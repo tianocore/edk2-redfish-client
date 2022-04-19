@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = RoleCollectionLib
-FILE_GUID                      =  28EE07AE-958A-4178-9CE7-BE718DE88EE1
+FILE_GUID                      =  AAF268E7-D462-455E-8BCC-D1130FD78DF8
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = RoleCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

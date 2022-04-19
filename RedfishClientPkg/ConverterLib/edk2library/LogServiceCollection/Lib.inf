@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = LogServiceCollectionLib
-FILE_GUID                      =  5B044156-D71B-49B7-92CF-BEB7D5AFAA0E
+FILE_GUID                      =  4D37B3C0-B0B3-407A-85AA-0E7EB864CBAC
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = LogServiceCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

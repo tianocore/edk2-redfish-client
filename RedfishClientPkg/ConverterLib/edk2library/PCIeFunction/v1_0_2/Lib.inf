@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PCIeFunctionV1_0_2Lib
-FILE_GUID                      =  7D94CD5A-C9A2-401E-BC2B-E37B1FBA2440
+FILE_GUID                      =  EC7036D5-072D-431C-88D3-86CF43F4E32D
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PCIeFunctionV1_0_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishEventDestination_V1_1_4_Dxe
-  FILE_GUID                 = e84e668e-f3e1-4c48-8b50-654d6e32c433
+  FILE_GUID                 = 3ffd2bad-0b60-4694-afb2-54b046a5ce92
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishEventDestination_V1_1_4EntryPoint

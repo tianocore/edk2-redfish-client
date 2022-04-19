@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = RoleV1_0_6Lib
-FILE_GUID                      =  F6132BE0-1365-4CC4-BEE1-9CDDA2E84958
+FILE_GUID                      =  756811E4-9D7C-41B8-A7C1-F88EF80E92A3
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = RoleV1_0_6Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

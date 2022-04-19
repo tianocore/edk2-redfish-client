@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SignatureV1_0_1Lib
-FILE_GUID                      =  9FDCADDA-90D2-4A75-96E7-35FE28AA2611
+FILE_GUID                      =  5622CA78-2594-4019-84BB-95C884844B3D
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SignatureV1_0_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

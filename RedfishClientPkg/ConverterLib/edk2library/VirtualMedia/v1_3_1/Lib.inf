@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = VirtualMediaV1_3_1Lib
-FILE_GUID                      =  A503C6B3-911F-433E-87F2-2A7355A2848A
+FILE_GUID                      =  3A2D0CAC-E587-45A9-8E6D-9BDF74EDBBF4
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = VirtualMediaV1_3_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

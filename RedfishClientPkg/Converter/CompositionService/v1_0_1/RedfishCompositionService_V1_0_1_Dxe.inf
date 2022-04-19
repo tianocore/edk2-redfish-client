@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishCompositionService_V1_0_1_Dxe
-  FILE_GUID                 = 755d7f08-597c-4810-af0c-2606fdde5c12
+  FILE_GUID                 = 9e2242b6-31ea-4ab5-aa7c-d376aedb3f63
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishCompositionService_V1_0_1EntryPoint

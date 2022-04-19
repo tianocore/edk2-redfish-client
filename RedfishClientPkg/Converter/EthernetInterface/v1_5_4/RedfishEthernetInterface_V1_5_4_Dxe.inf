@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishEthernetInterface_V1_5_4_Dxe
-  FILE_GUID                 = 30a67efc-1912-4c3d-b94f-5389b02fd799
+  FILE_GUID                 = 71c86b6d-095d-44a5-977f-e89ff5866350
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishEthernetInterface_V1_5_4EntryPoint

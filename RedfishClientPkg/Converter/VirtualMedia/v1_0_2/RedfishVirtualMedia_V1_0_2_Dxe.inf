@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishVirtualMedia_V1_0_2_Dxe
-  FILE_GUID                 = f2b6ac68-da90-4e4c-944d-3ecd3c6dd0fa
+  FILE_GUID                 = 5c8fe199-ec0b-4cde-aef6-7f9de823c0dc
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishVirtualMedia_V1_0_2EntryPoint

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = redfisherrorV1_0_0Lib
-FILE_GUID                      =  343295EE-6933-4B13-BFDC-3824BCA3D003
+FILE_GUID                      =  68074622-6924-4EBA-B327-C4AB5A77149E
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = redfisherrorV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

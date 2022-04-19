@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PortCollectionLib
-FILE_GUID                      =  68CEE660-EBD1-414F-A6A0-C8A634746C37
+FILE_GUID                      =  83AD9291-2B7D-43F3-9C83-07CCDC4E27C2
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PortCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

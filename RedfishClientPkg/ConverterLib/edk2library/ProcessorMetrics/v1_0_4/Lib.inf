@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ProcessorMetricsV1_0_4Lib
-FILE_GUID                      =  AFF47944-DD25-453C-B718-7D82BE81547F
+FILE_GUID                      =  E17026D7-0121-4597-AFF4-2650EA65CB94
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ProcessorMetricsV1_0_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

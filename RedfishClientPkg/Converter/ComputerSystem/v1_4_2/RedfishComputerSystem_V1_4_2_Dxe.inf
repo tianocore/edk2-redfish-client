@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishComputerSystem_V1_4_2_Dxe
-  FILE_GUID                 = 8c5090bd-5717-4fc9-8484-a363d4c006ec
+  FILE_GUID                 = 97c59500-3348-43d9-b6f4-26a3a1f51a34
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishComputerSystem_V1_4_2EntryPoint

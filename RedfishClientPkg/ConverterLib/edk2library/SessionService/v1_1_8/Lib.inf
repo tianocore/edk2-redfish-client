@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SessionServiceV1_1_8Lib
-FILE_GUID                      =  FD21A891-60B5-4E88-AEC9-021034419C05
+FILE_GUID                      =  628BC738-FDE7-470B-AA22-E5612A0152AA
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SessionServiceV1_1_8Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

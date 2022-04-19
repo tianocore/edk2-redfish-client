@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishMemoryChunks_V1_2_5_Dxe
-  FILE_GUID                 = 19d1fce6-4e56-469f-bc99-100f93a8b1c8
+  FILE_GUID                 = 6df327e6-873f-4fb1-85af-22f8d2bf8ae4
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishMemoryChunks_V1_2_5EntryPoint

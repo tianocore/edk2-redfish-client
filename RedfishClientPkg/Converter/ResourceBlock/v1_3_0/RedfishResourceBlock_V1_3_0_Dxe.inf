@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishResourceBlock_V1_3_0_Dxe
-  FILE_GUID                 = 6e236b28-3932-47d3-8ff8-6d18d563cded
+  FILE_GUID                 = f395db8e-5c3a-4b6a-a5db-c29857741f34
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishResourceBlock_V1_3_0EntryPoint

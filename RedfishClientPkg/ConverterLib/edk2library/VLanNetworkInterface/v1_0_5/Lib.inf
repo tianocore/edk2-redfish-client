@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = VLanNetworkInterfaceV1_0_5Lib
-FILE_GUID                      =  4489CEC2-7F07-4327-9E46-050AE8C32FD6
+FILE_GUID                      =  D441FBD4-0583-4BA3-8307-081327829BF9
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = VLanNetworkInterfaceV1_0_5Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

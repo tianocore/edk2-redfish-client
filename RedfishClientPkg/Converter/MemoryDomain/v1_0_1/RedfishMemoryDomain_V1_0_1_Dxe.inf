@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishMemoryDomain_V1_0_1_Dxe
-  FILE_GUID                 = ab9da488-6e8d-4a1a-b9c0-3360526010fc
+  FILE_GUID                 = 872edc49-8715-4a21-bb48-0563d4d236b2
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishMemoryDomain_V1_0_1EntryPoint

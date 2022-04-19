@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ResourceBlockV1_0_1Lib
-FILE_GUID                      =  33D8126C-FA1E-4346-93D8-009129DBF282
+FILE_GUID                      =  D4CE9169-F12D-44AD-9852-602BD0B02C3E
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ResourceBlockV1_0_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

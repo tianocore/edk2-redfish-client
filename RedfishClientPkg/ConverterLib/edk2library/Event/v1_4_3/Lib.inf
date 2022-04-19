@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = EventV1_4_3Lib
-FILE_GUID                      =  D37E6319-321C-4C28-ADF8-5C490171F4CE
+FILE_GUID                      =  1F3423B3-9520-4E20-8233-40445BD5D3B5
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = EventV1_4_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

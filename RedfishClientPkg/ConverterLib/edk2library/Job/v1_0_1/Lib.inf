@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = JobV1_0_1Lib
-FILE_GUID                      =  D6C51DD1-ACBF-4E39-95ED-0DACE2E87E7E
+FILE_GUID                      =  706A310F-2DB6-4A0C-88F8-FDAB7877368C
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = JobV1_0_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

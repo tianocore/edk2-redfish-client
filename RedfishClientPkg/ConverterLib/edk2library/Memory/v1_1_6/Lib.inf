@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MemoryV1_1_6Lib
-FILE_GUID                      =  8CF02E45-0542-4693-B451-7A53B8120BA3
+FILE_GUID                      =  8ACD3E6A-FB9F-44B5-B985-A0C248041BD9
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MemoryV1_1_6Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PowerDomainCollectionLib
-FILE_GUID                      =  AD10F873-2F82-4C76-B186-775BDA0505C1
+FILE_GUID                      =  8E65DDEB-2262-494B-BA79-A8CFEEFC1D83
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PowerDomainCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

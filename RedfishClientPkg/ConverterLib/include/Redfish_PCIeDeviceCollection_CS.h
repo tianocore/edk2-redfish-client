@@ -30,7 +30,7 @@ typedef struct _RedfishResource_Oem_CS {
 #endif
 
 //
-// The collection of PCIeDevice Resource instances.
+// The collection of PCIeDevice resource instances.
 //
 typedef struct _RedfishPCIeDeviceCollection_PCIeDeviceCollection_CS {
     RedfishCS_Header          Header;

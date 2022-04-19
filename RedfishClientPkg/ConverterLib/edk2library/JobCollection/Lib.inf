@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = JobCollectionLib
-FILE_GUID                      =  EF412A3F-76DD-479C-A469-032726C8A255
+FILE_GUID                      =  1C264885-CB73-4389-AAA0-6F3CF3777BFE
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = JobCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = CompositionServiceV1_1_2Lib
-FILE_GUID                      =  0973E3E5-4A27-4F91-91AC-F3523924F964
+FILE_GUID                      =  BCEE3A68-AD3D-43CB-957B-1F723C5B0B8F
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = CompositionServiceV1_1_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

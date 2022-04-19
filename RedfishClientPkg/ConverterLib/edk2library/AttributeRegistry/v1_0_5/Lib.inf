@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = AttributeRegistryV1_0_5Lib
-FILE_GUID                      =  0DF7DBEC-97C2-4A41-A138-C7C9E80F0FE0
+FILE_GUID                      =  0338F0F5-2823-492C-B707-D58107B4EBFF
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = AttributeRegistryV1_0_5Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

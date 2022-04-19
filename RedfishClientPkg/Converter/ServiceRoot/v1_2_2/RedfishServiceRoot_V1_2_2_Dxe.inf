@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishServiceRoot_V1_2_2_Dxe
-  FILE_GUID                 = 4729fbeb-303f-401c-b58b-ee75bd8971d6
+  FILE_GUID                 = c05f7122-f894-4f46-9d16-358ef1da64b4
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishServiceRoot_V1_2_2EntryPoint

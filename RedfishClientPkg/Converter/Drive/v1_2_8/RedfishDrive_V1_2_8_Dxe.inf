@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishDrive_V1_2_8_Dxe
-  FILE_GUID                 = ed43ff7b-b941-4856-9916-c1fcef5b3963
+  FILE_GUID                 = adb867bd-dc33-41ad-bbd4-cf336017f2f6
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishDrive_V1_2_8EntryPoint

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MetricReportDefinitionCollectionLib
-FILE_GUID                      =  7CF43127-7A8A-4EC4-81B3-D3C185DD3595
+FILE_GUID                      =  70287FAB-D1D1-4F51-9729-29E33A84B97C
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MetricReportDefinitionCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

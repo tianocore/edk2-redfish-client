@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = DriveV1_0_4Lib
-FILE_GUID                      =  1A5FEC8F-33B6-4EC5-A5CF-B9436F175AC8
+FILE_GUID                      =  BA549AB7-2AD2-4D00-A30C-14E13170FAE5
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = DriveV1_0_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

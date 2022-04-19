@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ThermalV1_3_1Lib
-FILE_GUID                      =  6FCB3209-C61F-41AC-BB66-2B667635EDEA
+FILE_GUID                      =  A72976CE-3347-4E4F-9BBE-048D8B23A37C
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ThermalV1_3_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

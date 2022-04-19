@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = CertificateV1_1_0Lib
-FILE_GUID                      =  7ED92E6E-A3E1-42E8-ABDE-0482519801D5
+FILE_GUID                      =  98DC7B81-0056-4BB8-A66E-0E7F545760AA
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = CertificateV1_1_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

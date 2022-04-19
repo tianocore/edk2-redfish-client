@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = UpdateServiceV1_2_7Lib
-FILE_GUID                      =  782A0CF4-F0E3-4746-9BBA-E2BD962CC33C
+FILE_GUID                      =  B06EB4D6-2812-4AB2-9693-89AB967E87DB
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = UpdateServiceV1_2_7Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

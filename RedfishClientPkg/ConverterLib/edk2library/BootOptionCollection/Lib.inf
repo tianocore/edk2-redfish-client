@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = BootOptionCollectionLib
-FILE_GUID                      =  4100A734-AB01-49EB-975C-0E2BF3AEC3C9
+FILE_GUID                      =  BCF45759-521B-47DB-BE22-8D0117F02BF6
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = BootOptionCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

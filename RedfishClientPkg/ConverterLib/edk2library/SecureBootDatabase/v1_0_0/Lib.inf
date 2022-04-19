@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SecureBootDatabaseV1_0_0Lib
-FILE_GUID                      =  3C2A69BF-A573-4AC8-AAA6-3D390DA4629E
+FILE_GUID                      =  90F171F9-8F8A-427E-8FBA-BDDFD38170E7
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SecureBootDatabaseV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = AggregationServiceV1_0_1Lib
-FILE_GUID                      =  AB6B1E7A-2E47-4293-8B40-2545B088C489
+FILE_GUID                      =  24B1EC9A-D95E-460C-9F9C-BFA4921375C0
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = AggregationServiceV1_0_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

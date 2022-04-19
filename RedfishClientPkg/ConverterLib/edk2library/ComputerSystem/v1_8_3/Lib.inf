@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ComputerSystemV1_8_3Lib
-FILE_GUID                      =  C2CE40B8-31E3-410F-85E9-DCA3A70E5888
+FILE_GUID                      =  78BD23D8-BCCD-4C07-A306-C03037D9227E
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ComputerSystemV1_8_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = AssemblyV1_2_2Lib
-FILE_GUID                      =  194EAB6C-EAD9-45CD-A44D-895C3A9366FD
+FILE_GUID                      =  B2F85DDD-4F28-4991-998C-28185A8F2980
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = AssemblyV1_2_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SessionCollectionLib
-FILE_GUID                      =  7B68E73A-F9A2-4CDD-B649-4D53DADD6CF8
+FILE_GUID                      =  4EE7745E-1B6C-48AE-8F9E-3E2C3A973912
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SessionCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = TriggersV1_0_0Lib
-FILE_GUID                      =  4644590B-49D2-42BD-9EC6-F4A77EFBA791
+FILE_GUID                      =  57306801-7FEE-4404-B7A6-A5FCD478D038
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = TriggersV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

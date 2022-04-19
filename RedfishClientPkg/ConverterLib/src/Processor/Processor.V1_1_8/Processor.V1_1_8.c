@@ -356,6 +356,11 @@ static RedfishCS_status GenCondition_Array_ElementCs(RedfishProcessor_V1_1_8_Pro
   if (Status != RedfishCS_status_success && Status != RedfishCS_status_not_found) {goto Error;}
   else {if (Status == RedfishCS_status_not_found){/*This is not the required property.*/}}
 
+  // Resolution
+  Status = GetRedfishPropertyStr (Cs, TempJsonObj, "Resolution", &(*Dst)->Resolution);
+  if (Status != RedfishCS_status_success && Status != RedfishCS_status_not_found) {goto Error;}
+  else {if (Status == RedfishCS_status_not_found){/*This is not the required property.*/}}
+
   // Severity
   Status = GetRedfishPropertyStr (Cs, TempJsonObj, "Severity", &(*Dst)->Severity);
   if (Status != RedfishCS_status_success && Status != RedfishCS_status_not_found) {goto Error;}
@@ -588,6 +593,9 @@ static RedfishCS_status CS_To_JSON_StatusConditions(json_t *CsJson, char *Key, R
 
     // OriginOfCondition
     if (CS_To_JSON_StatusConditionsOriginOfCondition(ArrayMember, "OriginOfCondition", NextArrayItem->OriginOfCondition) != RedfishCS_status_success) {goto Error;}
+
+    // Resolution 
+    if (InsertJsonStringObj (ArrayMember, "Resolution", NextArrayItem->Resolution) != RedfishCS_status_success) {goto Error;}
 
     // Severity 
     if (InsertJsonStringObj (ArrayMember, "Severity", NextArrayItem->Severity) != RedfishCS_status_success) {goto Error;}

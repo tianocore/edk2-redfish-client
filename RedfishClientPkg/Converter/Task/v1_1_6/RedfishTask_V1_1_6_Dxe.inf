@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishTask_V1_1_6_Dxe
-  FILE_GUID                 = 985340d1-432d-47d7-aa2e-1b7a89638494
+  FILE_GUID                 = 4461fb7d-9dc7-49ba-bdca-403535ac6e1f
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishTask_V1_1_6EntryPoint

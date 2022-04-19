@@ -490,6 +490,11 @@ static RedfishCS_status GenCondition_Array_ElementCs(RedfishComputerSystem_V1_8_
   if (Status != RedfishCS_status_success && Status != RedfishCS_status_not_found) {goto Error;}
   else {if (Status == RedfishCS_status_not_found){/*This is not the required property.*/}}
 
+  // Resolution
+  Status = GetRedfishPropertyStr (Cs, TempJsonObj, "Resolution", &(*Dst)->Resolution);
+  if (Status != RedfishCS_status_success && Status != RedfishCS_status_not_found) {goto Error;}
+  else {if (Status == RedfishCS_status_not_found){/*This is not the required property.*/}}
+
   // Severity
   Status = GetRedfishPropertyStr (Cs, TempJsonObj, "Severity", &(*Dst)->Severity);
   if (Status != RedfishCS_status_success && Status != RedfishCS_status_not_found) {goto Error;}
@@ -1214,6 +1219,9 @@ static RedfishCS_status CS_To_JSON_HostWatchdogTimerStatusConditions(json_t *CsJ
     // OriginOfCondition
     if (CS_To_JSON_HostWatchdogTimerStatusConditionsOriginOfCondition(ArrayMember, "OriginOfCondition", NextArrayItem->OriginOfCondition) != RedfishCS_status_success) {goto Error;}
 
+    // Resolution 
+    if (InsertJsonStringObj (ArrayMember, "Resolution", NextArrayItem->Resolution) != RedfishCS_status_success) {goto Error;}
+
     // Severity 
     if (InsertJsonStringObj (ArrayMember, "Severity", NextArrayItem->Severity) != RedfishCS_status_success) {goto Error;}
 
@@ -1499,6 +1507,9 @@ static RedfishCS_status CS_To_JSON_MemorySummaryStatusConditions(json_t *CsJson,
     // OriginOfCondition
     if (CS_To_JSON_MemorySummaryStatusConditionsOriginOfCondition(ArrayMember, "OriginOfCondition", NextArrayItem->OriginOfCondition) != RedfishCS_status_success) {goto Error;}
 
+    // Resolution 
+    if (InsertJsonStringObj (ArrayMember, "Resolution", NextArrayItem->Resolution) != RedfishCS_status_success) {goto Error;}
+
     // Severity 
     if (InsertJsonStringObj (ArrayMember, "Severity", NextArrayItem->Severity) != RedfishCS_status_success) {goto Error;}
 
@@ -1631,6 +1642,9 @@ static RedfishCS_status CS_To_JSON_ProcessorSummaryStatusConditions(json_t *CsJs
     // OriginOfCondition
     if (CS_To_JSON_ProcessorSummaryStatusConditionsOriginOfCondition(ArrayMember, "OriginOfCondition", NextArrayItem->OriginOfCondition) != RedfishCS_status_success) {goto Error;}
 
+    // Resolution 
+    if (InsertJsonStringObj (ArrayMember, "Resolution", NextArrayItem->Resolution) != RedfishCS_status_success) {goto Error;}
+
     // Severity 
     if (InsertJsonStringObj (ArrayMember, "Severity", NextArrayItem->Severity) != RedfishCS_status_success) {goto Error;}
 
@@ -1753,6 +1767,9 @@ static RedfishCS_status CS_To_JSON_StatusConditions(json_t *CsJson, char *Key, R
     // OriginOfCondition
     if (CS_To_JSON_StatusConditionsOriginOfCondition(ArrayMember, "OriginOfCondition", NextArrayItem->OriginOfCondition) != RedfishCS_status_success) {goto Error;}
 
+    // Resolution 
+    if (InsertJsonStringObj (ArrayMember, "Resolution", NextArrayItem->Resolution) != RedfishCS_status_success) {goto Error;}
+
     // Severity 
     if (InsertJsonStringObj (ArrayMember, "Severity", NextArrayItem->Severity) != RedfishCS_status_success) {goto Error;}
 
@@ -1860,6 +1877,9 @@ static RedfishCS_status CS_To_JSON_TrustedModulesStatusConditions(json_t *CsJson
 
     // OriginOfCondition
     if (CS_To_JSON_TrustedModulesStatusConditionsOriginOfCondition(ArrayMember, "OriginOfCondition", NextArrayItem->OriginOfCondition) != RedfishCS_status_success) {goto Error;}
+
+    // Resolution 
+    if (InsertJsonStringObj (ArrayMember, "Resolution", NextArrayItem->Resolution) != RedfishCS_status_success) {goto Error;}
 
     // Severity 
     if (InsertJsonStringObj (ArrayMember, "Severity", NextArrayItem->Severity) != RedfishCS_status_success) {goto Error;}

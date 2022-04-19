@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PrivilegeRegistryV1_0_2Lib
-FILE_GUID                      =  9A28A7E8-7EE6-4EC4-B44C-C57B85932A99
+FILE_GUID                      =  00095EDA-2B4F-41E4-9C63-DA2F2AE43E21
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PrivilegeRegistryV1_0_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

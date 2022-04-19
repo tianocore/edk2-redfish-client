@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishThermal_V1_2_7_Dxe
-  FILE_GUID                 = 1fdfecc1-7a6e-4d8d-b062-e50c3c18a54e
+  FILE_GUID                 = 3f0d430c-3a0e-4344-91a2-c9dc2e465969
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishThermal_V1_2_7EntryPoint

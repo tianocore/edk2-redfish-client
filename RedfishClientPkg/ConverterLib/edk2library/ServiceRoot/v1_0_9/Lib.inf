@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ServiceRootV1_0_9Lib
-FILE_GUID                      =  65E44B18-F33E-44BD-A2B6-80297A6D5CB4
+FILE_GUID                      =  D10C9053-4AD4-416E-8854-6C0669F2615A
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ServiceRootV1_0_9Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

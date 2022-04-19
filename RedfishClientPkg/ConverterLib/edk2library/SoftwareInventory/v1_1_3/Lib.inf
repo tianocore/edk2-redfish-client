@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SoftwareInventoryV1_1_3Lib
-FILE_GUID                      =  DDB3221C-56E4-4F60-9E87-85AD051A2076
+FILE_GUID                      =  F5EF54F6-B3C5-449B-B988-D92AAEB535E8
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SoftwareInventoryV1_1_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

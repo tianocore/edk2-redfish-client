@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = FacilityV1_0_0Lib
-FILE_GUID                      =  AB1E7D4F-78EF-4841-95A1-2211A8C6E24F
+FILE_GUID                      =  4AE5A57B-86CF-4915-8CC0-ACD4301B9909
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = FacilityV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

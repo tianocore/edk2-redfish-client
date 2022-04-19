@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ZoneV1_5_0Lib
-FILE_GUID                      =  DB536C11-C438-4500-8516-DBDB23BBAA14
+FILE_GUID                      =  1F3916A6-9081-4A8C-B248-9890B33F7C2F
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ZoneV1_5_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

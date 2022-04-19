@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = RouteSetEntryCollectionLib
-FILE_GUID                      =  AC4505EE-A088-40F8-9CFD-F178B9C77BE0
+FILE_GUID                      =  2B6CE22E-FA96-4E6C-BCDB-20AFDF7ED7A1
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = RouteSetEntryCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

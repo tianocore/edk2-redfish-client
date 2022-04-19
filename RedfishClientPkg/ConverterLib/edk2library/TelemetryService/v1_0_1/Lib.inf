@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = TelemetryServiceV1_0_1Lib
-FILE_GUID                      =  2118D205-8D39-4A63-BE6A-016F0FE1A4FA
+FILE_GUID                      =  875A6B23-9B68-489D-85A3-37A869C00897
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = TelemetryServiceV1_0_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

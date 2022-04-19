@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = EndpointGroupV1_1_4Lib
-FILE_GUID                      =  12E356C3-7D98-42A4-8A8D-A7908DAB9C29
+FILE_GUID                      =  181E7303-E685-4F39-BB94-914B228DAF3D
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = EndpointGroupV1_1_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

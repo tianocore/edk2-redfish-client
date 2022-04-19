@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MediaControllerCollectionLib
-FILE_GUID                      =  7449DB32-58EB-4FFA-975B-1D604F748999
+FILE_GUID                      =  3EA5D954-C26D-4796-B411-7B0FF321FE58
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MediaControllerCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

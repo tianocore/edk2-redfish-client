@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = NetworkPortV1_1_3Lib
-FILE_GUID                      =  10C90C03-7A59-4B4E-898E-D68A714C2B2C
+FILE_GUID                      =  01A9F5E6-FA0F-47AF-8922-628F17C0D0B2
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = NetworkPortV1_1_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = EthernetInterfaceV1_2_3Lib
-FILE_GUID                      =  FB515AD3-9EE1-4130-9029-C3295AF06B4B
+FILE_GUID                      =  57A81D3D-9930-4DD9-A483-9CB0C44E6BA0
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = EthernetInterfaceV1_2_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

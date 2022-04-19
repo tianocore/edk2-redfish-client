@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishSwitch_V1_0_7_Dxe
-  FILE_GUID                 = 86b06298-82d0-4754-9945-feb3aaa8b28f
+  FILE_GUID                 = 3b749ab7-e748-4658-8cf0-91e6dae30a34
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishSwitch_V1_0_7EntryPoint

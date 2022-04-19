@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishSimpleStorage_V1_0_0_Dxe
-  FILE_GUID                 = 86ab04de-1c9f-4a6c-8919-00a32cd5db34
+  FILE_GUID                 = 6a3fe44d-eb25-4665-bfcf-d40e957cd4a3
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishSimpleStorage_V1_0_0EntryPoint

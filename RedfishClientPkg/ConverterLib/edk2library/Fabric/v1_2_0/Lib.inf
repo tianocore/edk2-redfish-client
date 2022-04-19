@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = FabricV1_2_0Lib
-FILE_GUID                      =  24855173-13C9-4CE9-B9C3-1523AE5E1FBA
+FILE_GUID                      =  1E2108C8-397D-4A3E-8C1D-6309497F07FF
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = FabricV1_2_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishMetricDefinition_V1_0_2_Dxe
-  FILE_GUID                 = 81eff538-87e7-48ef-aa02-2b3f90b03e84
+  FILE_GUID                 = 3d8ea217-f939-4abf-a43b-08c0a83caef3
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishMetricDefinition_V1_0_2EntryPoint

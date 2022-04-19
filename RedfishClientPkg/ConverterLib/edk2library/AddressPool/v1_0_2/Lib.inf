@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = AddressPoolV1_0_2Lib
-FILE_GUID                      =  8CC3F2F3-F832-4797-853C-C962EA4D3CAF
+FILE_GUID                      =  2487AE5E-2CDB-43F9-8EF0-AA2FF01894B4
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = AddressPoolV1_0_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

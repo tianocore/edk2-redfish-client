@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishTelemetryService_V1_0_1_Dxe
-  FILE_GUID                 = ef6c33ee-2c09-4a26-bb42-f637da8b9b55
+  FILE_GUID                 = 24c0552c-abed-42eb-bd6d-c984f054a004
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishTelemetryService_V1_0_1EntryPoint

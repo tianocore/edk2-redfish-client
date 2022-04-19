@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishSensor_V1_0_4_Dxe
-  FILE_GUID                 = caef8bb9-8692-49fd-b399-a69536c9eb6d
+  FILE_GUID                 = 2b36d574-3536-4916-a65f-bb17fea302f7
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishSensor_V1_0_4EntryPoint

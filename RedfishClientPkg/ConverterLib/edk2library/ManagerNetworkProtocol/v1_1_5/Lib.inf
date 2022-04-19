@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ManagerNetworkProtocolV1_1_5Lib
-FILE_GUID                      =  05A30B3D-AB87-45B7-8E35-0FBFDE08AA55
+FILE_GUID                      =  07B2A551-A247-4A67-A4AF-AB043C3A2C12
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ManagerNetworkProtocolV1_1_5Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

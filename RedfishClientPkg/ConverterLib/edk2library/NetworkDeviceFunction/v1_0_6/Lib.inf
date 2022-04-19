@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = NetworkDeviceFunctionV1_0_6Lib
-FILE_GUID                      =  EF64D067-92AC-4050-B7E4-4B523A824003
+FILE_GUID                      =  E56FCC1B-3DD7-4D0E-AA60-36C555E499EE
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = NetworkDeviceFunctionV1_0_6Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

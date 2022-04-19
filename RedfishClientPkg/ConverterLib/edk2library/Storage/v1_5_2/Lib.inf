@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = StorageV1_5_2Lib
-FILE_GUID                      =  3B40C9F0-1141-464A-B6D1-48ADFFA67623
+FILE_GUID                      =  667A43F8-3598-4E53-96EA-B025FE89D545
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = StorageV1_5_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

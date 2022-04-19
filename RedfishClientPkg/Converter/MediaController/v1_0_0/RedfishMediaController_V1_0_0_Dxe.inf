@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishMediaController_V1_0_0_Dxe
-  FILE_GUID                 = 954a00fd-e133-48f3-b69a-381b258106f2
+  FILE_GUID                 = 66a2b694-5e35-428b-b531-c2aaff7650ec
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishMediaController_V1_0_0EntryPoint

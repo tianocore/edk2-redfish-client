@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MetricDefinitionV1_0_4Lib
-FILE_GUID                      =  19E73633-049B-4019-8E14-3AA0FFCFB214
+FILE_GUID                      =  F09FE622-031B-4049-AD2A-831B448C41B7
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MetricDefinitionV1_0_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

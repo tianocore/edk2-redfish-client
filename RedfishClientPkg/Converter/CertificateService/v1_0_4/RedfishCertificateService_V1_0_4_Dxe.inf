@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishCertificateService_V1_0_4_Dxe
-  FILE_GUID                 = 93e7a9c3-18e1-45c6-a1c7-a8a0bf1b70ca
+  FILE_GUID                 = 2af0c6b5-5cc0-46c6-a601-6b8ecfcd6b57
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishCertificateService_V1_0_4EntryPoint

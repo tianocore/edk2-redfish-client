@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SwitchV1_3_2Lib
-FILE_GUID                      =  1FC2C7CB-44E4-44B1-9DDF-5B710EC13440
+FILE_GUID                      =  F9E6A3EB-D52F-42A6-8EE8-66C1BB251BA2
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SwitchV1_3_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

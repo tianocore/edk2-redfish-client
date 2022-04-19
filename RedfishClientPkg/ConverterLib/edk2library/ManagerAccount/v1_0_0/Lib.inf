@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ManagerAccountV1_0_0Lib
-FILE_GUID                      =  D9885D63-7F81-456E-B05C-CE4BB4A67DE7
+FILE_GUID                      =  83F8F257-D772-48E3-842C-D5E5020EB7D4
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ManagerAccountV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

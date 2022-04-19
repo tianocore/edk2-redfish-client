@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MemoryMetricsV1_1_8Lib
-FILE_GUID                      =  2687FE49-197E-4521-AB7C-4FB52B148C34
+FILE_GUID                      =  8C5D032F-AD7A-4A05-B701-166E49C4CFD9
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MemoryMetricsV1_1_8Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MemoryChunksV1_2_2Lib
-FILE_GUID                      =  203C693D-9388-422F-A2F1-A3C8B5623CE6
+FILE_GUID                      =  5A7B72DC-AD20-4645-9E7A-B63F9CD0B832
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MemoryChunksV1_2_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

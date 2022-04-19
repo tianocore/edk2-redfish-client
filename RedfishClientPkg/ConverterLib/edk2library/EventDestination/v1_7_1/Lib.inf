@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = EventDestinationV1_7_1Lib
-FILE_GUID                      =  3F997CEF-D951-4976-8E6D-A14063437164
+FILE_GUID                      =  98E58305-0E7E-41EF-BCBB-5C7F7C33CD83
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = EventDestinationV1_7_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

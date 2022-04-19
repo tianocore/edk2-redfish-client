@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishPCIeFunction_V1_0_4_Dxe
-  FILE_GUID                 = d98df6d0-9ae6-4a8a-a988-5da3fec81df8
+  FILE_GUID                 = f1c0d063-cce7-4acd-be5e-27ce0f12f11b
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishPCIeFunction_V1_0_4EntryPoint

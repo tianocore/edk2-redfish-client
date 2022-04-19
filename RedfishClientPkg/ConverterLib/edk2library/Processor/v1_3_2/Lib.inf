@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ProcessorV1_3_2Lib
-FILE_GUID                      =  400A0E99-3489-4CF7-987F-6C03083EE6E5
+FILE_GUID                      =  B31947F0-211D-4871-88DA-D0DB39B1141F
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ProcessorV1_3_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = FanCollectionLib
-FILE_GUID                      =  81888F07-BF8F-4F49-B025-094F826D59AE
+FILE_GUID                      =  2CE9C5E1-D0A6-4DDB-9318-423A59A2EBB5
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = FanCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

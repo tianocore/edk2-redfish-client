@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = TaskServiceV1_1_4Lib
-FILE_GUID                      =  3DE19013-8191-4721-8E4B-C7651B0425F3
+FILE_GUID                      =  FF3A2D3B-1314-42AE-B032-C56CD357CF96
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = TaskServiceV1_1_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

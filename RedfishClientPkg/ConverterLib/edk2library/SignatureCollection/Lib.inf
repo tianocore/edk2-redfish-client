@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SignatureCollectionLib
-FILE_GUID                      =  745A3B46-A1AD-4D7F-8074-14252B2F4DB7
+FILE_GUID                      =  66628396-B87E-4CF7-8989-457185234C77
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SignatureCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

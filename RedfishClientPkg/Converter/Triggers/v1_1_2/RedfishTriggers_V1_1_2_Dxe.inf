@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishTriggers_V1_1_2_Dxe
-  FILE_GUID                 = a7d7d2cc-7d0f-4f7a-8b89-70904d16b226
+  FILE_GUID                 = 22bce900-670a-48a4-9390-ec52c361deb3
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishTriggers_V1_1_2EntryPoint

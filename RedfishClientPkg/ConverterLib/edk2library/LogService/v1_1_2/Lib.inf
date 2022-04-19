@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = LogServiceV1_1_2Lib
-FILE_GUID                      =  076A6B83-A2DF-41C3-8201-015895A80E55
+FILE_GUID                      =  442FDEA2-49DA-4827-AE93-ACF60E362EA3
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = LogServiceV1_1_2Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

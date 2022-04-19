@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PowerV1_4_0Lib
-FILE_GUID                      =  78658840-0F6A-4286-BD89-A0E397E61593
+FILE_GUID                      =  01A2F46B-F151-463D-9329-202E4B315534
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PowerV1_4_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

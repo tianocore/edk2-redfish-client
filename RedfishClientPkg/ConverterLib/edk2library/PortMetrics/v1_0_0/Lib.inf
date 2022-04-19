@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PortMetricsV1_0_0Lib
-FILE_GUID                      =  F72ED539-5595-4AF1-93E6-274D0FEB6290
+FILE_GUID                      =  C064149F-2B4F-4296-A693-50E09E7A02A9
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PortMetricsV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

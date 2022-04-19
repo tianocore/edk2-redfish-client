@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ConnectionCollectionLib
-FILE_GUID                      =  D090695D-D708-46C6-9B05-D35C171ACA54
+FILE_GUID                      =  4BAA7D4E-3D00-4090-BE9E-9A7B00A16777
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ConnectionCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

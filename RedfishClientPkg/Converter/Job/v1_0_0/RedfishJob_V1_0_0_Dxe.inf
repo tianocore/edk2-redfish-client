@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishJob_V1_0_0_Dxe
-  FILE_GUID                 = 66daabeb-306e-426f-bdf1-cb10ce71090d
+  FILE_GUID                 = e9796ad3-8a91-433c-bc73-34f529e2ab99
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishJob_V1_0_0EntryPoint

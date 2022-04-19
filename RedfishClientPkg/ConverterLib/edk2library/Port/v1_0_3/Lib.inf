@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PortV1_0_3Lib
-FILE_GUID                      =  F5A89FC8-FC70-4FB9-A90C-83611EB43931
+FILE_GUID                      =  E95F395E-A19E-4517-9317-CEB43F96F913
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PortV1_0_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = OperatingConfigCollectionLib
-FILE_GUID                      =  E2AA54E2-99C5-4184-A171-BB68780A88D7
+FILE_GUID                      =  E11607E5-1722-410F-ACB4-02BD56AB8532
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = OperatingConfigCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

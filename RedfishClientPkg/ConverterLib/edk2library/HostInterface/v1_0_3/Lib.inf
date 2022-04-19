@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = HostInterfaceV1_0_3Lib
-FILE_GUID                      =  37FE7380-5664-4C23-A53A-6BFE928060B3
+FILE_GUID                      =  C295AF7D-C506-45BD-9DF4-A080C64B7EAA
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = HostInterfaceV1_0_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

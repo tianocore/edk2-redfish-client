@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = VCATEntryCollectionLib
-FILE_GUID                      =  512102FF-CC02-4EE5-9D7E-7A703260F23A
+FILE_GUID                      =  A33FA6E8-423B-4915-974B-439AEE5B6726
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = VCATEntryCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

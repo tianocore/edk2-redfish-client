@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishVLanNetworkInterfaceCollection_Dxe
-  FILE_GUID                 = b5ce03eb-4fc7-4c96-8ff3-5fe259d3d997
+  FILE_GUID                 = 06ba016b-ffb7-4912-972d-2524dabd6804
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishVLanNetworkInterfaceCollectionEntryPoint

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = JsonSchemaFileV1_0_3Lib
-FILE_GUID                      =  8288E4EC-95B1-4D2E-9BDC-FED3F025B5FE
+FILE_GUID                      =  C4B99B00-396A-4230-BE8C-F0E3F210CDDC
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = JsonSchemaFileV1_0_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishSessionService_V1_0_4_Dxe
-  FILE_GUID                 = 87d0a18d-98a7-4a75-b871-65d8f9c7f04c
+  FILE_GUID                 = 1ee1cfdc-e069-49a5-b600-6ac092c4a4fc
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishSessionService_V1_0_4EntryPoint

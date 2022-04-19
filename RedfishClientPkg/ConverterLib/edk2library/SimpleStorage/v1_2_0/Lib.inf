@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SimpleStorageV1_2_0Lib
-FILE_GUID                      =  78E5F6AA-D432-46EB-AFFA-6358107E1239
+FILE_GUID                      =  7B13D6C3-F7AC-4195-95E6-10351985CE81
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SimpleStorageV1_2_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

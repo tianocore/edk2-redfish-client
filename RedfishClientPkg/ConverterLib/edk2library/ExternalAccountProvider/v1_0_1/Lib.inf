@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ExternalAccountProviderV1_0_1Lib
-FILE_GUID                      =  AC11054F-A89F-4942-BCE5-39713D66A6FA
+FILE_GUID                      =  5A8F4AEF-38D8-4682-92ED-C08E6242ADF6
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ExternalAccountProviderV1_0_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

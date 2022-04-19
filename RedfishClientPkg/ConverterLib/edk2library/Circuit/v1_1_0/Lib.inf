@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = CircuitV1_1_0Lib
-FILE_GUID                      =  355BC560-F79E-4404-8AF5-DA413064BE0C
+FILE_GUID                      =  E8119E48-8ECF-497E-933F-34EAE78270B9
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = CircuitV1_1_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

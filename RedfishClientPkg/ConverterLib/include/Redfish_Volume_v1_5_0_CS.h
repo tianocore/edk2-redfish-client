@@ -75,6 +75,8 @@ typedef struct _RedfishResource_Condition_CS {
     Redfishodatav4_idRef_CS    *OriginOfCondition;    // A link to the resource or
                                                      // object that originated the
                                                      // condition.
+    RedfishCS_char             *Resolution;          // Suggestions on how to resolve
+                                                     // the condition.
     RedfishCS_char             *Severity;            // The severity of the condition.
     RedfishCS_char             *Timestamp;           // The time the condition
                                                      // occurred.
@@ -357,7 +359,7 @@ typedef struct _RedfishVolume_V1_5_0_NamespaceFeatures_CS {
                                                                 // granularity (NPWG), write
                                                                 // alignment (NPWA), deallocate
                                                                 // granularity (NPDG), deallocate
-                                                                // alignment (NPDA) and optimimal
+                                                                // alignment (NPDA) and optimal
                                                                 // write size (NOWS)  are defined
                                                                 // for this namespace and should
                                                                 // be used by the host for I/O

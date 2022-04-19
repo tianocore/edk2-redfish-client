@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = AccelerationFunctionCollectionLib
-FILE_GUID                      =  D72AF9EE-0329-41A7-8667-A086131F4CEC
+FILE_GUID                      =  7437D878-DDF6-40CB-9CE9-68A3B4977A47
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = AccelerationFunctionCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

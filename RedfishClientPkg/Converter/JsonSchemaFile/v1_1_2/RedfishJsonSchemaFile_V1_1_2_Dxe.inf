@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishJsonSchemaFile_V1_1_2_Dxe
-  FILE_GUID                 = a9d476bf-24fc-4a25-b70b-17a1ad85b3da
+  FILE_GUID                 = b23a2f13-0502-494c-a9d6-245cae4f8d9e
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishJsonSchemaFile_V1_1_2EntryPoint

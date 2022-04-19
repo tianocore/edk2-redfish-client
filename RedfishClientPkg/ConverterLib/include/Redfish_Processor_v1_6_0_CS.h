@@ -222,6 +222,8 @@ typedef struct _RedfishResource_Condition_CS {
     Redfishodatav4_idRef_CS    *OriginOfCondition;    // A link to the resource or
                                                      // object that originated the
                                                      // condition.
+    RedfishCS_char             *Resolution;          // Suggestions on how to resolve
+                                                     // the condition.
     RedfishCS_char             *Severity;            // The severity of the condition.
     RedfishCS_char             *Timestamp;           // The time the condition
                                                      // occurred.

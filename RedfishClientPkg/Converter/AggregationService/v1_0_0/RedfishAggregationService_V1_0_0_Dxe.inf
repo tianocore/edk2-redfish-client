@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishAggregationService_V1_0_0_Dxe
-  FILE_GUID                 = e9ec78e0-ec0a-4d15-9a0a-2c272d40dabd
+  FILE_GUID                 = 2778e8c5-854f-4b7e-b975-f5dbf1e96803
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishAggregationService_V1_0_0EntryPoint

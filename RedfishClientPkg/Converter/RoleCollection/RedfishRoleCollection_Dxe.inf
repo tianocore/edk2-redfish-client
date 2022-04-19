@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishRoleCollection_Dxe
-  FILE_GUID                 = 9d5b83a5-b214-4bae-9c0e-481c29d74f88
+  FILE_GUID                 = 746d90cd-9f5b-45df-911c-e1a4092f16d7
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishRoleCollectionEntryPoint

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = VolumeV1_3_1Lib
-FILE_GUID                      =  C7236C8A-69F1-4265-9BD4-4D14B400B552
+FILE_GUID                      =  FCC4DDBA-02FC-4C2F-A732-8D4AC603BCB5
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = VolumeV1_3_1Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

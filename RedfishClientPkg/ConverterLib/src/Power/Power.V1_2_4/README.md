@@ -185,6 +185,7 @@
         RedfishCS_char_Array *MessageArgs;
         RedfishCS_char *MessageId;
         Redfishodatav4_idRef_CS *OriginOfCondition;
+        RedfishCS_char *Resolution;
         RedfishCS_char *Severity;
         RedfishCS_char *Timestamp;
     } RedfishResource_Condition_CS;
@@ -196,6 +197,7 @@
 |**MessageArgs**|RedfishCS_char_Array| Structure array points to one or more than one **RedfishCS_char *** for property **MessageArgs**.| No| Yes
 |**MessageId**|RedfishCS_char| String pointer to **MessageId** property.| No| Yes
 |**OriginOfCondition**|Redfishodatav4_idRef_CS| Structure points to **OriginOfCondition** property.| No| Yes
+|**Resolution**|RedfishCS_char| String pointer to **Resolution** property.| No| Yes
 |**Severity**|RedfishCS_char| String pointer to **Severity** property.| No| Yes
 |**Timestamp**|RedfishCS_char| String pointer to **Timestamp** property.| No| Yes
 

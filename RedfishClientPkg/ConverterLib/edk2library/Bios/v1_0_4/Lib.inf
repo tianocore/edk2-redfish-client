@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = BiosV1_0_4Lib
-FILE_GUID                      =  14E410E1-4B04-4D02-998C-C7B420DC7A11
+FILE_GUID                      =  E4F167AA-E431-47EB-86D9-FA9769E72D5A
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = BiosV1_0_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

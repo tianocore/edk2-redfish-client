@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = NetworkAdapterV1_2_0Lib
-FILE_GUID                      =  26AB5B99-9C7F-4361-857D-9C2AB5FA3FC6
+FILE_GUID                      =  AED3AE4B-B77F-477A-B3A2-B8EFB2C557A3
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = NetworkAdapterV1_2_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

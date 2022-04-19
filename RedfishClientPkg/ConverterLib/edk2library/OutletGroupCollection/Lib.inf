@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = OutletGroupCollectionLib
-FILE_GUID                      =  3C76A3FB-9F78-4BCB-9C1D-E9CE775838D2
+FILE_GUID                      =  DFE49DA9-C037-4D2E-A035-BC6E16BD54E2
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = OutletGroupCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

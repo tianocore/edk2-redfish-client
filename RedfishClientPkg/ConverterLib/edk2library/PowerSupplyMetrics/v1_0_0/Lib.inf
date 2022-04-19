@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PowerSupplyMetricsV1_0_0Lib
-FILE_GUID                      =  B0D49E7E-2086-4B21-850A-A027E9BEA0F3
+FILE_GUID                      =  24B51D92-3D4D-495A-85CF-A361816194C7
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PowerSupplyMetricsV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

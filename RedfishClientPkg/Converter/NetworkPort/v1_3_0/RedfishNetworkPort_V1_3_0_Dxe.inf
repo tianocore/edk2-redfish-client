@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishNetworkPort_V1_3_0_Dxe
-  FILE_GUID                 = e1931c19-21df-4ff1-abc2-57ab69dce3ad
+  FILE_GUID                 = edce285b-5fc0-42f3-bc50-ee03c507dd97
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishNetworkPort_V1_3_0EntryPoint

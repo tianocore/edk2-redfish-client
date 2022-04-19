@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishAccelerationFunction_V1_0_1_Dxe
-  FILE_GUID                 = 794ad4ed-4303-4dd1-ad56-977f2daadd99
+  FILE_GUID                 = 0bef0d28-1f41-4b3f-9d60-c154f980e4f2
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishAccelerationFunction_V1_0_1EntryPoint

@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishFabricAdapterCollection_Dxe
-  FILE_GUID                 = ca1255e8-b23a-4e53-a3c3-b5a37e34dd33
+  FILE_GUID                 = 2b00c00f-bd70-4085-8880-8085ad712451
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishFabricAdapterCollectionEntryPoint

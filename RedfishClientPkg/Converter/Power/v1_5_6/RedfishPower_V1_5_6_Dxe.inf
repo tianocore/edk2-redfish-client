@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishPower_V1_5_6_Dxe
-  FILE_GUID                 = 63dbb105-2700-434a-8f52-acb3e8c1a342
+  FILE_GUID                 = 10ad5500-ab32-433d-afbf-463ecc7dd6f0
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishPower_V1_5_6EntryPoint

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = LogEntryV1_1_6Lib
-FILE_GUID                      =  DD580FB7-DEC2-43FB-A8F4-57004D6CC1EE
+FILE_GUID                      =  B4D54345-29B5-45BC-B152-B02D40FDEB82
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = LogEntryV1_1_6Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

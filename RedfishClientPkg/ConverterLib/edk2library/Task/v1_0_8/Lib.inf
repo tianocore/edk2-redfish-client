@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = TaskV1_0_8Lib
-FILE_GUID                      =  09652E10-01A5-4BA4-9ECE-563D02B2B61B
+FILE_GUID                      =  C0E155ED-E6B8-4946-9F0B-5E05F62DB14B
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = TaskV1_0_8Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

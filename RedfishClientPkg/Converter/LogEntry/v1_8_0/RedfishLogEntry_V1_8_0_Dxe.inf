@@ -17,7 +17,7 @@
 [Defines]
   INF_VERSION               = 0x00010005
   BASE_NAME                 = RedfishLogEntry_V1_8_0_Dxe
-  FILE_GUID                 = 95ccd06d-86d1-4fba-bb6e-d2c4dd8ed72e
+  FILE_GUID                 = df284d31-8c15-4db1-85e9-e3bdb3c673ae
   MODULE_TYPE               = DXE_DRIVER
   VERSION_STRING            = 1.0
   ENTRY_POINT               = RedfishLogEntry_V1_8_0EntryPoint

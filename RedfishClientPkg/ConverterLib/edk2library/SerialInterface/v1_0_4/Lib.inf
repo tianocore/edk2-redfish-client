@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SerialInterfaceV1_0_4Lib
-FILE_GUID                      =  0D298B7A-C4EB-4ADF-8F0D-6F23F25CC818
+FILE_GUID                      =  EB7C5447-00B4-4C01-96E7-B5DC33128B0D
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SerialInterfaceV1_0_4Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

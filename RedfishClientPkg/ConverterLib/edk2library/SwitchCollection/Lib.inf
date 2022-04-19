@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SwitchCollectionLib
-FILE_GUID                      =  E0FADA4D-8198-44C4-BFFD-F3591C29770C
+FILE_GUID                      =  4AAE26CC-DFF1-4DA0-BA8E-400C5D19288B
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SwitchCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = SensorV1_0_3Lib
-FILE_GUID                      =  0E619793-60ED-4FF8-B33F-BAD7AB30E802
+FILE_GUID                      =  7AB424E6-DE97-4F04-949D-DD2C3504403B
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = SensorV1_0_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

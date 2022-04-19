@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PowerDistributionV1_0_0Lib
-FILE_GUID                      =  C1034807-733A-44A7-A3CF-8C5D4DE5E0EF
+FILE_GUID                      =  80A7F866-FAC0-4E95-B435-301D7EE7006B
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PowerDistributionV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

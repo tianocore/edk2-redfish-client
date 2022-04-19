@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = TaskCollectionLib
-FILE_GUID                      =  3AFD8597-41FC-4C79-80DF-8D75FD70DD61
+FILE_GUID                      =  DB7C6EE9-F4E8-467B-9E2B-3CB44766D139
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = TaskCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

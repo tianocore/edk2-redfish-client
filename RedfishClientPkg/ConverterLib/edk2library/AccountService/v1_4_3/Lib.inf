@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = AccountServiceV1_4_3Lib
-FILE_GUID                      =  D3E7491E-C92C-4DD0-907F-77DDFE2C1FB6
+FILE_GUID                      =  99B87F50-D974-488E-AE53-8D6EA5E49CD0
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = AccountServiceV1_4_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

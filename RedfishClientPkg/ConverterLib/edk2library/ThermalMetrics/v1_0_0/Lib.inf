@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ThermalMetricsV1_0_0Lib
-FILE_GUID                      =  4F15ADA9-F93F-45BA-90C5-6A084EF1DA43
+FILE_GUID                      =  69E67924-80ED-4E8E-90DE-6AAB51E681FD
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ThermalMetricsV1_0_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

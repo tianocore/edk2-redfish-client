@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PowerSupplyCollectionLib
-FILE_GUID                      =  B403EA97-2E97-4A5C-9B18-FA5DCC8A21D4
+FILE_GUID                      =  ED0E1694-A935-4E7E-985B-006F64BD705F
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PowerSupplyCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

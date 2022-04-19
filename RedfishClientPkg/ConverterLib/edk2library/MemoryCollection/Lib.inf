@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MemoryCollectionLib
-FILE_GUID                      =  EA971513-218F-4168-949B-63B2770BE8F6
+FILE_GUID                      =  ABABF5F4-A0F6-4454-B83F-E349E4667DF8
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MemoryCollectionLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

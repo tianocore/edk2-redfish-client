@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = MessageRegistryV1_2_3Lib
-FILE_GUID                      =  A27DC434-57C7-4B21-8691-27647AF60F3B
+FILE_GUID                      =  4AFD9FC6-048E-46F2-8966-D999FF6F4532
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = MessageRegistryV1_2_3Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

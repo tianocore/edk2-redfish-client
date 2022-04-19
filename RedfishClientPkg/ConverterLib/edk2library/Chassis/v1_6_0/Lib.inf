@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ChassisV1_6_0Lib
-FILE_GUID                      =  AEEA83A3-39F9-4EFF-9F01-7931E8C485D9
+FILE_GUID                      =  943F1968-20A5-4D7A-B704-C987BDD14DAA
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ChassisV1_6_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

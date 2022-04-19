@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = PCIeDeviceV1_6_0Lib
-FILE_GUID                      =  3CDF25E0-2347-4119-B490-CB06166FA9A7
+FILE_GUID                      =  46EF2DFB-6851-479B-96EB-F9836BFCA227
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = PCIeDeviceV1_6_0Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER

@@ -11,7 +11,7 @@
 [Defines]
 INF_VERSION                    = 0x00010006
 BASE_NAME                      = ActionInfoV1_0_6Lib
-FILE_GUID                      =  1C861A12-2D03-462E-8C64-D223623B0EC0
+FILE_GUID                      =  EE196E01-347A-47AD-A480-90FDCF44AA25
 MODULE_TYPE                    = BASE
 VERSION_STRING                 = 1.0
 LIBRARY_CLASS                  = ActionInfoV1_0_6Lib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER
