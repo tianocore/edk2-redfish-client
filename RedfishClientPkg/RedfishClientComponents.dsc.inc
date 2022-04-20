@@ -6,7 +6,7 @@
 # of EDKII Redfish drivers according to the value of flags described in
 # "RedfishClientDefines.dsc.inc".
 #
-# (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -15,13 +15,17 @@
 !if $(REDFISH_CLIENT) == TRUE
   RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
   RedfishClientPkg/RedfishETagDxe/RedfishETagDxe.inf
+  #
+  # Below two modules should be pulled in by build tool.
+  #
   RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
   RedfishClientPkg/Features/RedfishMemoryCollectionDxe/RedfishMemoryCollectionDxe.inf
-!endif
 
-!if $(REDFISH_CLIENT_ALL_AUTOGENED) == TRUE
   !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
-!else
+
+  #
+  # Below two modules should be pulled in by build tool.
+  #
   RedfishClientPkg/Converter/Memory/v1_7_1/RedfishMemory_V1_7_1_Dxe.inf
   RedfishClientPkg/Converter/MemoryCollection/RedfishMemoryCollection_Dxe.inf
 !endif
