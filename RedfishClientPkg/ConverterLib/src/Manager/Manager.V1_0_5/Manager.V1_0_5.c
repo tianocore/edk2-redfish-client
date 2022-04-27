@@ -2,10 +2,10 @@
 // Auto-generated file by Redfish Schema C Structure Generator.
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
-//  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+//  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
 //
 // Copyright Notice:
-// Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
+// Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
 // License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 //
 
@@ -650,14 +650,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsManager_ForceFailover(json_t *CsJson, char *Key, RedfishManager_V1_0_5_ForceFailover_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // target 
   if (InsertJsonStringObj (CsJson, "target", CSPtr->target) != RedfishCS_status_success) {goto Error;}
 
   // title 
   if (InsertJsonStringObj (CsJson, "title", CSPtr->title) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -665,14 +677,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsManager_ModifyRedundancySet(json_t *CsJson, char *Key, RedfishManager_V1_0_5_ModifyRedundancySet_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // target 
   if (InsertJsonStringObj (CsJson, "target", CSPtr->target) != RedfishCS_status_success) {goto Error;}
 
   // title 
   if (InsertJsonStringObj (CsJson, "title", CSPtr->title) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -680,14 +704,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsManager_Reset(json_t *CsJson, char *Key, RedfishManager_V1_0_5_Reset_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // target 
   if (InsertJsonStringObj (CsJson, "target", CSPtr->target) != RedfishCS_status_success) {goto Error;}
 
   // title 
   if (InsertJsonStringObj (CsJson, "title", CSPtr->title) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -695,9 +731,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, RedfishManager_V1_0_5_Manager_Actions_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -705,9 +750,18 @@ static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, Redfish
 }
 static RedfishCS_status CS_To_JSON_Actions(json_t *CsJson, char *Key, RedfishManager_V1_0_5_Manager_Actions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // #Manager.ForceFailover
   if (CS_To_JSON_ActionsManager_ForceFailover(CsJson, "#Manager.ForceFailover", CSPtr->Manager_ForceFailover) != RedfishCS_status_success) {goto Error;}
 
@@ -720,15 +774,27 @@ static RedfishCS_status CS_To_JSON_Actions(json_t *CsJson, char *Key, RedfishMan
   // Oem
   if (CS_To_JSON_ActionsOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_CommandShell(json_t *CsJson, char *Key, RedfishManager_V1_0_5_CommandShell_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ConnectTypesSupported 
   if (InsertJsonStringArrayObj (CsJson, "ConnectTypesSupported", CSPtr->ConnectTypesSupported) != RedfishCS_status_success) {goto Error;}
 
@@ -737,6 +803,9 @@ static RedfishCS_status CS_To_JSON_CommandShell(json_t *CsJson, char *Key, Redfi
 
   // ServiceEnabled 
   if (InsertJsonBoolObj (CsJson, "ServiceEnabled", CSPtr->ServiceEnabled) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -744,9 +813,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_GraphicalConsole(json_t *CsJson, char *Key, RedfishManager_V1_0_5_GraphicalConsole_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ConnectTypesSupported 
   if (InsertJsonStringArrayObj (CsJson, "ConnectTypesSupported", CSPtr->ConnectTypesSupported) != RedfishCS_status_success) {goto Error;}
 
@@ -756,15 +834,27 @@ static RedfishCS_status CS_To_JSON_GraphicalConsole(json_t *CsJson, char *Key, R
   // ServiceEnabled 
   if (InsertJsonBoolObj (CsJson, "ServiceEnabled", CSPtr->ServiceEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_LinksOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -772,9 +862,18 @@ static RedfishCS_status CS_To_JSON_LinksOem(json_t *CsJson, char *Key, RedfishRe
 }
 static RedfishCS_status CS_To_JSON_Links(json_t *CsJson, char *Key, RedfishManager_V1_0_5_Manager_Links_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ManagerForChassis 
   if (InsertJsonLinkArrayObj (CsJson, "ManagerForChassis", &CSPtr->ManagerForChassis) != RedfishCS_status_success) {goto Error;}
 
@@ -796,15 +895,27 @@ static RedfishCS_status CS_To_JSON_Links(json_t *CsJson, char *Key, RedfishManag
   // Oem
   if (CS_To_JSON_LinksOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -812,9 +923,18 @@ static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResourc
 }
 static RedfishCS_status CS_To_JSON_SerialConsole(json_t *CsJson, char *Key, RedfishManager_V1_0_5_SerialConsole_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ConnectTypesSupported 
   if (InsertJsonStringArrayObj (CsJson, "ConnectTypesSupported", CSPtr->ConnectTypesSupported) != RedfishCS_status_success) {goto Error;}
 
@@ -824,17 +944,32 @@ static RedfishCS_status CS_To_JSON_SerialConsole(json_t *CsJson, char *Key, Redf
   // ServiceEnabled 
   if (InsertJsonBoolObj (CsJson, "ServiceEnabled", CSPtr->ServiceEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_StatusConditionsOriginOfCondition(json_t *CsJson, char *Key, Redfishodatav4_idRef_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // @odata.id 
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -897,9 +1032,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_StatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -907,9 +1051,18 @@ static RedfishCS_status CS_To_JSON_StatusOem(json_t *CsJson, char *Key, RedfishR
 }
 static RedfishCS_status CS_To_JSON_Status(json_t *CsJson, char *Key, RedfishResource_Status_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Conditions
   if (CS_To_JSON_StatusConditions(CsJson, "Conditions", CSPtr->Conditions) != RedfishCS_status_success) {goto Error;}
 
@@ -924,6 +1077,9 @@ static RedfishCS_status CS_To_JSON_Status(json_t *CsJson, char *Key, RedfishReso
 
   // State 
   if (InsertJsonStringObj (CsJson, "State", CSPtr->State) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;

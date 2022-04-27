@@ -2,10 +2,10 @@
 // Auto-generated file by Redfish Schema C Structure Generator.
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
-//  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+//  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
 //
 // Copyright Notice:
-// Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
+// Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
 // License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 //
 
@@ -1269,9 +1269,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, RedfishPower_V1_3_2_OemActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1279,11 +1288,23 @@ static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, Redfish
 }
 static RedfishCS_status CS_To_JSON_Actions(json_t *CsJson, char *Key, RedfishPower_V1_3_2_Actions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Oem
   if (CS_To_JSON_ActionsOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1291,9 +1312,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1301,9 +1331,18 @@ static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResourc
 }
 static RedfishCS_status CS_To_JSON_PowerControlActionsOem(json_t *CsJson, char *Key, RedfishPower_V1_3_2_PowerControlOemActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1311,11 +1350,23 @@ static RedfishCS_status CS_To_JSON_PowerControlActionsOem(json_t *CsJson, char *
 }
 static RedfishCS_status CS_To_JSON_PowerControlActions(json_t *CsJson, char *Key, RedfishPower_V1_3_2_PowerControlActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Oem
   if (CS_To_JSON_PowerControlActionsOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1323,9 +1374,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerControlOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1333,9 +1393,18 @@ static RedfishCS_status CS_To_JSON_PowerControlOem(json_t *CsJson, char *Key, Re
 }
 static RedfishCS_status CS_To_JSON_PowerControlPowerLimit(json_t *CsJson, char *Key, RedfishPower_V1_3_2_PowerLimit_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // CorrectionInMs 
   if (InsertJsonInt64Obj (CsJson, "CorrectionInMs", CSPtr->CorrectionInMs) != RedfishCS_status_success) {goto Error;}
 
@@ -1345,15 +1414,27 @@ static RedfishCS_status CS_To_JSON_PowerControlPowerLimit(json_t *CsJson, char *
   // LimitInWatts 
   if (InsertJsonInt64Obj (CsJson, "LimitInWatts", CSPtr->LimitInWatts) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_PowerControlPowerMetrics(json_t *CsJson, char *Key, RedfishPower_V1_3_2_PowerMetric_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // AverageConsumedWatts 
   if (InsertJsonInt64Obj (CsJson, "AverageConsumedWatts", CSPtr->AverageConsumedWatts) != RedfishCS_status_success) {goto Error;}
 
@@ -1365,6 +1446,9 @@ static RedfishCS_status CS_To_JSON_PowerControlPowerMetrics(json_t *CsJson, char
 
   // MinConsumedWatts 
   if (InsertJsonInt64Obj (CsJson, "MinConsumedWatts", CSPtr->MinConsumedWatts) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1406,11 +1490,23 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerControlStatusConditionsOriginOfCondition(json_t *CsJson, char *Key, Redfishodatav4_idRef_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // @odata.id 
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1473,9 +1569,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerControlStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1483,9 +1588,18 @@ static RedfishCS_status CS_To_JSON_PowerControlStatusOem(json_t *CsJson, char *K
 }
 static RedfishCS_status CS_To_JSON_PowerControlStatus(json_t *CsJson, char *Key, RedfishResource_Status_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Conditions
   if (CS_To_JSON_PowerControlStatusConditions(CsJson, "Conditions", CSPtr->Conditions) != RedfishCS_status_success) {goto Error;}
 
@@ -1500,6 +1614,9 @@ static RedfishCS_status CS_To_JSON_PowerControlStatus(json_t *CsJson, char *Key,
 
   // State 
   if (InsertJsonStringObj (CsJson, "State", CSPtr->State) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1580,9 +1697,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesActionsOem(json_t *CsJson, char *Key, RedfishPower_V1_3_2_PowerSupplyOemActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1590,11 +1716,23 @@ static RedfishCS_status CS_To_JSON_PowerSuppliesActionsOem(json_t *CsJson, char 
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesActions(json_t *CsJson, char *Key, RedfishPower_V1_3_2_PowerSupplyActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Oem
   if (CS_To_JSON_PowerSuppliesActionsOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1602,9 +1740,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesInputRangesOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1664,9 +1811,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1708,11 +1864,23 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesStatusConditionsOriginOfCondition(json_t *CsJson, char *Key, Redfishodatav4_idRef_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // @odata.id 
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1775,9 +1943,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1785,9 +1962,18 @@ static RedfishCS_status CS_To_JSON_PowerSuppliesStatusOem(json_t *CsJson, char *
 }
 static RedfishCS_status CS_To_JSON_PowerSuppliesStatus(json_t *CsJson, char *Key, RedfishResource_Status_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Conditions
   if (CS_To_JSON_PowerSuppliesStatusConditions(CsJson, "Conditions", CSPtr->Conditions) != RedfishCS_status_success) {goto Error;}
 
@@ -1802,6 +1988,9 @@ static RedfishCS_status CS_To_JSON_PowerSuppliesStatus(json_t *CsJson, char *Key
 
   // State 
   if (InsertJsonStringObj (CsJson, "State", CSPtr->State) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1906,9 +2095,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_VoltagesActionsOem(json_t *CsJson, char *Key, RedfishPower_V1_3_2_VoltageOemActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1916,11 +2114,23 @@ static RedfishCS_status CS_To_JSON_VoltagesActionsOem(json_t *CsJson, char *Key,
 }
 static RedfishCS_status CS_To_JSON_VoltagesActions(json_t *CsJson, char *Key, RedfishPower_V1_3_2_VoltageActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Oem
   if (CS_To_JSON_VoltagesActionsOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1928,9 +2138,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_VoltagesOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1972,11 +2191,23 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_VoltagesStatusConditionsOriginOfCondition(json_t *CsJson, char *Key, Redfishodatav4_idRef_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // @odata.id 
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -2039,9 +2270,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_VoltagesStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -2049,9 +2289,18 @@ static RedfishCS_status CS_To_JSON_VoltagesStatusOem(json_t *CsJson, char *Key, 
 }
 static RedfishCS_status CS_To_JSON_VoltagesStatus(json_t *CsJson, char *Key, RedfishResource_Status_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Conditions
   if (CS_To_JSON_VoltagesStatusConditions(CsJson, "Conditions", CSPtr->Conditions) != RedfishCS_status_success) {goto Error;}
 
@@ -2066,6 +2315,9 @@ static RedfishCS_status CS_To_JSON_VoltagesStatus(json_t *CsJson, char *Key, Red
 
   // State 
   if (InsertJsonStringObj (CsJson, "State", CSPtr->State) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;

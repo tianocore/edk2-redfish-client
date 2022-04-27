@@ -2,10 +2,10 @@
 // Auto-generated file by Redfish Schema C Structure Generator.
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
-//  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+//  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
 //
 // Copyright Notice:
-// Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
+// Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
 // License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 //
 
@@ -1433,9 +1433,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_OemActions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -1443,11 +1452,23 @@ static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, Redfish
 }
 static RedfishCS_status CS_To_JSON_Actions(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_Actions_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Oem
   if (CS_To_JSON_ActionsOem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1455,9 +1476,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetBFDSingleHopOnly(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BFDSingleHopOnly_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // DemandModeEnabled 
   if (InsertJsonBoolObj (CsJson, "DemandModeEnabled", CSPtr->DemandModeEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -1479,20 +1509,35 @@ static RedfishCS_status CS_To_JSON_EthernetBFDSingleHopOnly(json_t *CsJson, char
   // SourcePort 
   if (InsertJsonInt64Obj (CsJson, "SourcePort", CSPtr->SourcePort) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetBGPEvpnESINumberRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_ESINumberRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1500,14 +1545,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetBGPEvpnEVINumberRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_EVINumberRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1515,14 +1572,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetBGPEvpnRouteDistinguisherRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_RouteDistinguisherRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1530,14 +1599,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetBGPEvpnRouteTargetRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_RouteTargetRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1545,14 +1626,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetBGPEvpnVLANIdentifierAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_VLANIdentifierAddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1560,9 +1653,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetBGPEvpn(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPEvpn_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ARPProxyEnabled 
   if (InsertJsonBoolObj (CsJson, "ARPProxyEnabled", CSPtr->ARPProxyEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -1605,20 +1707,35 @@ static RedfishCS_status CS_To_JSON_EthernetBGPEvpn(json_t *CsJson, char *Key, Re
   // VLANIdentifierAddressRange
   if (CS_To_JSON_EthernetBGPEvpnVLANIdentifierAddressRange(CsJson, "VLANIdentifierAddressRange", CSPtr->VLANIdentifierAddressRange) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGPASNumberRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_ASNumberRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1626,9 +1743,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGPBGPNeighborMaxPrefix(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_MaxPrefix_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // MaxPrefixNumber 
   if (InsertJsonInt64Obj (CsJson, "MaxPrefixNumber", CSPtr->MaxPrefixNumber) != RedfishCS_status_success) {goto Error;}
 
@@ -1641,15 +1767,27 @@ static RedfishCS_status CS_To_JSON_EthernetEBGPBGPNeighborMaxPrefix(json_t *CsJs
   // ThresholdWarningOnlyEnabled 
   if (InsertJsonBoolObj (CsJson, "ThresholdWarningOnlyEnabled", CSPtr->ThresholdWarningOnlyEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGPBGPNeighbor(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPNeighbor_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Address 
   if (InsertJsonStringObj (CsJson, "Address", CSPtr->Address) != RedfishCS_status_success) {goto Error;}
 
@@ -1695,15 +1833,27 @@ static RedfishCS_status CS_To_JSON_EthernetEBGPBGPNeighbor(json_t *CsJson, char 
   // TreatAsWithdrawEnabled 
   if (InsertJsonBoolObj (CsJson, "TreatAsWithdrawEnabled", CSPtr->TreatAsWithdrawEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGPBGPRoute(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPRoute_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // AdvertiseInactiveRoutesEnabled 
   if (InsertJsonBoolObj (CsJson, "AdvertiseInactiveRoutesEnabled", CSPtr->AdvertiseInactiveRoutesEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -1725,15 +1875,27 @@ static RedfishCS_status CS_To_JSON_EthernetEBGPBGPRoute(json_t *CsJson, char *Ke
   // SendDefaultRouteEnabled 
   if (InsertJsonBoolObj (CsJson, "SendDefaultRouteEnabled", CSPtr->SendDefaultRouteEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGPGracefulRestart(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_GracefulRestart_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // GracefulRestartEnabled 
   if (InsertJsonBoolObj (CsJson, "GracefulRestartEnabled", CSPtr->GracefulRestartEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -1746,20 +1908,35 @@ static RedfishCS_status CS_To_JSON_EthernetEBGPGracefulRestart(json_t *CsJson, c
   // TimeSeconds 
   if (InsertJsonInt64Obj (CsJson, "TimeSeconds", CSPtr->TimeSeconds) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGPMultiplePaths(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_MultiplePaths_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // MaximumPaths 
   if (InsertJsonInt64Obj (CsJson, "MaximumPaths", CSPtr->MaximumPaths) != RedfishCS_status_success) {goto Error;}
 
   // UseMultiplePathsEnabled 
   if (InsertJsonBoolObj (CsJson, "UseMultiplePathsEnabled", CSPtr->UseMultiplePathsEnabled) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1767,9 +1944,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetEBGP(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_EBGP_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ASNumberRange
   if (CS_To_JSON_EthernetEBGPASNumberRange(CsJson, "ASNumberRange", CSPtr->ASNumberRange) != RedfishCS_status_success) {goto Error;}
 
@@ -1812,15 +1998,27 @@ static RedfishCS_status CS_To_JSON_EthernetEBGP(json_t *CsJson, char *Key, Redfi
   // SendCommunityEnabled 
   if (InsertJsonBoolObj (CsJson, "SendCommunityEnabled", CSPtr->SendCommunityEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4DHCP(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_DHCP_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // DHCPInterfaceMTUBytes 
   if (InsertJsonInt64Obj (CsJson, "DHCPInterfaceMTUBytes", CSPtr->DHCPInterfaceMTUBytes) != RedfishCS_status_success) {goto Error;}
 
@@ -1830,20 +2028,35 @@ static RedfishCS_status CS_To_JSON_EthernetIPv4DHCP(json_t *CsJson, char *Key, R
   // DHCPServer 
   if (InsertJsonStringArrayObj (CsJson, "DHCPServer", CSPtr->DHCPServer) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4EBGPAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4AddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonStringObj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonStringObj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1851,14 +2064,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4FabricLinkAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4AddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonStringObj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonStringObj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1866,14 +2091,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4HostAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4AddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonStringObj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonStringObj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1881,14 +2118,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4IBGPAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4AddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonStringObj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonStringObj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1896,14 +2145,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4LoopbackAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4AddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonStringObj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonStringObj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1911,14 +2172,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4ManagementAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4AddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonStringObj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonStringObj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1926,14 +2199,26 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4VLANIdentifierAddressRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_VLANIdentifierAddressRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1941,9 +2226,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetIPv4(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_IPv4_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // AnycastGatewayIPAddress 
   if (InsertJsonStringObj (CsJson, "AnycastGatewayIPAddress", CSPtr->AnycastGatewayIPAddress) != RedfishCS_status_success) {goto Error;}
 
@@ -1998,20 +2292,35 @@ static RedfishCS_status CS_To_JSON_EthernetIPv4(json_t *CsJson, char *Key, Redfi
   // VLANIdentifierAddressRange
   if (CS_To_JSON_EthernetIPv4VLANIdentifierAddressRange(CsJson, "VLANIdentifierAddressRange", CSPtr->VLANIdentifierAddressRange) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPASNumberRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_ASNumberRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -2019,9 +2328,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPBGPNeighborMaxPrefix(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_MaxPrefix_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // MaxPrefixNumber 
   if (InsertJsonInt64Obj (CsJson, "MaxPrefixNumber", CSPtr->MaxPrefixNumber) != RedfishCS_status_success) {goto Error;}
 
@@ -2034,15 +2352,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPBGPNeighborMaxPrefix
   // ThresholdWarningOnlyEnabled 
   if (InsertJsonBoolObj (CsJson, "ThresholdWarningOnlyEnabled", CSPtr->ThresholdWarningOnlyEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPBGPNeighbor(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPNeighbor_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Address 
   if (InsertJsonStringObj (CsJson, "Address", CSPtr->Address) != RedfishCS_status_success) {goto Error;}
 
@@ -2088,15 +2418,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPBGPNeighbor(json_t *
   // TreatAsWithdrawEnabled 
   if (InsertJsonBoolObj (CsJson, "TreatAsWithdrawEnabled", CSPtr->TreatAsWithdrawEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPBGPRoute(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPRoute_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // AdvertiseInactiveRoutesEnabled 
   if (InsertJsonBoolObj (CsJson, "AdvertiseInactiveRoutesEnabled", CSPtr->AdvertiseInactiveRoutesEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -2118,15 +2460,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPBGPRoute(json_t *CsJ
   // SendDefaultRouteEnabled 
   if (InsertJsonBoolObj (CsJson, "SendDefaultRouteEnabled", CSPtr->SendDefaultRouteEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPGracefulRestart(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_GracefulRestart_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // GracefulRestartEnabled 
   if (InsertJsonBoolObj (CsJson, "GracefulRestartEnabled", CSPtr->GracefulRestartEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -2139,20 +2493,35 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPGracefulRestart(json
   // TimeSeconds 
   if (InsertJsonInt64Obj (CsJson, "TimeSeconds", CSPtr->TimeSeconds) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGPMultiplePaths(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_MultiplePaths_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // MaximumPaths 
   if (InsertJsonInt64Obj (CsJson, "MaximumPaths", CSPtr->MaximumPaths) != RedfishCS_status_success) {goto Error;}
 
   // UseMultiplePathsEnabled 
   if (InsertJsonBoolObj (CsJson, "UseMultiplePathsEnabled", CSPtr->UseMultiplePathsEnabled) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -2160,9 +2529,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGP(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_EBGP_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ASNumberRange
   if (CS_To_JSON_EthernetMultiProtocolEBGPASNumberRange(CsJson, "ASNumberRange", CSPtr->ASNumberRange) != RedfishCS_status_success) {goto Error;}
 
@@ -2205,20 +2583,35 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolEBGP(json_t *CsJson, cha
   // SendCommunityEnabled 
   if (InsertJsonBoolObj (CsJson, "SendCommunityEnabled", CSPtr->SendCommunityEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPASNumberRange(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_ASNumberRange_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Lower 
   if (InsertJsonInt64Obj (CsJson, "Lower", CSPtr->Lower) != RedfishCS_status_success) {goto Error;}
 
   // Upper 
   if (InsertJsonInt64Obj (CsJson, "Upper", CSPtr->Upper) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -2226,9 +2619,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPBGPNeighborMaxPrefix(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_MaxPrefix_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // MaxPrefixNumber 
   if (InsertJsonInt64Obj (CsJson, "MaxPrefixNumber", CSPtr->MaxPrefixNumber) != RedfishCS_status_success) {goto Error;}
 
@@ -2241,15 +2643,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPBGPNeighborMaxPrefix
   // ThresholdWarningOnlyEnabled 
   if (InsertJsonBoolObj (CsJson, "ThresholdWarningOnlyEnabled", CSPtr->ThresholdWarningOnlyEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPBGPNeighbor(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPNeighbor_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Address 
   if (InsertJsonStringObj (CsJson, "Address", CSPtr->Address) != RedfishCS_status_success) {goto Error;}
 
@@ -2295,15 +2709,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPBGPNeighbor(json_t *
   // TreatAsWithdrawEnabled 
   if (InsertJsonBoolObj (CsJson, "TreatAsWithdrawEnabled", CSPtr->TreatAsWithdrawEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPBGPRoute(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_BGPRoute_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // AdvertiseInactiveRoutesEnabled 
   if (InsertJsonBoolObj (CsJson, "AdvertiseInactiveRoutesEnabled", CSPtr->AdvertiseInactiveRoutesEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -2325,15 +2751,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPBGPRoute(json_t *CsJ
   // SendDefaultRouteEnabled 
   if (InsertJsonBoolObj (CsJson, "SendDefaultRouteEnabled", CSPtr->SendDefaultRouteEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPGracefulRestart(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_GracefulRestart_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // GracefulRestartEnabled 
   if (InsertJsonBoolObj (CsJson, "GracefulRestartEnabled", CSPtr->GracefulRestartEnabled) != RedfishCS_status_success) {goto Error;}
 
@@ -2346,20 +2784,35 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPGracefulRestart(json
   // TimeSeconds 
   if (InsertJsonInt64Obj (CsJson, "TimeSeconds", CSPtr->TimeSeconds) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGPMultiplePaths(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_MultiplePaths_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // MaximumPaths 
   if (InsertJsonInt64Obj (CsJson, "MaximumPaths", CSPtr->MaximumPaths) != RedfishCS_status_success) {goto Error;}
 
   // UseMultiplePathsEnabled 
   if (InsertJsonBoolObj (CsJson, "UseMultiplePathsEnabled", CSPtr->UseMultiplePathsEnabled) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -2367,9 +2820,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGP(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_CommonBGPProperties_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // ASNumberRange
   if (CS_To_JSON_EthernetMultiProtocolIBGPASNumberRange(CsJson, "ASNumberRange", CSPtr->ASNumberRange) != RedfishCS_status_success) {goto Error;}
 
@@ -2388,15 +2850,27 @@ static RedfishCS_status CS_To_JSON_EthernetMultiProtocolIBGP(json_t *CsJson, cha
   // SendCommunityEnabled 
   if (InsertJsonBoolObj (CsJson, "SendCommunityEnabled", CSPtr->SendCommunityEnabled) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_Ethernet(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_Ethernet_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // BFDSingleHopOnly
   if (CS_To_JSON_EthernetBFDSingleHopOnly(CsJson, "BFDSingleHopOnly", CSPtr->BFDSingleHopOnly) != RedfishCS_status_success) {goto Error;}
 
@@ -2415,15 +2889,27 @@ static RedfishCS_status CS_To_JSON_Ethernet(json_t *CsJson, char *Key, RedfishAd
   // MultiProtocolIBGP
   if (CS_To_JSON_EthernetMultiProtocolIBGP(CsJson, "MultiProtocolIBGP", CSPtr->MultiProtocolIBGP) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_GenZ(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_GenZ_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // AccessKey 
   if (InsertJsonStringObj (CsJson, "AccessKey", CSPtr->AccessKey) != RedfishCS_status_success) {goto Error;}
 
@@ -2439,15 +2925,27 @@ static RedfishCS_status CS_To_JSON_GenZ(json_t *CsJson, char *Key, RedfishAddres
   // MinSID 
   if (InsertJsonInt64Obj (CsJson, "MinSID", CSPtr->MinSID) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_LinksOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -2455,9 +2953,18 @@ static RedfishCS_status CS_To_JSON_LinksOem(json_t *CsJson, char *Key, RedfishRe
 }
 static RedfishCS_status CS_To_JSON_Links(json_t *CsJson, char *Key, RedfishAddressPool_V1_1_1_Links_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Endpoints 
   if (InsertJsonLinkArrayObj (CsJson, "Endpoints", &CSPtr->Endpoints) != RedfishCS_status_success) {goto Error;}
 
@@ -2473,15 +2980,27 @@ static RedfishCS_status CS_To_JSON_Links(json_t *CsJson, char *Key, RedfishAddre
   // Zones@odata.count 
   if (InsertJsonInt64Obj (CsJson, "Zones@odata.count", CSPtr->Zonesodata_count) != RedfishCS_status_success) {goto Error;}
 
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
+
   return RedfishCS_status_success;
 Error:;
   return RedfishCS_status_unsupported;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -2489,11 +3008,23 @@ static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResourc
 }
 static RedfishCS_status CS_To_JSON_StatusConditionsOriginOfCondition(json_t *CsJson, char *Key, Redfishodatav4_idRef_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // @odata.id 
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -2556,9 +3087,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_StatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
@@ -2566,9 +3106,18 @@ static RedfishCS_status CS_To_JSON_StatusOem(json_t *CsJson, char *Key, RedfishR
 }
 static RedfishCS_status CS_To_JSON_Status(json_t *CsJson, char *Key, RedfishResource_Status_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Conditions
   if (CS_To_JSON_StatusConditions(CsJson, "Conditions", CSPtr->Conditions) != RedfishCS_status_success) {goto Error;}
 
@@ -2583,6 +3132,9 @@ static RedfishCS_status CS_To_JSON_Status(json_t *CsJson, char *Key, RedfishReso
 
   // State 
   if (InsertJsonStringObj (CsJson, "State", CSPtr->State) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;

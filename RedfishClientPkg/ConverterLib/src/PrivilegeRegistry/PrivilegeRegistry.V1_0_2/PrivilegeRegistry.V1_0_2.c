@@ -2,10 +2,10 @@
 // Auto-generated file by Redfish Schema C Structure Generator.
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
-//  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+//  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
 //
 // Copyright Notice:
-// Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
+// Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
 // License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 //
 
@@ -618,9 +618,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_MappingsOperationMap(json_t *CsJson, char *Key, RedfishPrivilegeRegistry_V1_0_2_OperationMap_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // DELETE
   if (CS_To_JSON_MappingsOperationMapDELETE(CsJson, "DELETE", CSPtr->DELETE) != RedfishCS_status_success) {goto Error;}
 
@@ -638,6 +647,9 @@ static RedfishCS_status CS_To_JSON_MappingsOperationMap(json_t *CsJson, char *Ke
 
   // PUT
   if (CS_To_JSON_MappingsOperationMapPUT(CsJson, "PUT", CSPtr->PUT) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -849,9 +861,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_MappingsPropertyOverridesOperationMap(json_t *CsJson, char *Key, RedfishPrivilegeRegistry_V1_0_2_OperationMap_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // DELETE
   if (CS_To_JSON_MappingsPropertyOverridesOperationMapDELETE(CsJson, "DELETE", CSPtr->DELETE) != RedfishCS_status_success) {goto Error;}
 
@@ -869,6 +890,9 @@ static RedfishCS_status CS_To_JSON_MappingsPropertyOverridesOperationMap(json_t 
 
   // PUT
   if (CS_To_JSON_MappingsPropertyOverridesOperationMapPUT(CsJson, "PUT", CSPtr->PUT) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1117,9 +1141,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_MappingsResourceURIOverridesOperationMap(json_t *CsJson, char *Key, RedfishPrivilegeRegistry_V1_0_2_OperationMap_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // DELETE
   if (CS_To_JSON_MappingsResourceURIOverridesOperationMapDELETE(CsJson, "DELETE", CSPtr->DELETE) != RedfishCS_status_success) {goto Error;}
 
@@ -1137,6 +1170,9 @@ static RedfishCS_status CS_To_JSON_MappingsResourceURIOverridesOperationMap(json
 
   // PUT
   if (CS_To_JSON_MappingsResourceURIOverridesOperationMapPUT(CsJson, "PUT", CSPtr->PUT) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1385,9 +1421,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_MappingsSubordinateOverridesOperationMap(json_t *CsJson, char *Key, RedfishPrivilegeRegistry_V1_0_2_OperationMap_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // DELETE
   if (CS_To_JSON_MappingsSubordinateOverridesOperationMapDELETE(CsJson, "DELETE", CSPtr->DELETE) != RedfishCS_status_success) {goto Error;}
 
@@ -1405,6 +1450,9 @@ static RedfishCS_status CS_To_JSON_MappingsSubordinateOverridesOperationMap(json
 
   // PUT
   if (CS_To_JSON_MappingsSubordinateOverridesOperationMapPUT(CsJson, "PUT", CSPtr->PUT) != RedfishCS_status_success) {goto Error;}
+
+  // Set to parent JSON object.
+  if (json_object_set_new (CsParentJson, Key, CsJson) == -1) {goto Error;}
 
   return RedfishCS_status_success;
 Error:;
@@ -1495,9 +1543,18 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
+  json_t *CsParentJson;
+
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
+
+  CsParentJson = CsJson;
+  CsJson = json_object();
+  if (CsJson == NULL) {
+    return RedfishCS_status_unsupported;
+  }
+
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
   // No JSON property for this structure.
