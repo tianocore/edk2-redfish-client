@@ -276,10 +276,10 @@ static RedfishCS_status CS_To_JSON_ActionsBios_ChangePassword(json_t *CsJson, ch
     return RedfishCS_status_unsupported;
   }
 
-  // target 
+  // target
   if (InsertJsonStringObj (CsJson, "target", CSPtr->target) != RedfishCS_status_success) {goto Error;}
 
-  // title 
+  // title
   if (InsertJsonStringObj (CsJson, "title", CSPtr->title) != RedfishCS_status_success) {goto Error;}
 
   // Set to parent JSON object.
@@ -303,10 +303,10 @@ static RedfishCS_status CS_To_JSON_ActionsBios_ResetBios(json_t *CsJson, char *K
     return RedfishCS_status_unsupported;
   }
 
-  // target 
+  // target
   if (InsertJsonStringObj (CsJson, "target", CSPtr->target) != RedfishCS_status_success) {goto Error;}
 
-  // title 
+  // title
   if (InsertJsonStringObj (CsJson, "title", CSPtr->title) != RedfishCS_status_success) {goto Error;}
 
   // Set to parent JSON object.
@@ -367,17 +367,17 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_Attributes(json_t *CsJson, char *Key, RedfishBios_V1_0_9_Attributes_CS *CSPtr)
 {
-  json_t *CsParentJson;
+  //json_t *CsParentJson;
 
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
-  CsJson = json_object();
-  if (CsJson == NULL) {
-    return RedfishCS_status_unsupported;
-  }
+  //CsParentJson = CsJson;
+  //CsJson = json_object();
+  //if (CsJson == NULL) {
+  //  return RedfishCS_status_unsupported;
+  //}
 
   // Check if this is RedfishCS_Type_CS_EmptyProp.
   CsEmptyPropLinkToJson(CsJson, Key, &CSPtr->Prop);
@@ -421,34 +421,34 @@ RedfishCS_status CS_To_Bios_V1_0_9_JSON(RedfishBios_V1_0_9_Bios_CS *CSPtr, Redfi
   // Actions
   if (CS_To_JSON_Actions(CsJson, "Actions", CSPtr->Actions) != RedfishCS_status_success) {goto Error;}
 
-  // AttributeRegistry 
+  // AttributeRegistry
   if (InsertJsonStringObj (CsJson, "AttributeRegistry", CSPtr->AttributeRegistry) != RedfishCS_status_success) {goto Error;}
 
   // Attributes
   if (CS_To_JSON_Attributes(CsJson, "Attributes", CSPtr->Attributes) != RedfishCS_status_success) {goto Error;}
 
-  // Description 
+  // Description
   if (InsertJsonStringObj (CsJson, "Description", CSPtr->Description) != RedfishCS_status_success) {goto Error;}
 
-  // Id 
+  // Id
   if (InsertJsonStringObj (CsJson, "Id", CSPtr->Id) != RedfishCS_status_success) {goto Error;}
 
-  // Name 
+  // Name
   if (InsertJsonStringObj (CsJson, "Name", CSPtr->Name) != RedfishCS_status_success) {goto Error;}
 
   // Oem
   if (CS_To_JSON_Oem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.context 
+  // @odata.context
   if (InsertJsonStringObj (CsJson, "@odata.context", CSPtr->odata_context) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.etag 
+  // @odata.etag
   if (InsertJsonStringObj (CsJson, "@odata.etag", CSPtr->odata_etag) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.id 
+  // @odata.id
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.type 
+  // @odata.type
   if (InsertJsonStringObj (CsJson, "@odata.type", CSPtr->odata_type) != RedfishCS_status_success) {goto Error;}
 
   *JsonText = (RedfishCS_char *)json_dumps(CsJson, JSON_INDENT(2 * 1) | JSON_ENSURE_ASCII);
