@@ -18,6 +18,7 @@ from .resource import RfResource, RfCollection
 from .storage import RfSimpleStorageCollection, RfSmartStorage
 import flask
 import json
+import hashlib
 from collections import OrderedDict
 
 class RfSystemsCollection(RfCollection):
@@ -142,13 +143,25 @@ class RfMemoryCollection(RfCollection):
         self.res_data["Members"].append({"@odata.id":newMemoryUrl})
 
         post_data["@odata.id"] = newMemoryUrl
+
+        md5 = hashlib.md5()
+        md5.update(json.dumps(post_data).encode("utf-8"))
+        etag_str = 'W/"' + md5.hexdigest() + '"'
+        post_data["@odata.etag"] = etag_str
         self.elements[str(newMemoryIdx)] = post_data
 
         resp = flask.Response(json.dumps(post_data,indent=4))
         resp.headers["Location"] = newMemoryUrl
+        resp.headers["ETag"] = etag_str
+
         return 0, 200, None, resp
 
     def patch_memory(self, Idx, patch_data):
+        md5 = hashlib.md5()
+        md5.update(json.dumps(patch_data).encode("utf-8"))
+        etag_str = 'W/"' + md5.hexdigest() + '"'
+        patch_data["@odata.etag"] = etag_str
+
         self.elements[str(Idx)] = {**self.elements[str(Idx)], **patch_data}
         resp = flask.Response(json.dumps(self.elements[str(Idx)],indent=4))
         return 0, 200, None, resp
