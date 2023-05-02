@@ -2,6 +2,7 @@
 # Copyright Notice:
 #
 # Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # Copyright Notice:
@@ -123,8 +124,49 @@ class RfSystemObj(RfResource):
 
 # subclass Logs Collection
 class RfMemoryCollection(RfCollection):
+    def final_init_processing(self, base_path, rel_path):
+        self.maxIdx = self.res_data["Members@odata.count"]
+
     def element_type(self):
         return RfMemory
+
+    def post_resource(self, post_data):
+        print("Members@odata.count:{}".format(self.res_data["Members@odata.count"]))
+        print("Members:{}".format(self.res_data["Members"]))
+        print("post_data:{}".format(post_data))
+
+        self.res_data["Members@odata.count"] = self.res_data["Members@odata.count"] + 1
+        self.maxIdx = self.maxIdx + 1
+        newMemoryIdx = self.maxIdx
+        newMemoryUrl = self.res_data["@odata.id"] + "/" + str(newMemoryIdx)
+        self.res_data["Members"].append({"@odata.id":newMemoryUrl})
+
+        post_data["@odata.id"] = newMemoryUrl
+        self.elements[str(newMemoryIdx)] = post_data
+
+        resp = flask.Response(json.dumps(post_data,indent=4))
+        resp.headers["Location"] = newMemoryUrl
+        return 0, 200, None, resp
+
+    def patch_memory(self, Idx, patch_data):
+        self.elements[str(Idx)] = {**self.elements[str(Idx)], **patch_data}
+        resp = flask.Response(json.dumps(self.elements[str(Idx)],indent=4))
+        return 0, 200, None, resp
+
+    def get_memory(self, Idx):
+        return json.dumps(self.elements[Idx],indent=4)
+
+    def delete_memory(self, Idx):
+        print("in delete_memory")
+
+        resp = flask.Response(json.dumps(self.elements[Idx],indent=4))
+
+        self.elements.pop(Idx)
+        self.res_data["Members@odata.count"] = self.res_data["Members@odata.count"] - 1
+
+        newMemoryUrl = self.res_data["@odata.id"] + "/" + str(Idx)
+        self.res_data["Members"].remove({"@odata.id":newMemoryUrl})
+        return 0, 200, None, resp
 
 
 class RfMemory(RfResource):
@@ -267,3 +309,4 @@ class RfBootOptionCollection(RfCollection):
         return 0, 200, None, resp
 
 class RfBootOption(RfResource):
+    pass

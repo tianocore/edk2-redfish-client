@@ -1,6 +1,7 @@
 #
 # Copyright Notice:
 # Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # Copyright Notice:
@@ -303,6 +304,30 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000, cert="", key
     def rf_patch_account_service():
         rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         rc, status_code, err_string, resp = root.accountService.patch_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/Memory", methods=['POST'])
+    @auth.rfAuthRequired
+    def rf_computer_memory_post(system_id):
+        print ("in POST memory collection")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        print("rdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.components['Systems'].get_element(system_id).components['Memory'].post_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/Memory/<string:MemoryIdx>", methods=['PATCH'])
+    @auth.rfAuthRequired
+    def rf_computer_memory_patch(system_id, MemoryIdx):
+        print ("in PATCH memory[%s] resource" % MemoryIdx)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        print("rdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.components['Systems'].get_element(system_id).components['Memory'].patch_memory(MemoryIdx, rdata)
         if rc == 0:
             return resp, status_code
         else:
