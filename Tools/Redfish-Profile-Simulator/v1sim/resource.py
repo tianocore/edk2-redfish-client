@@ -1,6 +1,13 @@
+#
+# Copyright Notice:
+#
+# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
 # Copyright Notice:
 # Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Profile-Simulator/blob/master/LICENSE.md
+#
 
 import json
 import os
@@ -23,7 +30,7 @@ class RfResource:
         if os.path.exists(indx_file_path):
             res_file = open(indx_file_path, "r")
             res_rawdata = res_file.read()
-            self.res_data = json.loads(res_rawdata)
+            self.res_data = json.loads(res_rawdata,object_pairs_hook=OrderedDict)
             self.create_sub_objects(base_path, rel_path)
             self.final_init_processing(base_path, rel_path)
         else:
@@ -36,7 +43,15 @@ class RfResource:
         pass
 
     def get_resource(self):
-        return flask.jsonify(self.res_data)
+        self.response=json.dumps(self.res_data,indent=4)
+        try:
+            # SHA1 should generate well-behaved etags
+            response = flask.make_response(self.response)
+            etag = hashlib.sha1(self.response.encode('utf-8')).hexdigest()
+            response.set_etag(etag)
+            return response
+        except KeyError:
+            flask.abort(404)
 
     def get_attribute(self, attribute):
         return flask.jsonify(self.res_data[attribute])
@@ -54,6 +69,14 @@ class RfResource:
             else:
                 raise Exception("attribute %s not found" % key)
 
+        resp = flask.Response(json.dumps(self.res_data,indent=4))
+        return 0, 200, None, resp
+
+    def post_resource(self, post_data):
+        pass
+
+    def delete_resource(self):
+        pass
 
 class RfResourceRaw:
     def __init__(self, base_path, rel_path, parent=None):

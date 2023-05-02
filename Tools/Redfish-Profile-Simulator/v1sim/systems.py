@@ -1,6 +1,13 @@
+#
+# Copyright Notice:
+#
+# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
 # Copyright Notice:
 # Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Profile-Simulator/blob/master/LICENSE.md
+#
 
 import os
 
@@ -8,7 +15,9 @@ from .common_services import RfLogServiceCollection
 from .network import RfEthernetCollection, RfNetworkInterfaceCollection
 from .resource import RfResource, RfCollection
 from .storage import RfSimpleStorageCollection, RfSmartStorage
-
+import flask
+import json
+from collections import OrderedDict
 
 class RfSystemsCollection(RfCollection):
     def element_type(self):
@@ -48,15 +57,17 @@ class RfSystemObj(RfResource):
                 self.components[item] = RfUSBDeviceCollection(base_path, os.path.join(rel_path, item), parent=self)
             elif item == "USBPorts":
                 self.components[item] = RfUSBPortCollection(base_path, os.path.join(rel_path, item), parent=self)
+            elif item == "BootOptions":
+                self.components[item] = RfBootOptionCollection(base_path, os.path.join(rel_path, item), parent=self)
 
     def patch_resource(self, patch_data):
         # first verify client didn't send us a property we cant patch
         for key in patch_data.keys():
-            if key != "AssetTag" and key != "IndicatorLED" and key != "Boot":
+            if key != "AssetTag" and key != "IndicatorLED" and key != "Boot" and key != "BiosVersion":
                 return 4, 400, "Invalid Patch Property Sent", ""
             elif key == "Boot":
                 for prop2 in patch_data["Boot"].keys():
-                    if prop2 != "BootSourceOverrideEnabled" and prop2 != "BootSourceOverrideTarget":
+                    if prop2 != "BootSourceOverrideEnabled" and prop2 != "BootSourceOverrideTarget" and prop2 != "BootNext" and prop2 != "BootOrder":
                         return 4, 400, "Invalid Patch Property Sent", ""
         # now patch the valid properties sent
         if "AssetTag" in patch_data:
@@ -64,6 +75,8 @@ class RfSystemObj(RfResource):
             self.res_data['AssetTag'] = patch_data['AssetTag']
         if "IndicatorLED" in patch_data:
             self.res_data['IndicatorLED'] = patch_data['IndicatorLED']
+        if "BiosVersion" in patch_data:
+            self.res_data['BiosVersion'] = patch_data['BiosVersion']
         if "Boot" in patch_data:
             boot_data = patch_data["Boot"]
             if "BootSourceOverrideEnabled" in boot_data:
@@ -80,7 +93,13 @@ class RfSystemObj(RfResource):
                     self.res_data['Boot']['BootSourceOverrideTarget'] = value
                 else:
                     return 4, 400, "Invalid_Value_Specified: BootSourceOverrideTarget", ""
-        return 0, 204, None, None
+            if "BootNext" in boot_data:
+                self.res_data['Boot']['BootNext'] = boot_data['BootNext']
+            if "BootOrder" in boot_data:
+                self.res_data['Boot']['BootOrder'] = boot_data['BootOrder']
+
+        resp = flask.Response(json.dumps(self.res_data,indent=4))
+        return 0, 200, None, resp
 
     def reset_resource(self, reset_data):
         if "ResetType" in reset_data:
@@ -145,13 +164,17 @@ class RfBiosSettings(RfResource):
     def patch_resource(self, patch_data):
         if "Attributes" not in patch_data:
             return 4, 400, "Invalid Payload. No Attributes found", ""
+        self.res_data["Attributes"] = OrderedDict()
         for key in patch_data["Attributes"].keys():
+            print("Check key in patch_data:{}".format(key))
             # verify client didn't send us a property we cant patch
-            if key not in self.res_data["Attributes"]:
+            if key not in self.parent.res_data["Attributes"]:
+                print("Invalid Patch Property Sent")
                 return 4, 400, "Invalid Patch Property Sent", ""
             else:
-                self.parent.res_data["Attributes"][key] = patch_data["Attributes"][key]
-        return 0, 204, None, None
+                self.res_data["Attributes"][key] = patch_data["Attributes"][key]
+        resp = flask.Response(json.dumps(self.res_data,indent=4))
+        return 0, 200, None, resp
 
 
 class RfPCIeDeviceCollection(RfCollection):
@@ -196,3 +219,51 @@ class RfUSBPortCollection(RfCollection):
 
 class RfUSBPort(RfResource):
     pass
+
+class RfBootOptionCollection(RfCollection):
+    def final_init_processing(self, base_path, rel_path):
+        self.maxIdx = 0
+        self.bootOptions = {}
+
+    def element_type(self):
+        return RfBootOption
+
+    def post_resource(self, post_data):
+        print("Members@odata.count:{}".format(self.res_data["Members@odata.count"]))
+        print("Members:{}".format(self.res_data["Members"]))
+        print("post_data:{}".format(post_data))
+
+        self.res_data["Members@odata.count"] = self.res_data["Members@odata.count"] + 1
+        self.maxIdx = self.maxIdx + 1
+        newBootOptIdx = self.maxIdx
+        newBootOptUrl = self.res_data["@odata.id"] + "/" + str(newBootOptIdx)
+        self.res_data["Members"].append({"@odata.id":newBootOptUrl})
+
+        post_data["@odata.id"] = newBootOptUrl
+        self.bootOptions[str(newBootOptIdx)] = post_data
+
+        resp = flask.Response(json.dumps(post_data,indent=4))
+        resp.headers["Location"] = newBootOptUrl
+        return 0, 200, None, resp
+
+    def patch_bootOpt(self, Idx, patch_data):
+        self.bootOptions[str(Idx)] = {**self.bootOptions[str(Idx)], **patch_data}
+        resp = flask.Response(json.dumps(self.bootOptions[str(Idx)],indent=4))
+        return 0, 200, None, resp
+
+    def get_bootOpt(self, Idx):
+        return json.dumps(self.bootOptions[Idx],indent=4)
+
+    def delete_bootOpt(self, Idx):
+        print("in delete_bootOpt")
+
+        resp = flask.Response(json.dumps(self.bootOptions[Idx],indent=4))
+
+        self.bootOptions.pop(Idx)
+        self.res_data["Members@odata.count"] = self.res_data["Members@odata.count"] - 1
+
+        bootOptUrl = self.res_data["@odata.id"] + "/" + str(Idx)
+        self.res_data["Members"].remove({"@odata.id":bootOptUrl})
+        return 0, 200, None, resp
+
+class RfBootOption(RfResource):

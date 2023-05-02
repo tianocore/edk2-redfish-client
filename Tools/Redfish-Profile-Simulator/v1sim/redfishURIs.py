@@ -1,17 +1,23 @@
+#
+# Copyright Notice:
+# Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
 # Copyright Notice:
 # Copyright 2016 Distributed Management Task Force, Inc. All rights reserved.
 # License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-Profile-Simulator/blob/master/LICENSE.md
 
 import json
+from collections import OrderedDict
 
 from flask import Flask
 from flask import request
 
 from .flask_redfish_auth import RfHTTPBasicOrTokenAuth
-from .resource import RfResource, RfResourceRaw, RfCollection
 
+from werkzeug.serving import WSGIRequestHandler
 
-def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
+def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000, cert="", key=""):
     app = Flask(__name__)
 
     # create auth class that does basic or redifish session auth
@@ -21,8 +27,8 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
     # for basic auth, we only support user=catfish, passwd=hunter
     @auth.verify_basic_password
     def verify_rf_passwd(user, passwd):
-        if user == "root":
-            if passwd == "password123456":
+        if user == "admin":
+            if passwd == "pwd123456":
                 return True
         return False
 
@@ -43,13 +49,13 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
 
     # GET /redfish
     @app.route("/redfish", methods=['GET'])
-    @app.route("/redfish/", methods=['GET'])
+    #@app.route("/redfish/", methods=['GET'])
     def rf_versions():
         return versions.get_resource()
 
     # GET /redfish/v1
     @app.route("/redfish/v1", methods=['GET'])
-    @app.route("/redfish/v1/", methods=['GET'])
+    #@app.route("/redfish/v1/", methods=['GET'])
     def rf_service_root():
         return root.get_resource()
 
@@ -65,8 +71,9 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
         return resolve_path(root, rf_path)
 
     @app.route("/redfish/v1/<path:rf_path>", methods=['GET'])
-    @app.route("/redfish/v1/<path:rf_path>/", methods=['GET'])
+    #@app.route("/redfish/v1/<path:rf_path>/", methods=['GET'])
     @auth.rfAuthRequired
+    @conditional
     def rf_subsystems(rf_path):
         return resolve_path(root, rf_path)
 
@@ -78,135 +85,189 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
         return root.get_resource()
 
     @app.route("/redfish/v1/Systems/<path:sys_path>", methods=['PATCH'])
-    @app.route("/redfish/v1/Systems/<path:sys_path>/", methods=['PATCH'])
+    #@app.route("/redfish/v1/Systems/<path:sys_path>/", methods=['PATCH'])
     @auth.rfAuthRequired
     def rf_computer_systempatch(sys_path):
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         print("rdata:{}".format(rdata))
-        obj = patch_path(root.systems, sys_path)
+        obj = patch_path(root.components['Systems'], sys_path)
+        rc, status_code, err_string, resp = obj.patch_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/BootOptions/<string:bootOptIdx>", methods=['GET'])
+    @auth.rfAuthRequired
+    def rf_computer_bootoptions_get(system_id, bootOptIdx):
+        return root.components['Systems'].get_element(system_id).components['BootOptions'].get_bootOpt(bootOptIdx)
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/BootOptions/<string:bootOptIdx>", methods=['DELETE'])
+    @auth.rfAuthRequired
+    def rf_computer_bootoptions_del(system_id, bootOptIdx):
+        print("in rf_computer_bootoptions_del")
+        rc, status_code, err_string, resp =  root.components['Systems'].get_element(system_id).components['BootOptions'].delete_bootOpt(bootOptIdx)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/BootOptions/<string:bootOptIdx>", methods=['PATCH'])
+    @auth.rfAuthRequired
+    def rf_computer_bootoption_patch(system_id, bootOptIdx):
+        print ("in POST boot options")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        print("rdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.components['Systems'].get_element(system_id).components['BootOptions'].patch_bootOpt(bootOptIdx, rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/BootOptions", methods=['POST'])
+    @auth.rfAuthRequired
+    def rf_computer_bootoptions_post(system_id):
+        print ("in POST boot options")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        print("rdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.components['Systems'].get_element(system_id).components['BootOptions'].post_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/Actions/ComputerSystem.Reset", methods=['POST'])
+    #@app.route("/redfish/v1/Systems/<string:system_id>/Actions/ComputerSystem.Reset/", methods=['POST'])
+    @auth.rfAuthRequired
+    def rf_computer_systemreset(system_id):
+        # print("in reset")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        # print("rdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.components['Systems'].get_element(system_id).reset_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/Bios/Actions/Bios.ResetBios", methods=['POST'])
+    #@app.route("/redfish/v1/Systems/<string:system_id>/Bios/Actions/Bios.ResetBios/", methods=['POST'])
+    @auth.rfAuthRequired
+    def rf_computer_biosreset(system_id):
+        # print("in reset")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        # print("rdata:{}".format(rdata))
+        system = root.systems.get_element(system_id)
+        bios = system.get_component("Bios")
+        rc, status_code, err_string, resp = bios.reset_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Systems/<string:system_id>/Bios/Actions/Bios.ChangePassword", methods=['PATCH'])
+    #@app.route("/redfish/v1/Systems/<string:system_id>/Bios/Actions/Bios.ChangePassword/", methods=['PATCH'])
+    @auth.rfAuthRequired
+    def rf_computer_change_pswd(system_id):
+        # print("in reset")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        # print("rdata:{}".format(rdata))
+        system = root.systems.get_element(system_id)
+        bios = system.get_component("Bios")
+        rc, status_code, err_string, resp = bios.change_password(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Chassis/<string:chassis_id>/Actions/Chassis.Reset", methods=['POST'])
+    #@app.route("/redfish/v1/Chassis/<string:chassis_id>/Actions/Chassis.Reset/", methods=['POST'])
+    @auth.rfAuthRequired
+    def rf_computer_chassisreset(chassis_id):
+        # print("in reset")
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        # print("rdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.chassis.get_element(chassis_id).reset_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Chassis/<string:chassis_id>/Power", methods=['PATCH'])
+    #@app.route("/redfish/v1/Chassis/<string:chassis_id>/Power/", methods=['PATCH'])
+    @auth.rfAuthRequired
+    def rf_chassis_powerpatch(chassis_id):
+        # rawdata=request.data
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        # print("RRrdata:{}".format(rdata))
+        rc, status_code, err_string, resp = root.chassis.get_element(chassis_id).power.patch_resource(rdata)
+        if rc == 0:
+            return resp, status_code
+        else:
+            return err_string, status_code
+
+    @app.route("/redfish/v1/Registries/<path:sys_path>", methods=['PATCH'])
+    @auth.rfAuthRequired
+    def rf_registries_patch(sys_path):
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
+        print("rdata:{}".format(rdata))
+        obj = patch_path(root.components['Registries'], sys_path)
         rc, status_code, err_string, resp = obj.patch_resource(rdata)
         if rc == 0:
             return "", status_code
         else:
             return err_string, status_code
 
-    @app.route("/redfish/v1/Systems/<string:system_id>/Actions/ComputerSystem.Reset", methods=['POST'])
-    @app.route("/redfish/v1/Systems/<string:system_id>/Actions/ComputerSystem.Reset/", methods=['POST'])
-    @auth.rfAuthRequired
-    def rf_computer_systemreset(system_id):
-        # print("in reset")
-        rdata = request.get_json(cache=True)
-        # print("rdata:{}".format(rdata))
-        rc, status_code, err_string, resp = root.components['Systems'].get_element(system_id).reset_resource(rdata)
-        if rc == 0:
-            return "", status_code
-        else:
-            return err_string, status_code
-
-    @app.route("/redfish/v1/Systems/<string:system_id>/bios/Actions/Bios.ResetBios", methods=['POST'])
-    @app.route("/redfish/v1/Systems/<string:system_id>/bios/Actions/Bios.ResetBios/", methods=['POST'])
-    @auth.rfAuthRequired
-    def rf_computer_biosreset(system_id):
-        # print("in reset")
-        rdata = request.get_json(cache=True)
-        # print("rdata:{}".format(rdata))
-        system = root.systems.get_element(system_id)
-        bios = system.get_component("bios")
-        rc, status_code, err_string, resp = bios.reset_resource(rdata)
-        if rc == 0:
-            return "", status_code
-        else:
-            return err_string, status_code
-
-    @app.route("/redfish/v1/Systems/<string:system_id>/bios/Actions/Bios.ChangePassword", methods=['PATCH'])
-    @app.route("/redfish/v1/Systems/<string:system_id>/bios/Actions/Bios.ChangePassword/", methods=['PATCH'])
-    @auth.rfAuthRequired
-    def rf_computer_change_pswd(system_id):
-        # print("in reset")
-        rdata = request.get_json(cache=True)
-        # print("rdata:{}".format(rdata))
-        system = root.systems.get_element(system_id)
-        bios = system.get_component("bios")
-        rc, status_code, err_string, resp = bios.change_password(rdata)
-        if rc == 0:
-            return "", status_code
-        else:
-            return err_string, status_code
-
-    @app.route("/redfish/v1/Chassis/<string:chassis_id>/Actions/Chassis.Reset", methods=['POST'])
-    @app.route("/redfish/v1/Chassis/<string:chassis_id>/Actions/Chassis.Reset/", methods=['POST'])
-    @auth.rfAuthRequired
-    def rf_computer_chassisreset(chassis_id):
-        # print("in reset")
-        rdata = request.get_json(cache=True)
-        # print("rdata:{}".format(rdata))
-        rc, status_code, err_string, resp = root.chassis.get_element(chassis_id).reset_resource(rdata)
-        if rc == 0:
-            return "", status_code
-        else:
-            return err_string, status_code
-
-    @app.route("/redfish/v1/Chassis/<string:chassis_id>/Power", methods=['PATCH'])
-    @app.route("/redfish/v1/Chassis/<string:chassis_id>/Power/", methods=['PATCH'])
-    @auth.rfAuthRequired
-    def rf_chassis_powerpatch(chassis_id):
-        # rawdata=request.data
-        rdata = request.get_json(cache=True)
-        # print("RRrdata:{}".format(rdata))
-        rc, status_code, err_string, resp = root.chassis.get_element(chassis_id).power.patch_resource(rdata)
-        if rc == 0:
-            return "", status_code
-        else:
-            return err_string, status_code
-
     @app.route("/redfish/v1/Managers/<string:manager_id>", methods=['PATCH'])
-    @app.route("/redfish/v1/Managers/<string:manager_id>/", methods=['PATCH'])
+    #@app.route("/redfish/v1/Managers/<string:manager_id>/", methods=['PATCH'])
     @auth.rfAuthRequired
     def rf_patch_manager_entity(manager_id):
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         # print("RRrdata:{}".format(rdata))
         rc, status_code, err_string, resp = root.managers.get_element(manager_id).patch_resource(rdata)
         if rc == 0:
-            return "", status_code
+            return resp, status_code
         else:
             return err_string, status_code
 
     # rest/v1/Managers/1
     @app.route("/redfish/v1/Managers/<string:manager_id>/Actions/Manager.Reset", methods=['POST'])
-    @app.route("/redfish/v1/Managers/<string:manager_id>/Actions/Manager.Reset/", methods=['POST'])
+    #@app.route("/redfish/v1/Managers/<string:manager_id>/Actions/Manager.Reset/", methods=['POST'])
     @auth.rfAuthRequired
     def rf_reset_manager(manager_id):
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         # print("rdata:{}".format(rdata))
         rc, status_code, err_string, resp = root.managers.get_element(manager_id).reset_resource(rdata)
         if rc == 0:
-            return "", status_code
+            return resp, status_code
         else:
             return err_string, status_code
 
     @app.route("/redfish/v1/Managers/<string:manager_id>/EthernetInterfaces/<string:eth_id>", methods=['PATCH'])
-    @app.route("/redfish/v1/Managers/<string:manager_id>/EthernetInterfaces/<string:eth_id>/", methods=['PATCH'])
+    #@app.route("/redfish/v1/Managers/<string:manager_id>/EthernetInterfaces/<string:eth_id>/", methods=['PATCH'])
     @auth.rfAuthRequired
     def rf_patch_manager_nic_entity(manager_id, eth_id):
         resp = root.managers.get_element(manager_id).ethernetColl.get_interface(eth_id).get_resource()
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         # print("RRrdata:{}".format(rdata))
         ethernet_coll = root.managers.get_element(manager_id).ethernetColl
         rc, status_code, err_string, resp = ethernet_coll.get_interface(eth_id).patch_resource(rdata)
         if rc == 0:
-            return "", status_code
+            return resp, status_code
         else:
             return err_string, status_code
 
+    @app.route("/redfish/v1/SessionService", methods=['GET'])
+    def rf_get_session_service():
+        return root.components['SessionService'].get_resource()
+
     @app.route("/redfish/v1/SessionService", methods=['PATCH'])
-    @app.route("/redfish/v1/SessionService/", methods=['PATCH'])
-    @auth.rfAuthRequired
+    #@app.route("/redfish/v1/SessionService/", methods=['PATCH'])
     def rf_patch_session_service():
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         # print("RRrdata:{}".format(rdata))
         rc, status_code, err_string, resp = root.sessionService.patch_resource(rdata)
         if rc == 0:
-            return "", status_code
+            return resp, status_code
         else:
             return err_string, status_code
 
@@ -215,7 +276,7 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
     @app.route("/redfish/v1/SessionService/Sessions", methods=['POST'])
     def rf_login():
         print("login")
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         print("rdata:{}".format(rdata))
         if rdata["UserName"] == "root" and rdata["Password"] == "password123456":
             x = {"Id": "SESSION123456"}
@@ -233,17 +294,17 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
     @auth.rfAuthRequired
     def rf_session_logout(session_id):
         print("session logout %s" % session_id)
-        # rdata=request.get_json(cache=True)
+        # rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         # print("rdata:{}".format(rdata))
         return "", 204
 
     @app.route("/redfish/v1/AccountService", methods=['PATCH'])
     @auth.rfAuthRequired
     def rf_patch_account_service():
-        rdata = request.get_json(cache=True)
+        rdata = json.loads(request.data,object_pairs_hook=OrderedDict)
         rc, status_code, err_string, resp = root.accountService.patch_resource(rdata)
         if rc == 0:
-            return "", status_code
+            return resp, status_code
         else:
             return err_string, status_code
 
@@ -293,12 +354,14 @@ def rfApi_SimpleServer(root, versions, host="127.0.0.1", port=5000):
     '''
 
     # END file redfishURIs
-
     # start Flask REST engine running
-    app.run(host=host, port=port)
+
+    if key != "" and cert != "":
+        app.run(host=host, port=port, ssl_context=(cert, key))
+    else:
+        app.run(host=host, port=port)
 
     # never returns
-
 
 '''
 reference source links:
