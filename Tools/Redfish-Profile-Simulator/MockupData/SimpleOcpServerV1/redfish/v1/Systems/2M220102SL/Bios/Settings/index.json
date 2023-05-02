@@ -1,0 +1,31 @@
+{
+    "@odata.type": "#Bios.v1_0_2.Bios",
+    "Id": "SD",
+    "Name": "BIOS Configuration Pending Settings",
+    "Description": "BIOS Configuration Pending Settings. These settings will be applied on next system reboot.",
+    "AttributeRegistry": "/redfish/v1/Registries/BiosAttributeRegistryUefiKeyword.v1_0_0",
+    "Attributes": {
+        "ns_Dev9_iSCSIInitiatorName": "iqn.test.init",
+        "ns_Dev9_iSCSIMacAddr": "8C:DC:D4:26:C9:74",
+        "ns_Dev9_iSCSIAddAttempts": "attempt:2",
+        "ns_Dev9_iSCSIAttemptName2": "Attempt 2",
+        "ns_Dev9_iSCSIBootEnable2": 1,
+        "ns_Dev9_iSCSIIpAddressType2": 0,
+        "ns_Dev9_iSCSIConnectRetry2": 5,
+        "ns_Dev9_iSCSIConnectTimeout2": 300,
+        "ns_Dev9_iSCSIISID2": "0CDCD4654321",
+        "ns_Dev9_iSCSIInitiatorIpAddress2": "192.168.111.101",
+        "ns_Dev9_iSCSIInitiatorNetmask2": "255.255.255.0",
+        "ns_Dev9_iSCSIInitiatorGateway2": "192.168.111.1",
+        "ns_Dev9_iSCSITargetTcpPort2": 3260,
+        "ns_Dev9_iSCSITargetName2": "iqn.2016-06:067",
+        "ns_Dev9_iSCSITargetIpAddress2": "192.168.111.1",
+        "ns_Dev9_iSCSILUN2": "0",
+        "ns_Dev9_iSCSIInitiatorInfoViaDHCP2": 0,
+        "ns_Dev9_iSCSIAuthenticationMethod2": 0,
+        "ns_Dev9_iSCSIChapType2": 0
+    },
+    "@odata.context": "/redfish/v1/$metadata#Bios.Bios",
+    "@odata.id": "/redfish/v1/Systems/2M220102SL/Bios/SD",
+    "@Redfish.Copyright": "Copyright (c) 2019, Intel Corporation. All rights reserved. SPDX-License-Identifier: BSD-2-Clause-Patent. <BR> Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright."
+}

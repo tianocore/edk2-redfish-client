@@ -1,0 +1,10 @@
+{
+    "@Redfish.Copyright": "Copyright (c) 2019, Intel Corporation. All rights reserved. SPDX-License-Identifier: BSD-2-Clause-Patent.",
+    "@odata.context": "/redfish/v1/$metadata#BootOptionCollection.BootOptionCollection",
+    "@odata.id": "/redfish/v1/Systems/2M220101SL/BootOptions",
+    "@odata.type": "#BootOptionCollection.BootOptionCollection",
+    "Name": "UEFI Boot Options Collection",
+    "Members@odata.count": 0,
+    "Members": [
+    ]
+}

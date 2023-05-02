@@ -1,0 +1,17 @@
+{
+    "@odata.type": "#Bios.v1_0_2.Bios",
+    "Id": "Bios",
+    "Name": "BIOS Configuration Current Settings",
+    "Description": "BIOS Configuration Current Settings.",
+    "AttributeRegistry": "/redfish/v1/Registries/BiosAttributeRegistryUefiKeyword.v1_0_0",
+    "Attributes": {},
+    "@Redfish.Settings": {
+        "@odata.type": "#Settings.v1_0_4.Settings",
+        "SettingsObject": {
+            "@odata.id": "/redfish/v1/Systems/2M220101SL/Bios/Settings"
+        }
+    },
+    "@odata.context": "/redfish/v1/$metadata#Bios.Bios",
+    "@odata.id": "/redfish/v1/Systems/2M220101SL/Bios",
+    "@Redfish.Copyright": "Copyright (c) 2019, Intel Corporation. All rights reserved. SPDX-License-Identifier: BSD-2-Clause-Patent."
+}

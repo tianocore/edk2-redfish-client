@@ -1,16 +1,16 @@
 {
     "@odata.type": "#ComputerSystem.v1_1_0.ComputerSystem",
-    "Id": "2M220100SL",
+    "Id": "2M220102SL",
     "Name": "Catfish System",
     "SystemType": "Physical",
     "AssetTag": "CATFISHASSETTAG",
     "Manufacturer": "CatfishManufacturer",
     "Model": "YellowCat1000",
-    "SerialNumber": "2M220100SL",
-    "SKU": "867530",
-    "PartNumber": "224071-J23",
+    "SerialNumber": "2M220102SL",
+    "SKU": "",
+    "PartNumber": "",
     "Description": "Catfish Implementation Recipe of simple scale-out monolithic server",
-    "UUID": "badfaced-aaaa-beef-1313-131313131313",
+    "UUID": "badfaced-5555-beef-1313-131313131313",
     "HostName": "catfishHostname",
     "PowerState": "On",
     "BiosVersion": "X00.1.2.3.4(build-23)",
@@ -35,13 +35,13 @@
         ]
     },
     "Bios": {
-        "@odata.id": "/redfish/v1/Systems/2M220100SL/Bios"
+        "@odata.id": "/redfish/v1/Systems/2M220102SL/Bios"
     },
     "LogServices": {
-        "@odata.id": "/redfish/v1/Systems/2M220100SL/LogServices"
+        "@odata.id": "/redfish/v1/Systems/2M220102SL/LogServices"
     },
     "Memory": {
-        "@odata.id": "/redfish/v1/Systems/2M220100SL/Memory"
+        "@odata.id": "/redfish/v1/Systems/2M220102SL/Memory"
     },
     "Links": {
         "Chassis": [
@@ -58,7 +58,7 @@
     },
     "Actions": {
         "#ComputerSystem.Reset": {
-            "target": "/redfish/v1/Systems/2M220100SL/Actions/ComputerSystem.Reset",
+            "target": "/redfish/v1/Systems/2M220102SL/Actions/ComputerSystem.Reset",
             "ResetType@Redfish.AllowableValues": [
                 "On",
                 "ForceOff",
@@ -71,6 +71,6 @@
         }
     },
     "@odata.context": "/redfish/v1/$metadata#ComputerSystem.ComputerSystem",
-    "@odata.id": "/redfish/v1/Systems/2M220100SL",
+    "@odata.id": "/redfish/v1/Systems/2M220102SL",
     "@Redfish.Copyright": "Copyright (c) 2019, Intel Corporation. All rights reserved. SPDX-License-Identifier: BSD-2-Clause-Patent. <BR> Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright."
 }

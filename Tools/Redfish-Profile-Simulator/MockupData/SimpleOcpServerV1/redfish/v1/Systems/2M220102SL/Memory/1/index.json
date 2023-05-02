@@ -1,0 +1,56 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#Memory.Memory",
+  "@odata.id": "/redfish/v1/Systems/2M220102SL/Memory/1/",
+  "@odata.type": "#Memory.v1_7_1.Memory",
+  "Id": "1",
+  "BaseModuleType": "RDIMM",
+  "BusWidthBits": 72,
+  "CacheSizeMiB": 0,
+  "CapacityMiB": 8192,
+  "DataWidthBits": 64,
+  "DeviceLocator": "PROC 1 DIMM 1",
+  "ErrorCorrection": "MultiBitECC",
+  "LogicalSizeMiB": 0,
+  "Manufacturer": "Micron",
+  "MemoryDeviceType": "DDR4",
+  "MemoryLocation": {
+    "Channel": 6,
+    "MemoryController": 3,
+    "Slot": 1,
+    "Socket": 1
+  },
+  "MemoryMedia": [
+    "DRAM"
+  ],
+  "MemoryType": "DRAM",
+  "Name": "proc1dimm1",
+  "NonVolatileSizeMiB": 0,
+  "Oem": {
+    "Hpe": {
+      "@odata.context": "/redfish/v1/$metadata#HpeMemoryExt.HpeMemoryExt",
+      "@odata.type": "#HpeMemoryExt.v2_5_0.HpeMemoryExt",
+      "BaseModuleType": "RDIMM",
+      "DIMMStatus": "GoodInUse",
+      "MaxOperatingSpeedMTs": 3200,
+      "MinimumVoltageVoltsX10": 12,
+      "VendorName": "Micron"
+    }
+  },
+  "OperatingMemoryModes": [
+    "Volatile"
+  ],
+  "OperatingSpeedMhz": 2666,
+  "PartNumber": "9ASF1G72PZ-3G2E1",
+  "PersistentRegionSizeLimitMiB": 0,
+  "RankCount": 1,
+  "SecurityCapabilities": {},
+  "SerialNumber": "218BCAC5",
+  "Status": {
+    "Health": "OK",
+    "State": "Enabled"
+  },
+  "VendorID": "11264",
+  "VolatileRegionSizeLimitMiB": 8192,
+  "VolatileSizeMiB": 8192
+}
+

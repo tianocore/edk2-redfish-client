@@ -1,0 +1,16 @@
+{
+    "@Redfish.Copyright": "Copyright (c) 2019, Intel Corporation. All rights reserved. SPDX-License-Identifier: BSD-2-Clause-Patent.",
+    "@odata.type": "#AttributeRegistry.v1_0_0.AttributeRegistry",
+    "@odata.id": "/redfish/v1/Registries/BiosAttributeRegistryUefiKeyword.v1_0_0",
+    "Description": "This registry defines a representation of BIOS Attribute instances (UEFI configuration keyword).",
+    "Id": "BiosAttributeRegistryUefiKeyword.v1_0_0",
+    "Language": "en",
+    "Name": "BIOS Attribute Registry",
+    "OwningEntity": "Intel",
+    "RegistryVersion": "1.0.0",
+    "RegistryEntries": {
+        "Attributes": [],
+        "Menus": [],
+        "Dependencies": []
+    }
+}

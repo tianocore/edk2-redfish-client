@@ -1,0 +1,22 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#MemoryCollection.MemoryCollection",
+  "@odata.id": "/redfish/v1/Systems/2M220101SL/Memory",
+  "@odata.type": "#MemoryCollection.MemoryCollection",
+  "Description": "Memory DIMM Collection",
+  "Name": "Memory DIMM Collection",
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Systems/2M220101SL/Memory/1"
+    },
+    {
+      "@odata.id": "/redfish/v1/Systems/2M220101SL/Memory/2"
+    },
+    {
+      "@odata.id": "/redfish/v1/Systems/2M220101SL/Memory/3"
+    },
+    {
+      "@odata.id": "/redfish/v1/Systems/2M220101SL/Memory/4"
+    }
+  ],
+  "Members@odata.count": 4
+}

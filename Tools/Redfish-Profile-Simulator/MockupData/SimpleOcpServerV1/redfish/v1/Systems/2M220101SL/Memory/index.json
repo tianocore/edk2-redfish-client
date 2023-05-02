@@ -1,0 +1,10 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#MemoryCollection.MemoryCollection",
+  "@odata.id": "/redfish/v1/Systems/2M220101SL/Memory",
+  "@odata.type": "#MemoryCollection.MemoryCollection",
+  "Description": "Memory DIMM Collection",
+  "Name": "Memory DIMM Collection",
+  "Members": [
+  ],
+  "Members@odata.count": 0
+}
