@@ -7,7 +7,10 @@ UEFI Redfish EDK2 implementation.
 
 # License
 The majority of the content in the EDK Redfish Client open source project uses a
-[BSD-2-Clause Plus Patent License](LICENSE).
+[BSD-2-Clause Plus Patent License](LICENSE). The EDKII Redfish client open source project contains the following
+components that are covered by additional licenses:
+
+  - [Tools/Redfish-Profile-Simulator](Tools/Redfish-Profile-Simulator/LICENSE.md)
 
 # Maintainers
 
