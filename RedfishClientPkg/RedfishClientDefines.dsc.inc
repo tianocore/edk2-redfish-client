@@ -25,3 +25,10 @@
   DEFINE REDFISH_CLIENT = TRUE
 !endif
 
+!ifndef REDFISH_CLIENT_ALL_AUTOGENED
+  #
+  # This flag is to enable or disable the EDK2 Redfish client support.
+  #
+  DEFINE REDFISH_CLIENT_ALL_AUTOGENED = FALSE
+!endif
+

@@ -16,3 +16,7 @@
   RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
 !endif
 
+!if $(REDFISH_CLIENT_ALL_AUTOGENED) == TRUE
+  !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
+!endif
+

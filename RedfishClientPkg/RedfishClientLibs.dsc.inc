@@ -10,4 +10,7 @@
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 ##
+!if $(REDFISH_CLIENT_ALL_AUTOGENED) == TRUE
+ !include RedfishClientPkg/RedfishJsonStructureLib.dsc.inc
+!endif
 
