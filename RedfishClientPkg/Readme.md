@@ -119,6 +119,42 @@ struct _EDKII_REDFISH_PLATFORM_CONFIG_PROTOCOL {
 For those Non-EDK2 HII-based platform configuration formats, the driver instance
 can provide its own implementation to get or set the platform configurations.
 
+### EDKII Redfish Feature Core DXE Driver ***[[12]](#[0])***
+EDKII Redfish Feature Core DXE driver provides the protocol interface to
+the auto-generated Redfish feature driver to register itself for the
+Redfish resource URI it manages.
+
+```C
+struct _EDKII_REDFISH_FEATURE_PROTOCOL {
+  REDFISH_FEATURE_REGISTER      Register;
+  REDFISH_FEATURE_UNREGISTER    Unregister;
+};
+```
+
+Redfish Feature Core DXE driver records the
+URI according to the URI hierarchy, and then it starts up the Redfish
+feature drivers based on the hierarchy when the particular event
+***[[11]](#[0])*** is triggered. This makes sure the upper-level Redfish
+resource is built up before the lower-level resource. For example,
+ComputerSystem resource must be ready before the Memory resource managed
+by MemoryCollection because the Memory resource is part of ComputerSystem
+resource.
+
+### Start-Up Event to Trigger EDKII Redfish Feature Core ***[[11]](#[0])***
+This is an EFI event for triggering EDKII Redfish Feature Core to travel
+URIs in the database and execute the callback that registered by Redfish feature
+drivers. The event GUID is defined in below PCD and is default set to
+**gEfiEventReadyToBootGuid**.
+
+```C
+PcdEdkIIRedfishFeatureDriverStartupEventGuid
+```
+
+This PCD can be overridden to any events based on the platform
+implementation. EDKII Redfish Feature Core can be triggered earlier,
+for example before the BDS or in the early DXE phase if the platform provides
+the EFI REST EX protocol which is available before the BDS phase.
+
 ### EDK2 HII VFR Form ***[[8]](#[0])***
 According to **UEFI spec 2.9 section 35.6 Form Browser Protocol**,
 **EFI_HII_REST_STYLE_FORMSET_GUID** is used on HII form to indicate that HII

@@ -13,4 +13,6 @@
 ##
 
 !if $(REDFISH_CLIENT) == TRUE
+  RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
 !endif
+
