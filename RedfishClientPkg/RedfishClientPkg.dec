@@ -16,6 +16,7 @@
   Include
 
 [Includes.Common.Private]
+  PrivateInclude                # Private header files
   PrivateInclude/Crt            # Private header files for C RTL.
 
 [Protocols]
