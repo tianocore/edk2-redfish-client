@@ -15,7 +15,8 @@
 [Includes]
   Include
 
-[LibraryClasses]
+[Includes.Common.Private]
+  PrivateInclude/Crt            # Private header files for C RTL.
 
 [Protocols]
   ## Include/Protocol/EdkIIRedfishFeature.h
