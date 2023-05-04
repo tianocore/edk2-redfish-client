@@ -47,4 +47,6 @@
 
 [Components]
 
+  RedfishClientPkg/Library/RedfishFeatureUtilityLib/RedfishFeatureUtilityLib.inf
+
   !include RedfishClientPkg/RedfishClient.dsc.inc

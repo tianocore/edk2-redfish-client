@@ -14,3 +14,6 @@
  !include RedfishClientPkg/RedfishJsonStructureLib.dsc.inc
 !endif
 
+  RedfishFeatureUtilityLib|RedfishClientPkg/Library/RedfishFeatureUtilityLib/RedfishFeatureUtilityLib.inf
+  RedfishPlatformConfigLib|RedfishPkg/Library/RedfishPlatformConfigLib/RedfishPlatformConfigLib.inf
+

@@ -19,6 +19,9 @@
   PrivateInclude                # Private header files
   PrivateInclude/Crt            # Private header files for C RTL.
 
+[LibraryClasses]
+  RedfishFeatureUtilityLib|Include/Library/RedfishFeatureUtilityLib.h
+
 [Protocols]
   ## Include/Protocol/EdkIIRedfishFeature.h
   gEdkIIRedfishFeatureProtocolGuid        = { 0x785CC694, 0x4930, 0xEFBF, { 0x2A, 0xCB, 0xA4, 0xB6, 0xA1, 0xCC, 0xAA, 0x34 } }
