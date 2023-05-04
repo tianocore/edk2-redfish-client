@@ -14,6 +14,7 @@
 
 !if $(REDFISH_CLIENT) == TRUE
   RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
+  RedfishClientPkg/RedfishETagDxe/RedfishETagDxe.inf
 !endif
 
 !if $(REDFISH_CLIENT_ALL_AUTOGENED) == TRUE

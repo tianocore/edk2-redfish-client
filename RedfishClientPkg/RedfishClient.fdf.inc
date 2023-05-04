@@ -12,4 +12,5 @@
 ##
 !if $(REDFISH_CLIENT) == TRUE
   INF RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
+  INF RedfishClientPkg/RedfishETagDxe/RedfishETagDxe.inf
 !endif
