@@ -14,6 +14,10 @@
  !include RedfishClientPkg/RedfishJsonStructureLib.dsc.inc
 !endif
 
+  NetLib|NetworkPkg/Library/DxeNetLib/DxeNetLib.inf
+  HttpLib|NetworkPkg/Library/DxeHttpLib/DxeHttpLib.inf
+  RedfishLib|RedfishClientPkg/PrivateLibrary/RedfishLib/RedfishLib.inf
   RedfishFeatureUtilityLib|RedfishClientPkg/Library/RedfishFeatureUtilityLib/RedfishFeatureUtilityLib.inf
   RedfishPlatformConfigLib|RedfishPkg/Library/RedfishPlatformConfigLib/RedfishPlatformConfigLib.inf
+  RedfishContentCodingLib|RedfishPkg/Library/RedfishContentCodingLibNull/RedfishContentCodingLibNull.inf
 
