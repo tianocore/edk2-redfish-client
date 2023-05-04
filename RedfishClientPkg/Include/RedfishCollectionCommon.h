@@ -40,7 +40,6 @@ typedef struct _REDFISH_COLLECTION_PRIVATE {
   EDKII_REDFISH_FEATURE_PROTOCOL           *FeatureProtocol;
   REDFISH_SERVICE                          RedfishService;
   EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL    ConfigHandler;
-  EFI_EVENT                                Event;
   CHAR8                                    *CollectionPath;
   CHAR8                                    *CollectionJson;
   REDFISH_PAYLOAD                          CollectionPayload;
