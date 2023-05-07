@@ -1,0 +1,48 @@
+## @file
+#
+#  (C) Copyright 2020-2021 Hewlett Packard Enterprise Development LP<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = RedfishMemoryDxe
+  FILE_GUID                 = f5594d13-ca13-485f-ac3a-80c5074dd8c0
+  MODULE_TYPE               = DXE_DRIVER
+  VERSION_STRING            = 1.0
+  ENTRY_POINT               = RedfishResourceEntryPoint
+  UNLOAD_IMAGE              = RedfishResourceUnload
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishPkg/RedfishPkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[Sources]
+  ../Common/RedfishMemoryCommon.h
+  ../Common/RedfishMemoryCommon.c
+  RedfishMemoryDxe.c
+
+[LibraryClasses]
+  BaseMemoryLib
+  DebugLib
+  RedfishLib
+  RedfishFeatureUtilityLib
+  UefiLib
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEdkIIRedfishConfigHandlerProtocolGuid    ## PRODUCED
+  gEfiRestJsonStructureProtocolGuid         ## CONSUMED
+  gEdkIIRedfishResourceConfigProtocolGuid   ## PRODUCED
+
+[Pcd]
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+
+[Depex]
+  TRUE

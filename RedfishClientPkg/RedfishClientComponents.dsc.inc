@@ -21,3 +21,5 @@
   !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
 !endif
 
+  RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
+  RedfishClientPkg/Features/RedfishMemoryCollectionDxe/RedfishMemoryCollectionDxe.inf
