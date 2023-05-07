@@ -12,6 +12,9 @@
 ##
 !if $(REDFISH_CLIENT_ALL_AUTOGENED) == TRUE
  !include RedfishClientPkg/RedfishJsonStructureLib.dsc.inc
+!else
+  MemoryV1_7_1Lib|RedfishClientPkg/ConverterLib/edk2library/Memory/v1_7_1/Lib.inf
+  MemoryCollectionLib|RedfishClientPkg/ConverterLib/edk2library/MemoryCollection/Lib.inf
 !endif
 
   NetLib|NetworkPkg/Library/DxeNetLib/DxeNetLib.inf

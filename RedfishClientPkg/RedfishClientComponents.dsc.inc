@@ -15,11 +15,13 @@
 !if $(REDFISH_CLIENT) == TRUE
   RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
   RedfishClientPkg/RedfishETagDxe/RedfishETagDxe.inf
+  RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
+  RedfishClientPkg/Features/RedfishMemoryCollectionDxe/RedfishMemoryCollectionDxe.inf
 !endif
 
 !if $(REDFISH_CLIENT_ALL_AUTOGENED) == TRUE
   !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
+!else
+  RedfishClientPkg/Converter/Memory/v1_7_1/RedfishMemory_V1_7_1_Dxe.inf
+  RedfishClientPkg/Converter/MemoryCollection/RedfishMemoryCollection_Dxe.inf
 !endif
-
-  RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
-  RedfishClientPkg/Features/RedfishMemoryCollectionDxe/RedfishMemoryCollectionDxe.inf
