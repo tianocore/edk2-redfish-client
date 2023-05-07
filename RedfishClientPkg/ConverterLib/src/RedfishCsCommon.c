@@ -1,6 +1,6 @@
 /** @file
 
-  (C) Copyright 2018-2021 Hewlett Packard Enterprise Development LP<BR>
+  (C) Copyright 2018-2022 Hewlett Packard Enterprise Development LP<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -994,7 +994,6 @@ InsertJsonStringObj (
   )
 {
   json_t          *JsonValue;
-  RedfishCS_char  NullStr[] = "";
   RedfishCS_char  *InsertStr;
 
   InsertStr = StringValue;
@@ -1003,7 +1002,7 @@ InsertJsonStringObj (
   }
 
   if (InsertStr == (char *)NULL) {
-    InsertStr = NullStr;
+    return RedfishCS_status_success;
   }
 
   JsonValue = json_string (InsertStr);
