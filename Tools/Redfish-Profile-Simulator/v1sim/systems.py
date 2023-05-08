@@ -2,7 +2,7 @@
 # Copyright Notice:
 #
 # Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
-# (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # Copyright Notice:
@@ -63,15 +63,7 @@ class RfSystemObj(RfResource):
                 self.components[item] = RfBootOptionCollection(base_path, os.path.join(rel_path, item), parent=self)
 
     def patch_resource(self, patch_data):
-        # first verify client didn't send us a property we cant patch
-        for key in patch_data.keys():
-            if key != "AssetTag" and key != "IndicatorLED" and key != "Boot" and key != "BiosVersion":
-                return 4, 400, "Invalid Patch Property Sent", ""
-            elif key == "Boot":
-                for prop2 in patch_data["Boot"].keys():
-                    if prop2 != "BootSourceOverrideEnabled" and prop2 != "BootSourceOverrideTarget" and prop2 != "BootNext" and prop2 != "BootOrder":
-                        return 4, 400, "Invalid Patch Property Sent", ""
-        # now patch the valid properties sent
+        # patch the valid properties sent
         if "AssetTag" in patch_data:
             print("assetTag:{}".format(patch_data["AssetTag"]))
             self.res_data['AssetTag'] = patch_data['AssetTag']
@@ -100,7 +92,7 @@ class RfSystemObj(RfResource):
             if "BootOrder" in boot_data:
                 self.res_data['Boot']['BootOrder'] = boot_data['BootOrder']
 
-        resp = flask.Response(json.dumps(self.res_data,indent=4))
+        resp = flask.Response(json.dumps(self.res_data,indent=4), mimetype="application/json")
         return 0, 200, None, resp
 
     def reset_resource(self, reset_data):
@@ -150,7 +142,7 @@ class RfMemoryCollection(RfCollection):
         post_data["@odata.etag"] = etag_str
         self.elements[str(newMemoryIdx)] = post_data
 
-        resp = flask.Response(json.dumps(post_data,indent=4))
+        resp = flask.Response(json.dumps(post_data,indent=4), mimetype="application/json")
         resp.headers["Location"] = newMemoryUrl
         resp.headers["ETag"] = etag_str
 
@@ -163,7 +155,7 @@ class RfMemoryCollection(RfCollection):
         patch_data["@odata.etag"] = etag_str
 
         self.elements[str(Idx)] = {**self.elements[str(Idx)], **patch_data}
-        resp = flask.Response(json.dumps(self.elements[str(Idx)],indent=4))
+        resp = flask.Response(json.dumps(self.elements[str(Idx)],indent=4), mimetype="application/json")
         return 0, 200, None, resp
 
     def get_memory(self, Idx):
@@ -172,7 +164,7 @@ class RfMemoryCollection(RfCollection):
     def delete_memory(self, Idx):
         print("in delete_memory")
 
-        resp = flask.Response(json.dumps(self.elements[Idx],indent=4))
+        resp = flask.Response(json.dumps(self.elements[Idx],indent=4), mimetype="application/json")
 
         self.elements.pop(Idx)
         self.res_data["Members@odata.count"] = self.res_data["Members@odata.count"] - 1
@@ -228,7 +220,7 @@ class RfBiosSettings(RfResource):
                 return 4, 400, "Invalid Patch Property Sent", ""
             else:
                 self.res_data["Attributes"][key] = patch_data["Attributes"][key]
-        resp = flask.Response(json.dumps(self.res_data,indent=4))
+        resp = flask.Response(json.dumps(self.res_data,indent=4), mimetype="application/json")
         return 0, 200, None, resp
 
 
@@ -297,13 +289,13 @@ class RfBootOptionCollection(RfCollection):
         post_data["@odata.id"] = newBootOptUrl
         self.bootOptions[str(newBootOptIdx)] = post_data
 
-        resp = flask.Response(json.dumps(post_data,indent=4))
+        resp = flask.Response(json.dumps(post_data,indent=4), mimetype="application/json")
         resp.headers["Location"] = newBootOptUrl
         return 0, 200, None, resp
 
     def patch_bootOpt(self, Idx, patch_data):
         self.bootOptions[str(Idx)] = {**self.bootOptions[str(Idx)], **patch_data}
-        resp = flask.Response(json.dumps(self.bootOptions[str(Idx)],indent=4))
+        resp = flask.Response(json.dumps(self.bootOptions[str(Idx)],indent=4), mimetype="application/json")
         return 0, 200, None, resp
 
     def get_bootOpt(self, Idx):
@@ -312,7 +304,7 @@ class RfBootOptionCollection(RfCollection):
     def delete_bootOpt(self, Idx):
         print("in delete_bootOpt")
 
-        resp = flask.Response(json.dumps(self.bootOptions[Idx],indent=4))
+        resp = flask.Response(json.dumps(self.bootOptions[Idx],indent=4), mimetype="application/json")
 
         self.bootOptions.pop(Idx)
         self.res_data["Members@odata.count"] = self.res_data["Members@odata.count"] - 1

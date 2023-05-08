@@ -2,6 +2,7 @@
 # Copyright Notice:
 #
 # Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # Copyright Notice:
@@ -47,6 +48,7 @@ class RfResource:
         try:
             # SHA1 should generate well-behaved etags
             response = flask.make_response(self.response)
+            response.mimetype = 'application/json'
             etag = hashlib.sha1(self.response.encode('utf-8')).hexdigest()
             response.set_etag(etag)
             return response
@@ -69,7 +71,7 @@ class RfResource:
             else:
                 raise Exception("attribute %s not found" % key)
 
-        resp = flask.Response(json.dumps(self.res_data,indent=4))
+        resp = flask.Response(json.dumps(self.res_data,indent=4), mimetype="application/json")
         return 0, 200, None, resp
 
     def post_resource(self, post_data):
