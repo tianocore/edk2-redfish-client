@@ -1,5 +1,5 @@
 {
-    "@odata.type": "#Bios.v1_0_2.Bios",
+    "@odata.type": "#Bios.v1_0_9.Bios",
     "Id": "Bios",
     "Name": "BIOS Configuration Current Settings",
     "Description": "BIOS Configuration Current Settings",
