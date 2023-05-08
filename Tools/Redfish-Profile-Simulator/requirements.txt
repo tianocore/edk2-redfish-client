@@ -1,2 +1,5 @@
+Werkzeug==0.16
+Jinja2==3.0.3
+itsdangerous==2.0.1
 flask==1.1.1
 pyOpenSSL
