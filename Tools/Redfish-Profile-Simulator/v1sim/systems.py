@@ -92,7 +92,11 @@ class RfSystemObj(RfResource):
             if "BootOrder" in boot_data:
                 self.res_data['Boot']['BootOrder'] = boot_data['BootOrder']
 
-        resp = flask.Response(json.dumps(self.res_data,indent=4), mimetype="application/json")
+        context = json.dumps(self.res_data,indent=4)
+        self.generate_etag(context)
+        resp = flask.Response(context, mimetype="application/json")
+        resp.headers["ETag"] = self.etag
+
         return 0, 200, None, resp
 
     def reset_resource(self, reset_data):
@@ -136,26 +140,28 @@ class RfMemoryCollection(RfCollection):
 
         post_data["@odata.id"] = newMemoryUrl
 
-        md5 = hashlib.md5()
-        md5.update(json.dumps(post_data).encode("utf-8"))
-        etag_str = 'W/"' + md5.hexdigest() + '"'
-        post_data["@odata.etag"] = etag_str
+        self.generate_etag(json.dumps(post_data,indent=4))
+
+        post_data["@odata.etag"] = self.etag
         self.elements[str(newMemoryIdx)] = post_data
 
         resp = flask.Response(json.dumps(post_data,indent=4), mimetype="application/json")
         resp.headers["Location"] = newMemoryUrl
-        resp.headers["ETag"] = etag_str
-
+        resp.headers["ETag"] = self.etag
         return 0, 200, None, resp
 
     def patch_memory(self, Idx, patch_data):
-        md5 = hashlib.md5()
-        md5.update(json.dumps(patch_data).encode("utf-8"))
-        etag_str = 'W/"' + md5.hexdigest() + '"'
-        patch_data["@odata.etag"] = etag_str
+
 
         self.elements[str(Idx)] = {**self.elements[str(Idx)], **patch_data}
+
+        context = json.dumps(self.elements[str(Idx)],indent=4)
+        self.generate_etag(context)
+        patch_data["@odata.etag"] = self.etag
+        self.elements[str(Idx)] = {**self.elements[str(Idx)], **patch_data}
+
         resp = flask.Response(json.dumps(self.elements[str(Idx)],indent=4), mimetype="application/json")
+        resp.headers["ETag"] = self.etag
         return 0, 200, None, resp
 
     def get_memory(self, Idx):

@@ -36,6 +36,12 @@ class RfResource:
             self.final_init_processing(base_path, rel_path)
         else:
             self.res_data = {}
+        self.generate_etag(json.dumps(self.res_data))
+
+    def generate_etag(self, context):
+        md5 = hashlib.md5()
+        md5.update(context.encode('utf-8'))
+        self.etag = 'W/"' + md5.hexdigest() + '"'
 
     def create_sub_objects(self, base_path, rel_path):
         pass
@@ -49,8 +55,8 @@ class RfResource:
             # SHA1 should generate well-behaved etags
             response = flask.make_response(self.response)
             response.mimetype = 'application/json'
-            etag = hashlib.sha1(self.response.encode('utf-8')).hexdigest()
-            response.set_etag(etag)
+            response.headers["ETag"] = self.etag
+
             return response
         except KeyError:
             flask.abort(404)
