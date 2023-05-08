@@ -1,5 +1,5 @@
 {
-    "@odata.type": "#ComputerSystem.v1_1_0.ComputerSystem",
+    "@odata.type": "#ComputerSystem.v1_5_0.ComputerSystem",
     "Id": "2M220101SL",
     "Name": "Catfish System",
     "SystemType": "Physical",
@@ -10,7 +10,7 @@
     "SKU": "",
     "PartNumber": "",
     "Description": "Catfish Implementation Recipe of simple scale-out monolithic server",
-    "UUID": "BADFACED-DEAD-BEEF-1313-131313131313",
+    "UUID": "25EF0280-EC82-42B0-8FB6-10ADCCC67C02",
     "HostName": "catfishHostname",
     "PowerState": "On",
     "BiosVersion": "X00.1.2.3.4(build-23)",
