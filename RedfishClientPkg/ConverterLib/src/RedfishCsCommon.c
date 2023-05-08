@@ -223,7 +223,7 @@ allocateDuplicateStr (
 {
   RedfishCS_status  Status;
 
-  if ((Str == NULL) || (strlen (Str) == 0)) {
+  if (Str == NULL) {
     *DstBuffer = NULL;
     return RedfishCS_status_success;
   }
