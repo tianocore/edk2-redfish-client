@@ -15,6 +15,8 @@ import os
 import sys
 
 import flask
+import hashlib
+from collections import OrderedDict
 
 if sys.version_info >= (3, 5):
     from typing import Type
