@@ -1,7 +1,7 @@
 ## @file
 # Redfish Client Package
 #
-# (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
@@ -21,6 +21,7 @@
 
 [LibraryClasses]
   RedfishFeatureUtilityLib|Include/Library/RedfishFeatureUtilityLib.h
+  EdkIIRedfishResourceConfigLib|Include/Library/EdkIIRedfishResourceConfigLib.h
   RedfishEventLib|Include/Library/RedfishEventLib.h
   RedfishVersionLib|Include/Library/RedfishVersionLib.h
 
@@ -36,6 +37,8 @@
   gEdkIIRedfishResourceConfigProtocolGuid = { 0x6f164c68, 0xfb09, 0x4646, { 0xa8, 0xd3, 0x24, 0x11, 0x5d, 0xab, 0x3e, 0xe7 } }
   ## Include/Protocol/EdkiiRedfishETagProtocol.h
   gEdkIIRedfishETagProtocolGuid           = { 0x5706d368, 0xaf66, 0x48f5, { 0x89, 0xfc, 0xa6, 0x61, 0xce, 0xb5, 0xa6, 0xa9 } }
+  ## Include/Protocol/EdkIIRedfishInterchangeData.h
+  gEdkIIRedfishFeatureInterchangeDataProtocolGuid = { 0x4B8FF71C, 0x4A7B, 0x9478, { 0xB7, 0x81, 0x35, 0x9B, 0x0A, 0xF2, 0x00, 0x91 } }
 
 [Guids]
   ## Include/Guid/RedfishClientPkgTokenSpace.h

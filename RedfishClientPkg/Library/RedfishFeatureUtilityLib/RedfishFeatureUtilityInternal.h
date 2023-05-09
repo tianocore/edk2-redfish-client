@@ -34,7 +34,8 @@
 #define INDEX_STRING_SIZE    16
 #define IS_EMPTY_STRING(a)  (a == NULL || a[0] == '\0')
 #define INDEX_STRING               L"{%d}"
-#define SCHEMA_NAME_PREFIX_OFFSET  15// x-uefi-redfish-
+#define SCHEMA_NAME_PREFIX         "x-uefi-redfish-"
+#define SCHEMA_NAME_PREFIX_OFFSET  (AsciiStrLen (SCHEMA_NAME_PREFIX))
 #define REDFISH_SYSTEM_ROOT_PATH   "/v1/Systems[UUID~%g]"
 #define MAX_CONF_LANG_LEN          128
 
