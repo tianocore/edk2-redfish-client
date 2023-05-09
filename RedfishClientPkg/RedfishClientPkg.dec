@@ -22,6 +22,7 @@
 [LibraryClasses]
   RedfishFeatureUtilityLib|Include/Library/RedfishFeatureUtilityLib.h
   RedfishEventLib|Include/Library/RedfishEventLib.h
+  RedfishVersionLib|Include/Library/RedfishVersionLib.h
 
 [LibraryClasses.Common.Private]
   ##  @libraryclass Redfish Helper Library
@@ -52,4 +53,5 @@
   # { 0x7CE88FB3, 0x4BD7, 0x4679, { 0x87, 0xA8, 0xA8, 0xD8, 0xDE, 0xE5, 0x0D, 0x2B }}
   #
   gEfiRedfishClientPkgTokenSpaceGuid.PcdEdkIIRedfishFeatureDriverStartupEventGuid|{0xB3, 0x8F, 0xE8, 0x7C, 0xD7, 0x4B, 0x79, 0x46, 0x87, 0xA8, 0xA8, 0xD8, 0xDE, 0xE5, 0x0D, 0x2B}|VOID*|0x10000003
-
+  ## Default Redfish version string
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdDefaultRedfishVersion|L"v1"|VOID*|0x10000004
