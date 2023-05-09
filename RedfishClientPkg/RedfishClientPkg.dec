@@ -21,6 +21,7 @@
 
 [LibraryClasses]
   RedfishFeatureUtilityLib|Include/Library/RedfishFeatureUtilityLib.h
+  RedfishResourceIdentifyLib|Include/Library/RedfishResourceIdentifyLib.h
   EdkIIRedfishResourceConfigLib|Include/Library/EdkIIRedfishResourceConfigLib.h
   RedfishEventLib|Include/Library/RedfishEventLib.h
   RedfishVersionLib|Include/Library/RedfishVersionLib.h
