@@ -28,3 +28,4 @@
   RedfishContentCodingLib|RedfishPkg/Library/RedfishContentCodingLibNull/RedfishContentCodingLibNull.inf
   ConverterCommonLib|RedfishClientPkg/ConverterLib/edk2library/ConverterCommonLib/ConverterCommonLib.inf
 
+  RedfishEventLib|RedfishClientPkg/Library/RedfishEventLib/RedfishEventLib.inf
