@@ -5,7 +5,7 @@
 # by using "!include RedfishClientPkg/RedfisClientLibs.fdf.inc" to specify the module instances
 # to be built in the firmware volume.
 #
-# (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+# (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -13,6 +13,7 @@
 !if $(REDFISH_CLIENT) == TRUE
   INF RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
   INF RedfishClientPkg/RedfishETagDxe/RedfishETagDxe.inf
+  INF RedfishClientPkg/RedfishConfigLangMapDxe/RedfishConfigLangMapDxe.inf
   INF RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
   INF RedfishClientPkg/Features/RedfishMemoryCollectionDxe/RedfishMemoryCollectionDxe.inf
 
