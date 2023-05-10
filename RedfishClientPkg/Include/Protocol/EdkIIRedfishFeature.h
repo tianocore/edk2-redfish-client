@@ -1,7 +1,7 @@
 /** @file
   This file defines the EDKII_REDFISH_FEATURE_PROTOCOL interface.
 
-  (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+  (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -9,6 +9,8 @@
 
 #ifndef EDKII_REDFISH_FEATURE_H_
 #define EDKII_REDFISH_FEATURE_H_
+
+#include <Protocol/EdkIIRedfishInterchangeData.h>
 
 typedef struct _EDKII_REDFISH_FEATURE_PROTOCOL EDKII_REDFISH_FEATURE_PROTOCOL;
 
@@ -23,25 +25,13 @@ typedef enum {
   CallbackActionMax
 } FEATURE_CALLBACK_ACTION;
 
-typedef enum {
-  InformationTypeNone = 0,            ///< Invalid information.
-  InformationTypeCollectionMemberUri, ///< URI to the new created collection member.
-  InformationTypeMax
-} FEATURE_RETURNED_INFORMATION_TYPE;
-
-typedef struct {
-  FEATURE_RETURNED_INFORMATION_TYPE    Type;
-} FEATURE_RETURNED_INFORMATION;
-
 /**
   The callback function provided by Redfish Feature driver.
 
   @param[in]     This                Pointer to EDKII_REDFISH_FEATURE_PROTOCOL instance.
   @param[in]     FeatureAction       The action Redfish feature driver should take.
   @param[in]     Context             The context of Redfish feature driver.
-  @param[in,out] InformationReturned The pointer to retrive the pointer to
-                                     FEATURE_RETURNED_INFOMATION. The memory block of this
-                                     information should be freed by caller.
+  @param[in,out] ExchangeInformation The pointer to RESOURCE_INFORMATION_EXCHANGE.
 
   @retval EFI_SUCCESS              Redfish feature driver callback is executed successfully.
   @retval Others                   Some errors happened.
@@ -53,7 +43,7 @@ EFI_STATUS
   IN     EDKII_REDFISH_FEATURE_PROTOCOL *This,
   IN     FEATURE_CALLBACK_ACTION        FeatureAction,
   IN     VOID                           *Context,
-  IN OUT FEATURE_RETURNED_INFORMATION   **InformationReturned
+  IN OUT RESOURCE_INFORMATION_EXCHANGE *ExchangeInformation
   );
 
 /**
