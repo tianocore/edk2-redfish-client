@@ -1,6 +1,6 @@
 ## @file
 #
-#  (C) Copyright 2020-2021 Hewlett Packard Enterprise Development LP<BR>
+#  (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -27,6 +27,7 @@
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
+  NetworkPkg/NetworkPkg.dec
   RedfishPkg/RedfishPkg.dec
   RedfishClientPkg/RedfishClientPkg.dec
 
@@ -35,16 +36,25 @@
   BaseMemoryLib
   DebugLib
   MemoryAllocationLib
-  PrintLib
   RedfishLib
   RedfishPlatformConfigLib
   UefiLib
   UefiBootServicesTableLib
   UefiRuntimeServicesTableLib
+  PrintLib
+  HttpLib
 
 [Protocols]
-  gEdkIIRedfishETagProtocolGuid   ## CONSUMED ##
+  gEdkIIRedfishETagProtocolGuid           ## CONSUMED ##
+  gEdkIIRedfishConfigLangMapProtocolGuid  ## CONSUMED ##
 
 [Pcd]
-  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
-  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+
+[Guids]
+
+[BuildOptions]
+  #
+  # NOTE: /wd4706 disables the following Visual Studio compiler warning in Jansson:
+  #       "C4706: assignment within conditional expression"
+  #
+  MSFT:*_*_*_CC_FLAGS = /wd4706
