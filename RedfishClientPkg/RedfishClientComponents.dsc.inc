@@ -21,6 +21,7 @@
   #
   RedfishClientPkg/Features/Memory/V1_7_1/Dxe/MemoryDxe.inf
   RedfishClientPkg/Features/MemoryCollectionDxe/MemoryCollectionDxe.inf
+  RedfishClientPkg/Features/ComputerSystemCollectionDxe/ComputerSystemCollectionDxe.inf
 
   !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
 
@@ -30,3 +31,4 @@
   RedfishClientPkg/Converter/Memory/v1_7_1/RedfishMemory_V1_7_1_Dxe.inf
   RedfishClientPkg/Converter/MemoryCollection/RedfishMemoryCollection_Dxe.inf
 !endif
+  RedfishClientPkg/Converter/ComputerSystemCollection/RedfishComputerSystemCollection_Dxe.inf
