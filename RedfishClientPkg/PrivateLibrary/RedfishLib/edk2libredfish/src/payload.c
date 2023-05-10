@@ -9,7 +9,7 @@
 //----------------------------------------------------------------------------
 
   Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
-  (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+  (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -380,6 +380,45 @@ getPayloadForPathString (
 }
 
 redfishPayload *
+patchPayloadEx (
+  redfishPayload        *target,
+  redfishPayload        *payload,
+  EFI_HTTP_HEADER       **Headers,
+  UINTN                 *HeaderCount,
+  EFI_HTTP_STATUS_CODE  **StatusCode
+  )
+{
+  json_t  *json;
+  char    *content;
+  char    *uri;
+
+  if (!target || !payload || (StatusCode == NULL)) {
+    return NULL;
+  }
+
+  *StatusCode = NULL;
+
+  json = json_object_get (target->json, "@odata.id");
+  if (json == NULL) {
+    return NULL;
+  }
+
+  uri = strdup (json_string_value (json));
+
+  content = json_dumps (payload->json, 0);
+  json_decref (json);
+
+  json = patchUriFromServiceEx (target->service, uri, content, Headers, HeaderCount, StatusCode);
+  free (uri);
+  free (content);
+  if (json == NULL) {
+    return NULL;
+  }
+
+  return createRedfishPayload (json, target->service);
+}
+
+redfishPayload *
 patchPayload (
   redfishPayload        *target,
   redfishPayload        *payload,
@@ -409,6 +448,44 @@ patchPayload (
   json = patchUriFromService (target->service, uri, content, StatusCode);
   free (uri);
   free (content);
+  if (json == NULL) {
+    return NULL;
+  }
+
+  return createRedfishPayload (json, target->service);
+}
+
+redfishPayload *
+postContentToPayloadEx (
+  redfishPayload        *target,
+  const char            *data,
+  size_t                dataSize,
+  const char            *contentType,
+  EFI_HTTP_HEADER       **Headers,
+  UINTN                 *HeaderCount,
+  EFI_HTTP_STATUS_CODE  **StatusCode
+  )
+{
+  json_t  *json;
+  char    *uri;
+
+  if (!target || !data || (StatusCode == NULL)) {
+    return NULL;
+  }
+
+  *StatusCode = NULL;
+
+  json = json_object_get (target->json, "@odata.id");
+  if (json == NULL) {
+    json = json_object_get (target->json, "target");
+    if (json == NULL) {
+      return NULL;
+    }
+  }
+
+  uri  = strdup (json_string_value (json));
+  json = postUriFromServiceEx (target->service, uri, data, dataSize, contentType, Headers, HeaderCount, StatusCode);
+  free (uri);
   if (json == NULL) {
     return NULL;
   }
@@ -450,6 +527,34 @@ postContentToPayload (
   }
 
   return createRedfishPayload (json, target->service);
+}
+
+redfishPayload *
+postPayloadEx (
+  redfishPayload        *target,
+  redfishPayload        *payload,
+  EFI_HTTP_HEADER       **Headers,
+  UINTN                 *HeaderCount,
+  EFI_HTTP_STATUS_CODE  **StatusCode
+  )
+{
+  char            *content;
+  redfishPayload  *ret;
+
+  if (!target || !payload || (StatusCode == NULL)) {
+    return NULL;
+  }
+
+  *StatusCode = NULL;
+
+  if (!json_is_object (payload->json)) {
+    return NULL;
+  }
+
+  content = payloadToString (payload, false);
+  ret     = postContentToPayloadEx (target, content, strlen (content), NULL, Headers, HeaderCount, StatusCode);
+  free (content);
+  return ret;
 }
 
 redfishPayload *
