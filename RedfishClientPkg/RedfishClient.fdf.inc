@@ -14,7 +14,7 @@
   INF RedfishClientPkg/RedfishFeatureCoreDxe/RedfishFeatureCoreDxe.inf
   INF RedfishClientPkg/RedfishETagDxe/RedfishETagDxe.inf
   INF RedfishClientPkg/RedfishConfigLangMapDxe/RedfishConfigLangMapDxe.inf
-  INF RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
+  INF RedfishClientPkg/Features/Memory/V1_7_1/Dxe/MemoryDxe.inf
   INF RedfishClientPkg/Features/MemoryCollectionDxe/MemoryCollectionDxe.inf
 
   !include RedfishClientPkg/RedfishJsonStructureDxe.fdf.inc

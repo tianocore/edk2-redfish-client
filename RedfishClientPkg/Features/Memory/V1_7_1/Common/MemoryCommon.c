@@ -1,45 +1,53 @@
 /** @file
   Redfish feature driver implementation - common functions
 
-  (C) Copyright 2020-2021 Hewlett Packard Enterprise Development LP<BR>
+  (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
-#include "RedfishMemoryCommon.h"
+#include "MemoryCommon.h"
 
 CHAR8  MemoryEmptyJson[] = "{\"@odata.id\": \"\", \"@odata.type\": \"#Memory.v1_7_1.Memory\", \"Id\": \"\", \"Name\": \"\"}";
 
 REDFISH_RESOURCE_COMMON_PRIVATE  *mRedfishResourcePrivate = NULL;
 
+/**
+  Consume resource from given URI.
+
+  @param[in]   This                Pointer to REDFISH_RESOURCE_COMMON_PRIVATE instance.
+  @param[in]   Json                The JSON to consume.
+  @param[in]   HeaderEtag          The Etag string returned in HTTP header.
+
+  @retval EFI_SUCCESS              Value is returned successfully.
+  @retval Others                   Some error happened.
+
+**/
 EFI_STATUS
 RedfishConsumeResourceCommon (
   IN  REDFISH_RESOURCE_COMMON_PRIVATE  *Private,
-  IN  CHAR8                            *MemoryJson
+  IN  CHAR8                            *Json,
+  IN  CHAR8                            *HeaderEtag OPTIONAL
   )
 {
   EFI_STATUS                    Status;
   EFI_REDFISH_MEMORY_V1_7_1     *Memory;
   EFI_REDFISH_MEMORY_V1_7_1_CS  *MemoryCs;
   EFI_STRING                    ConfigureLang;
-  CHAR8                         *Arraykey;
-  CHAR8                         *EtagInDb;
 
-  if ((Private == NULL) || IS_EMPTY_STRING (MemoryJson)) {
+  if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
   }
 
   Memory        = NULL;
   MemoryCs      = NULL;
   ConfigureLang = NULL;
-  Arraykey      = NULL;
-  EtagInDb      = NULL;
 
   Status = Private->JsonStructProtocol->ToStructure (
                                           Private->JsonStructProtocol,
                                           NULL,
-                                          MemoryJson,
+                                          Json,
                                           (EFI_REST_JSON_STRUCTURE_HEADER **)&Memory
                                           );
   if (EFI_ERROR (Status)) {
@@ -52,24 +60,13 @@ RedfishConsumeResourceCommon (
   //
   // Check ETAG to see if we need to consume it
   //
-  EtagInDb = GetEtagWithUri (Private->Uri);
-  if ((EtagInDb != NULL) && (MemoryCs->odata_etag != NULL)) {
-    if (AsciiStrCmp (EtagInDb, MemoryCs->odata_etag) == 0) {
-      //
-      // No change
-      //
-      DEBUG ((DEBUG_INFO, "%a, ETAG: [%a] no change, ignore consume action\n", __FUNCTION__, EtagInDb));
-      goto ON_RELEASE;
-    }
-  }
-
-  //
-  // Find array key from URI
-  //
-  Status = GetArraykeyFromUri (Private->Uri, &Arraykey);
-  if (EFI_ERROR (Status)) {
-    ASSERT (FALSE);
-    return Status;
+  if (CheckEtag (Private->Uri, HeaderEtag, MemoryCs->odata_etag)) {
+    //
+    // No change
+    //
+    DEBUG ((DEBUG_INFO, "%a, ETAG: %s has no change, ignore consume action\n", __FUNCTION__, Private->Uri));
+    Status = EFI_ALREADY_STARTED;
+    goto ON_RELEASE;
   }
 
   //
@@ -77,9 +74,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->AllocationAlignmentMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "AllocationAlignmentMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "AllocationAlignmentMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->AllocationAlignmentMiB);
       if (EFI_ERROR (Status)) {
@@ -88,7 +85,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -97,9 +94,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->AllocationIncrementMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "AllocationIncrementMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "AllocationIncrementMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->AllocationIncrementMiB);
       if (EFI_ERROR (Status)) {
@@ -108,18 +105,42 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // Handle ALLOWEDSPEEDSMHZ
+  //
+  if (MemoryCs->AllowedSpeedsMHz != NULL) {
+    //
+    // Find corresponding configure language for collection resource.
+    //
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "AllowedSpeedsMHz");
+    if (ConfigureLang != NULL) {
+      Status = ApplyFeatureSettingsNumericArrayType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->AllowedSpeedsMHz);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      }
+
+      FreePool (ConfigureLang);
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+    }
+  }
+
+  //
+  // ASSEMBLY will be handled by feature driver.
+  //
 
   //
   // Handle BASEMODULETYPE
   //
   if (MemoryCs->BaseModuleType != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "BaseModuleType", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "BaseModuleType");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->BaseModuleType);
       if (EFI_ERROR (Status)) {
@@ -128,7 +149,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -137,9 +158,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->BusWidthBits != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "BusWidthBits", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "BusWidthBits");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->BusWidthBits);
       if (EFI_ERROR (Status)) {
@@ -148,7 +169,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -157,9 +178,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->CacheSizeMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "CacheSizeMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "CacheSizeMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->CacheSizeMiB);
       if (EFI_ERROR (Status)) {
@@ -168,7 +189,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -177,9 +198,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->CapacityMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "CapacityMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "CapacityMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->CapacityMiB);
       if (EFI_ERROR (Status)) {
@@ -188,7 +209,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -197,9 +218,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->ConfigurationLocked != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "ConfigurationLocked", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "ConfigurationLocked");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->ConfigurationLocked);
       if (EFI_ERROR (Status)) {
@@ -208,7 +229,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -217,9 +238,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->DataWidthBits != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "DataWidthBits", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "DataWidthBits");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->DataWidthBits);
       if (EFI_ERROR (Status)) {
@@ -228,7 +249,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -237,9 +258,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->DeviceID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "DeviceID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "DeviceID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->DeviceID);
       if (EFI_ERROR (Status)) {
@@ -248,7 +269,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -257,9 +278,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->DeviceLocator != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "DeviceLocator", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "DeviceLocator");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->DeviceLocator);
       if (EFI_ERROR (Status)) {
@@ -268,7 +289,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -277,9 +298,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->ErrorCorrection != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "ErrorCorrection", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "ErrorCorrection");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->ErrorCorrection);
       if (EFI_ERROR (Status)) {
@@ -288,7 +309,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -297,9 +318,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->FirmwareApiVersion != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "FirmwareApiVersion", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "FirmwareApiVersion");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->FirmwareApiVersion);
       if (EFI_ERROR (Status)) {
@@ -308,7 +329,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -317,9 +338,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->FirmwareRevision != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "FirmwareRevision", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "FirmwareRevision");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->FirmwareRevision);
       if (EFI_ERROR (Status)) {
@@ -328,7 +349,27 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+    }
+  }
+
+  //
+  // Handle FUNCTIONCLASSES
+  //
+  if (MemoryCs->FunctionClasses != NULL) {
+    //
+    // Find corresponding configure language for collection resource.
+    //
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "FunctionClasses");
+    if (ConfigureLang != NULL) {
+      Status = ApplyFeatureSettingsStringArrayType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->FunctionClasses);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      }
+
+      FreePool (ConfigureLang);
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -337,9 +378,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->IsRankSpareEnabled != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "IsRankSpareEnabled", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "IsRankSpareEnabled");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->IsRankSpareEnabled);
       if (EFI_ERROR (Status)) {
@@ -348,7 +389,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -357,9 +398,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->IsSpareDeviceEnabled != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "IsSpareDeviceEnabled", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "IsSpareDeviceEnabled");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->IsSpareDeviceEnabled);
       if (EFI_ERROR (Status)) {
@@ -368,18 +409,22 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // LOCATION is not handled. Defined in http://redfish.dmtf.org/schemas/v1/Resource.json
+  //
 
   //
   // Handle LOGICALSIZEMIB
   //
   if (MemoryCs->LogicalSizeMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "LogicalSizeMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "LogicalSizeMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->LogicalSizeMiB);
       if (EFI_ERROR (Status)) {
@@ -388,7 +433,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -397,9 +442,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->Manufacturer != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "Manufacturer", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "Manufacturer");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->Manufacturer);
       if (EFI_ERROR (Status)) {
@@ -408,7 +453,27 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+    }
+  }
+
+  //
+  // Handle MAXTDPMILLIWATTS
+  //
+  if (MemoryCs->MaxTDPMilliWatts != NULL) {
+    //
+    // Find corresponding configure language for collection resource.
+    //
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MaxTDPMilliWatts");
+    if (ConfigureLang != NULL) {
+      Status = ApplyFeatureSettingsNumericArrayType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MaxTDPMilliWatts);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      }
+
+      FreePool (ConfigureLang);
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -417,9 +482,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemoryDeviceType != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemoryDeviceType", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemoryDeviceType");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemoryDeviceType);
       if (EFI_ERROR (Status)) {
@@ -428,7 +493,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -445,9 +510,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemoryLocation->Channel != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemoryLocation/Channel", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemoryLocation/Channel");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->Channel);
       if (EFI_ERROR (Status)) {
@@ -456,7 +521,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -465,9 +530,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemoryLocation->MemoryController != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemoryLocation/MemoryController", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemoryLocation/MemoryController");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->MemoryController);
       if (EFI_ERROR (Status)) {
@@ -476,7 +541,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -485,9 +550,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemoryLocation->Slot != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemoryLocation/Slot", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemoryLocation/Slot");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->Slot);
       if (EFI_ERROR (Status)) {
@@ -496,7 +561,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -505,9 +570,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemoryLocation->Socket != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemoryLocation/Socket", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemoryLocation/Socket");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->Socket);
       if (EFI_ERROR (Status)) {
@@ -516,18 +581,26 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // Handle MEMORYMEDIA
+  //
+  //
+  // ****** Warning ******
+  // Unsupported array type:
+  //
 
   //
   // Handle MEMORYSUBSYSTEMCONTROLLERMANUFACTURERID
   //
   if (MemoryCs->MemorySubsystemControllerManufacturerID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemorySubsystemControllerManufacturerID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemorySubsystemControllerManufacturerID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemorySubsystemControllerManufacturerID);
       if (EFI_ERROR (Status)) {
@@ -536,7 +609,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -545,9 +618,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemorySubsystemControllerProductID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemorySubsystemControllerProductID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemorySubsystemControllerProductID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemorySubsystemControllerProductID);
       if (EFI_ERROR (Status)) {
@@ -556,7 +629,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -565,9 +638,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->MemoryType != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "MemoryType", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "MemoryType");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemoryType);
       if (EFI_ERROR (Status)) {
@@ -576,18 +649,22 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // METRICS will be handled by feature driver.
+  //
 
   //
   // Handle MODULEMANUFACTURERID
   //
   if (MemoryCs->ModuleManufacturerID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "ModuleManufacturerID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "ModuleManufacturerID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->ModuleManufacturerID);
       if (EFI_ERROR (Status)) {
@@ -596,7 +673,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -605,9 +682,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->ModuleProductID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "ModuleProductID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "ModuleProductID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->ModuleProductID);
       if (EFI_ERROR (Status)) {
@@ -616,7 +693,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -625,9 +702,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->NonVolatileSizeMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "NonVolatileSizeMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "NonVolatileSizeMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->NonVolatileSizeMiB);
       if (EFI_ERROR (Status)) {
@@ -636,18 +713,26 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // Handle OPERATINGMEMORYMODES
+  //
+  //
+  // ****** Warning ******
+  // Unsupported array type:
+  //
 
   //
   // Handle OPERATINGSPEEDMHZ
   //
   if (MemoryCs->OperatingSpeedMhz != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "OperatingSpeedMhz", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "OperatingSpeedMhz");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->OperatingSpeedMhz);
       if (EFI_ERROR (Status)) {
@@ -656,7 +741,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -665,9 +750,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PartNumber != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PartNumber", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PartNumber");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->PartNumber);
       if (EFI_ERROR (Status)) {
@@ -676,7 +761,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -685,9 +770,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PersistentRegionNumberLimit != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PersistentRegionNumberLimit", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PersistentRegionNumberLimit");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PersistentRegionNumberLimit);
       if (EFI_ERROR (Status)) {
@@ -696,7 +781,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -705,9 +790,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PersistentRegionSizeLimitMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PersistentRegionSizeLimitMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PersistentRegionSizeLimitMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PersistentRegionSizeLimitMiB);
       if (EFI_ERROR (Status)) {
@@ -716,7 +801,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -725,9 +810,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PersistentRegionSizeMaxMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PersistentRegionSizeMaxMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PersistentRegionSizeMaxMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PersistentRegionSizeMaxMiB);
       if (EFI_ERROR (Status)) {
@@ -736,7 +821,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -753,9 +838,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PowerManagementPolicy/AveragePowerBudgetMilliWatts", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PowerManagementPolicy/AveragePowerBudgetMilliWatts");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts);
       if (EFI_ERROR (Status)) {
@@ -764,7 +849,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -773,9 +858,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PowerManagementPolicy/MaxTDPMilliWatts", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PowerManagementPolicy/MaxTDPMilliWatts");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts);
       if (EFI_ERROR (Status)) {
@@ -784,7 +869,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -793,9 +878,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PowerManagementPolicy/PeakPowerBudgetMilliWatts", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PowerManagementPolicy/PeakPowerBudgetMilliWatts");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts);
       if (EFI_ERROR (Status)) {
@@ -804,7 +889,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -813,9 +898,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->PowerManagementPolicy->PolicyEnabled != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "PowerManagementPolicy/PolicyEnabled", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "PowerManagementPolicy/PolicyEnabled");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->PowerManagementPolicy->PolicyEnabled);
       if (EFI_ERROR (Status)) {
@@ -824,7 +909,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -833,9 +918,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->RankCount != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "RankCount", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "RankCount");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->RankCount);
       if (EFI_ERROR (Status)) {
@@ -844,9 +929,17 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // Handle REGIONS
+  //
+  //
+  // ****** Warning ******
+  // Unsupported array type:
+  //
 
   //
   // Handle SECURITYCAPABILITIES
@@ -861,9 +954,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SecurityCapabilities->ConfigurationLockCapable != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SecurityCapabilities/ConfigurationLockCapable", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SecurityCapabilities/ConfigurationLockCapable");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->SecurityCapabilities->ConfigurationLockCapable);
       if (EFI_ERROR (Status)) {
@@ -872,7 +965,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -881,9 +974,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SecurityCapabilities->DataLockCapable != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SecurityCapabilities/DataLockCapable", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SecurityCapabilities/DataLockCapable");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->SecurityCapabilities->DataLockCapable);
       if (EFI_ERROR (Status)) {
@@ -892,7 +985,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -901,9 +994,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SecurityCapabilities->MaxPassphraseCount != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SecurityCapabilities/MaxPassphraseCount", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SecurityCapabilities/MaxPassphraseCount");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->SecurityCapabilities->MaxPassphraseCount);
       if (EFI_ERROR (Status)) {
@@ -912,7 +1005,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -921,9 +1014,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SecurityCapabilities->PassphraseCapable != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SecurityCapabilities/PassphraseCapable", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SecurityCapabilities/PassphraseCapable");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->SecurityCapabilities->PassphraseCapable);
       if (EFI_ERROR (Status)) {
@@ -932,7 +1025,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -941,9 +1034,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SecurityCapabilities->PassphraseLockLimit != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SecurityCapabilities/PassphraseLockLimit", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SecurityCapabilities/PassphraseLockLimit");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->SecurityCapabilities->PassphraseLockLimit);
       if (EFI_ERROR (Status)) {
@@ -952,18 +1045,26 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
+
+  //
+  // Handle SECURITYCAPABILITIES->SECURITYSTATES
+  //
+  //
+  // ****** Warning ******
+  // Unsupported array type:
+  //
 
   //
   // Handle SECURITYSTATE
   //
   if (MemoryCs->SecurityState != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SecurityState", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SecurityState");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SecurityState);
       if (EFI_ERROR (Status)) {
@@ -972,7 +1073,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -981,9 +1082,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SerialNumber != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SerialNumber", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SerialNumber");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SerialNumber);
       if (EFI_ERROR (Status)) {
@@ -992,7 +1093,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1001,9 +1102,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SpareDeviceCount != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SpareDeviceCount", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SpareDeviceCount");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->SpareDeviceCount);
       if (EFI_ERROR (Status)) {
@@ -1012,7 +1113,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1021,9 +1122,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SubsystemDeviceID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SubsystemDeviceID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SubsystemDeviceID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SubsystemDeviceID);
       if (EFI_ERROR (Status)) {
@@ -1032,7 +1133,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1041,9 +1142,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->SubsystemVendorID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "SubsystemVendorID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "SubsystemVendorID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SubsystemVendorID);
       if (EFI_ERROR (Status)) {
@@ -1052,7 +1153,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1061,9 +1162,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->VendorID != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "VendorID", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "VendorID");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->VendorID);
       if (EFI_ERROR (Status)) {
@@ -1072,7 +1173,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1081,9 +1182,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->VolatileRegionNumberLimit != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "VolatileRegionNumberLimit", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "VolatileRegionNumberLimit");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileRegionNumberLimit);
       if (EFI_ERROR (Status)) {
@@ -1092,7 +1193,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1101,9 +1202,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->VolatileRegionSizeLimitMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "VolatileRegionSizeLimitMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "VolatileRegionSizeLimitMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileRegionSizeLimitMiB);
       if (EFI_ERROR (Status)) {
@@ -1112,7 +1213,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1121,9 +1222,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->VolatileRegionSizeMaxMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "VolatileRegionSizeMaxMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "VolatileRegionSizeMaxMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileRegionSizeMaxMiB);
       if (EFI_ERROR (Status)) {
@@ -1132,7 +1233,7 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
@@ -1141,9 +1242,9 @@ RedfishConsumeResourceCommon (
   //
   if (MemoryCs->VolatileSizeMiB != NULL) {
     //
-    // Find corresponding redpath for collection resource.
+    // Find corresponding configure language for collection resource.
     //
-    ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, "VolatileSizeMiB", Arraykey);
+    ConfigureLang = GetConfigureLang (MemoryCs->odata_id, "VolatileSizeMiB");
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileSizeMiB);
       if (EFI_ERROR (Status)) {
@@ -1152,24 +1253,15 @@ RedfishConsumeResourceCommon (
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for key: %a\n", __FUNCTION__, Arraykey));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
     }
   }
 
-  //
 ON_RELEASE:
 
   //
   // Release resource.
   //
-  if (EtagInDb != NULL) {
-    FreePool (EtagInDb);
-  }
-
-  if (Arraykey != NULL) {
-    FreePool (Arraykey);
-  }
-
   Private->JsonStructProtocol->DestoryStructure (
                                  Private->JsonStructProtocol,
                                  (EFI_REST_JSON_STRUCTURE_HEADER *)Memory
@@ -1181,7 +1273,7 @@ ON_RELEASE:
 EFI_STATUS
 ProvisioningMemoryProperties (
   IN  EFI_REST_JSON_STRUCTURE_PROTOCOL *JsonStructProtocol,
-  IN  CHAR8 *IputJson,
+  IN  CHAR8 *InputJson,
   IN  CHAR8 *ResourceId, OPTIONAL
   IN  EFI_STRING                        ConfigureLang,
   IN  BOOLEAN                           ProvisionMode,
@@ -1191,28 +1283,29 @@ ProvisioningMemoryProperties (
   EFI_REDFISH_MEMORY_V1_7_1     *Memory;
   EFI_REDFISH_MEMORY_V1_7_1_CS  *MemoryCs;
   EFI_STATUS                    Status;
-  INT64                         *NumericValue;
-  INT32                         *IntegerValue;
-  BOOLEAN                       *BooleanValue;
-  CHAR8                         *AsciiStringValue;
   BOOLEAN                       PropertyChanged;
-  BOOLEAN                       UnusedProperty;
+  INT64                         *NumericValue;
+  INT64                         *NumericArrayValue;
+  UINTN                         ArraySize;
+  CHAR8                         *AsciiStringValue;
+  BOOLEAN                       *BooleanValue;
+  INT32                         *IntegerValue;
+  CHAR8                         **AsciiStringArrayValue;
 
-  if ((JsonStructProtocol == NULL) || (ResultJson == NULL) || IS_EMPTY_STRING (IputJson) || IS_EMPTY_STRING (ConfigureLang)) {
+  if ((JsonStructProtocol == NULL) || (ResultJson == NULL) || IS_EMPTY_STRING (InputJson) || IS_EMPTY_STRING (ConfigureLang)) {
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __FUNCTION__, ConfigureLang, (ProvisionMode ? L"Provision all resource" : L"Provision existing resource")));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __FUNCTION__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
 
   *ResultJson     = NULL;
   PropertyChanged = FALSE;
-  UnusedProperty  = TRUE;
 
   Memory = NULL;
   Status = JsonStructProtocol->ToStructure (
                                  JsonStructProtocol,
                                  NULL,
-                                 IputJson,
+                                 InputJson,
                                  (EFI_REST_JSON_STRUCTURE_HEADER **)&Memory
                                  );
   if (EFI_ERROR (Status)) {
@@ -1251,6 +1344,19 @@ ProvisioningMemoryProperties (
       if (ProvisionMode || (*MemoryCs->AllocationIncrementMiB != *NumericValue)) {
         MemoryCs->AllocationIncrementMiB = NumericValue;
         PropertyChanged                  = TRUE;
+      }
+    }
+  }
+
+  //
+  // Handle ALLOWEDSPEEDSMHZ
+  //
+  if (PropertyChecker (MemoryCs->AllowedSpeedsMHz, ProvisionMode)) {
+    NumericArrayValue = GetPropertyNumericArrayValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"AllowedSpeedsMHz", ConfigureLang, &ArraySize);
+    if (NumericArrayValue != NULL) {
+      if (ProvisionMode || !CompareRedfishNumericArrayValues (MemoryCs->AllowedSpeedsMHz, NumericArrayValue, ArraySize)) {
+        AddRedfishNumericArray (&MemoryCs->AllowedSpeedsMHz, NumericArrayValue, ArraySize);
+        PropertyChanged = TRUE;
       }
     }
   }
@@ -1318,6 +1424,7 @@ ProvisioningMemoryProperties (
         if (IntegerValue != NULL) {
           *IntegerValue                 = (BooleanValue ? 0x01 : 0x00);
           MemoryCs->ConfigurationLocked = IntegerValue;
+          PropertyChanged               = TRUE;
         }
       }
     }
@@ -1402,6 +1509,19 @@ ProvisioningMemoryProperties (
   }
 
   //
+  // Handle FUNCTIONCLASSES
+  //
+  if (PropertyChecker (MemoryCs->FunctionClasses, ProvisionMode)) {
+    AsciiStringArrayValue = GetPropertyStringArrayValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"FunctionClasses", ConfigureLang, &ArraySize);
+    if (AsciiStringArrayValue != NULL) {
+      if (ProvisionMode || !CompareRedfishStringArrayValues (MemoryCs->FunctionClasses, AsciiStringArrayValue, ArraySize)) {
+        AddRedfishCharArray (&MemoryCs->FunctionClasses, AsciiStringArrayValue, ArraySize);
+        PropertyChanged = TRUE;
+      }
+    }
+  }
+
+  //
   // Handle ISRANKSPAREENABLED
   //
   if (PropertyChecker (MemoryCs->IsRankSpareEnabled, ProvisionMode)) {
@@ -1412,6 +1532,7 @@ ProvisioningMemoryProperties (
         if (IntegerValue != NULL) {
           *IntegerValue                = (BooleanValue ? 0x01 : 0x00);
           MemoryCs->IsRankSpareEnabled = IntegerValue;
+          PropertyChanged              = TRUE;
         }
       }
     }
@@ -1428,6 +1549,7 @@ ProvisioningMemoryProperties (
         if (IntegerValue != NULL) {
           *IntegerValue                  = (BooleanValue ? 0x01 : 0x00);
           MemoryCs->IsSpareDeviceEnabled = IntegerValue;
+          PropertyChanged                = TRUE;
         }
       }
     }
@@ -1460,6 +1582,19 @@ ProvisioningMemoryProperties (
   }
 
   //
+  // Handle MAXTDPMILLIWATTS
+  //
+  if (PropertyChecker (MemoryCs->MaxTDPMilliWatts, ProvisionMode)) {
+    NumericArrayValue = GetPropertyNumericArrayValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MaxTDPMilliWatts", ConfigureLang, &ArraySize);
+    if (NumericArrayValue != NULL) {
+      if (ProvisionMode || !CompareRedfishNumericArrayValues (MemoryCs->MaxTDPMilliWatts, NumericArrayValue, ArraySize)) {
+        AddRedfishNumericArray (&MemoryCs->MaxTDPMilliWatts, NumericArrayValue, ArraySize);
+        PropertyChanged = TRUE;
+      }
+    }
+  }
+
+  //
   // Handle MEMORYDEVICETYPE
   //
   if (PropertyChecker (MemoryCs->MemoryDeviceType, ProvisionMode)) {
@@ -1475,74 +1610,66 @@ ProvisioningMemoryProperties (
   //
   // Handle MEMORYLOCATION
   //
-  if (MemoryCs->MemoryLocation == NULL) {
-    MemoryCs->MemoryLocation = AllocateZeroPool (sizeof (RedfishMemory_V1_7_1_MemoryLocation_CS));
-    ASSERT (MemoryCs->MemoryLocation != NULL);
-    UnusedProperty = TRUE;
-  } else {
-    UnusedProperty = FALSE;
-  }
+  if (MemoryCs->MemoryLocation != NULL) {
+    //
+    // Handle MEMORYLOCATION->CHANNEL
+    //
+    if (PropertyChecker (MemoryCs->MemoryLocation->Channel, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/Channel", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->MemoryLocation->Channel != *NumericValue)) {
+          MemoryCs->MemoryLocation->Channel = NumericValue;
+          PropertyChanged                   = TRUE;
+        }
+      }
+    }
 
-  //
-  // Handle MEMORYLOCATION->CHANNEL
-  //
-  if (PropertyChecker (MemoryCs->MemoryLocation->Channel, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/Channel", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->MemoryLocation->Channel != *NumericValue)) {
-        MemoryCs->MemoryLocation->Channel = NumericValue;
-        PropertyChanged                   = TRUE;
-        UnusedProperty                    = FALSE;
+    //
+    // Handle MEMORYLOCATION->MEMORYCONTROLLER
+    //
+    if (PropertyChecker (MemoryCs->MemoryLocation->MemoryController, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/MemoryController", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->MemoryLocation->MemoryController != *NumericValue)) {
+          MemoryCs->MemoryLocation->MemoryController = NumericValue;
+          PropertyChanged                            = TRUE;
+        }
+      }
+    }
+
+    //
+    // Handle MEMORYLOCATION->SLOT
+    //
+    if (PropertyChecker (MemoryCs->MemoryLocation->Slot, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/Slot", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->MemoryLocation->Slot != *NumericValue)) {
+          MemoryCs->MemoryLocation->Slot = NumericValue;
+          PropertyChanged                = TRUE;
+        }
+      }
+    }
+
+    //
+    // Handle MEMORYLOCATION->SOCKET
+    //
+    if (PropertyChecker (MemoryCs->MemoryLocation->Socket, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/Socket", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->MemoryLocation->Socket != *NumericValue)) {
+          MemoryCs->MemoryLocation->Socket = NumericValue;
+          PropertyChanged                  = TRUE;
+        }
       }
     }
   }
 
   //
-  // Handle MEMORYLOCATION->MEMORYCONTROLLER
+  // Handle MEMORYMEDIA
   //
-  if (PropertyChecker (MemoryCs->MemoryLocation->MemoryController, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/MemoryController", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->MemoryLocation->MemoryController != *NumericValue)) {
-        MemoryCs->MemoryLocation->MemoryController = NumericValue;
-        PropertyChanged                            = TRUE;
-        UnusedProperty                             = FALSE;
-      }
-    }
-  }
-
+  //// ****** Warning ******
+  // Unsupported array type:
   //
-  // Handle MEMORYLOCATION->SLOT
-  //
-  if (PropertyChecker (MemoryCs->MemoryLocation->Slot, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/Slot", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->MemoryLocation->Slot != *NumericValue)) {
-        MemoryCs->MemoryLocation->Slot = NumericValue;
-        PropertyChanged                = TRUE;
-        UnusedProperty                 = FALSE;
-      }
-    }
-  }
-
-  //
-  // Handle MEMORYLOCATION->SOCKET
-  //
-  if (PropertyChecker (MemoryCs->MemoryLocation->Socket, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"MemoryLocation/Socket", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->MemoryLocation->Socket != *NumericValue)) {
-        MemoryCs->MemoryLocation->Socket = NumericValue;
-        PropertyChanged                  = TRUE;
-        UnusedProperty                   = FALSE;
-      }
-    }
-  }
-
-  if (UnusedProperty) {
-    FreePool (MemoryCs->MemoryLocation);
-    MemoryCs->MemoryLocation = NULL;
-  }
 
   //
   // Handle MEMORYSUBSYSTEMCONTROLLERMANUFACTURERID
@@ -1623,6 +1750,13 @@ ProvisioningMemoryProperties (
   }
 
   //
+  // Handle OPERATINGMEMORYMODES
+  //
+  //// ****** Warning ******
+  // Unsupported array type:
+  //
+
+  //
   // Handle OPERATINGSPEEDMHZ
   //
   if (PropertyChecker (MemoryCs->OperatingSpeedMhz, ProvisionMode)) {
@@ -1690,77 +1824,62 @@ ProvisioningMemoryProperties (
   //
   // Handle POWERMANAGEMENTPOLICY
   //
-  if (MemoryCs->PowerManagementPolicy == NULL) {
-    MemoryCs->PowerManagementPolicy = AllocateZeroPool (sizeof (RedfishMemory_V1_7_1_PowerManagementPolicy_CS));
-    ASSERT (MemoryCs->PowerManagementPolicy != NULL);
-    UnusedProperty = TRUE;
-  } else {
-    UnusedProperty = FALSE;
-  }
-
-  //
-  // Handle POWERMANAGEMENTPOLICY->AVERAGEPOWERBUDGETMILLIWATTS
-  //
-  if (PropertyChecker (MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/AveragePowerBudgetMilliWatts", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts != *NumericValue)) {
-        MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts = NumericValue;
-        PropertyChanged                                               = TRUE;
-        UnusedProperty                                                = FALSE;
-      }
-    }
-  }
-
-  //
-  // Handle POWERMANAGEMENTPOLICY->MAXTDPMILLIWATTS
-  //
-  if (PropertyChecker (MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/MaxTDPMilliWatts", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts != *NumericValue)) {
-        MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts = NumericValue;
-        PropertyChanged                                   = TRUE;
-        UnusedProperty                                    = FALSE;
-      }
-    }
-  }
-
-  //
-  // Handle POWERMANAGEMENTPOLICY->PEAKPOWERBUDGETMILLIWATTS
-  //
-  if (PropertyChecker (MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/PeakPowerBudgetMilliWatts", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts != *NumericValue)) {
-        MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts = NumericValue;
-        PropertyChanged                                            = TRUE;
-        UnusedProperty                                             = FALSE;
-      }
-    }
-  }
-
-  //
-  // Handle POWERMANAGEMENTPOLICY->POLICYENABLED
-  //
-  if (PropertyChecker (MemoryCs->PowerManagementPolicy->PolicyEnabled, ProvisionMode)) {
-    BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/PolicyEnabled", ConfigureLang);
-    if (BooleanValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->PolicyEnabled != *BooleanValue)) {
-        IntegerValue = AllocatePool (sizeof (*IntegerValue));
-        if (IntegerValue != NULL) {
-          *IntegerValue                                  = (BooleanValue ? 0x01 : 0x00);
-          MemoryCs->PowerManagementPolicy->PolicyEnabled = IntegerValue;
-          PropertyChanged                                = TRUE;
-          UnusedProperty                                 = FALSE;
+  if (MemoryCs->PowerManagementPolicy != NULL) {
+    //
+    // Handle POWERMANAGEMENTPOLICY->AVERAGEPOWERBUDGETMILLIWATTS
+    //
+    if (PropertyChecker (MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/AveragePowerBudgetMilliWatts", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts != *NumericValue)) {
+          MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts = NumericValue;
+          PropertyChanged                                               = TRUE;
         }
       }
     }
-  }
 
-  if (UnusedProperty) {
-    FreePool (MemoryCs->PowerManagementPolicy);
-    MemoryCs->PowerManagementPolicy = NULL;
+    //
+    // Handle POWERMANAGEMENTPOLICY->MAXTDPMILLIWATTS
+    //
+    if (PropertyChecker (MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/MaxTDPMilliWatts", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts != *NumericValue)) {
+          MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts = NumericValue;
+          PropertyChanged                                   = TRUE;
+        }
+      }
+    }
+
+    //
+    // Handle POWERMANAGEMENTPOLICY->PEAKPOWERBUDGETMILLIWATTS
+    //
+    if (PropertyChecker (MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/PeakPowerBudgetMilliWatts", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts != *NumericValue)) {
+          MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts = NumericValue;
+          PropertyChanged                                            = TRUE;
+        }
+      }
+    }
+
+    //
+    // Handle POWERMANAGEMENTPOLICY->POLICYENABLED
+    //
+    if (PropertyChecker (MemoryCs->PowerManagementPolicy->PolicyEnabled, ProvisionMode)) {
+      BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"PowerManagementPolicy/PolicyEnabled", ConfigureLang);
+      if (BooleanValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->PowerManagementPolicy->PolicyEnabled != *BooleanValue)) {
+          IntegerValue = AllocatePool (sizeof (*IntegerValue));
+          if (IntegerValue != NULL) {
+            *IntegerValue                                  = (BooleanValue ? 0x01 : 0x00);
+            MemoryCs->PowerManagementPolicy->PolicyEnabled = IntegerValue;
+            PropertyChanged                                = TRUE;
+          }
+        }
+      }
+    }
   }
 
   //
@@ -1777,101 +1896,99 @@ ProvisioningMemoryProperties (
   }
 
   //
+  // Handle REGIONS
+  //
+  //// ****** Warning ******
+  // Unsupported array type:
+  //
+
+  //
   // Handle SECURITYCAPABILITIES
   //
-  if (MemoryCs->SecurityCapabilities == NULL) {
-    MemoryCs->SecurityCapabilities = AllocateZeroPool (sizeof (RedfishMemory_V1_7_1_SecurityCapabilities_CS));
-    ASSERT (MemoryCs->SecurityCapabilities != NULL);
-    UnusedProperty = TRUE;
-  } else {
-    UnusedProperty = FALSE;
-  }
-
-  //
-  // Handle SECURITYCAPABILITIES->CONFIGURATIONLOCKCAPABLE
-  //
-  if (PropertyChecker (MemoryCs->SecurityCapabilities->ConfigurationLockCapable, ProvisionMode)) {
-    BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/ConfigurationLockCapable", ConfigureLang);
-    if (BooleanValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->SecurityCapabilities->ConfigurationLockCapable != *BooleanValue)) {
-        IntegerValue = AllocatePool (sizeof (*IntegerValue));
-        if (IntegerValue != NULL) {
-          *IntegerValue                                            = (BooleanValue ? 0x01 : 0x00);
-          MemoryCs->SecurityCapabilities->ConfigurationLockCapable = IntegerValue;
-          PropertyChanged                                          = TRUE;
-          UnusedProperty                                           = FALSE;
+  if (MemoryCs->SecurityCapabilities != NULL) {
+    //
+    // Handle SECURITYCAPABILITIES->CONFIGURATIONLOCKCAPABLE
+    //
+    if (PropertyChecker (MemoryCs->SecurityCapabilities->ConfigurationLockCapable, ProvisionMode)) {
+      BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/ConfigurationLockCapable", ConfigureLang);
+      if (BooleanValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->SecurityCapabilities->ConfigurationLockCapable != *BooleanValue)) {
+          IntegerValue = AllocatePool (sizeof (*IntegerValue));
+          if (IntegerValue != NULL) {
+            *IntegerValue                                            = (BooleanValue ? 0x01 : 0x00);
+            MemoryCs->SecurityCapabilities->ConfigurationLockCapable = IntegerValue;
+            PropertyChanged                                          = TRUE;
+          }
         }
       }
     }
-  }
 
-  //
-  // Handle SECURITYCAPABILITIES->DATALOCKCAPABLE
-  //
-  if (PropertyChecker (MemoryCs->SecurityCapabilities->DataLockCapable, ProvisionMode)) {
-    BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/DataLockCapable", ConfigureLang);
-    if (BooleanValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->SecurityCapabilities->DataLockCapable != *BooleanValue)) {
-        IntegerValue = AllocatePool (sizeof (*IntegerValue));
-        if (IntegerValue != NULL) {
-          *IntegerValue                                   = (BooleanValue ? 0x01 : 0x00);
-          MemoryCs->SecurityCapabilities->DataLockCapable = IntegerValue;
-          PropertyChanged                                 = TRUE;
-          UnusedProperty                                  = FALSE;
+    //
+    // Handle SECURITYCAPABILITIES->DATALOCKCAPABLE
+    //
+    if (PropertyChecker (MemoryCs->SecurityCapabilities->DataLockCapable, ProvisionMode)) {
+      BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/DataLockCapable", ConfigureLang);
+      if (BooleanValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->SecurityCapabilities->DataLockCapable != *BooleanValue)) {
+          IntegerValue = AllocatePool (sizeof (*IntegerValue));
+          if (IntegerValue != NULL) {
+            *IntegerValue                                   = (BooleanValue ? 0x01 : 0x00);
+            MemoryCs->SecurityCapabilities->DataLockCapable = IntegerValue;
+            PropertyChanged                                 = TRUE;
+          }
         }
       }
     }
-  }
 
-  //
-  // Handle SECURITYCAPABILITIES->MAXPASSPHRASECOUNT
-  //
-  if (PropertyChecker (MemoryCs->SecurityCapabilities->MaxPassphraseCount, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/MaxPassphraseCount", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->SecurityCapabilities->MaxPassphraseCount != *NumericValue)) {
-        MemoryCs->SecurityCapabilities->MaxPassphraseCount = NumericValue;
-        PropertyChanged                                    = TRUE;
-        UnusedProperty                                     = FALSE;
-      }
-    }
-  }
-
-  //
-  // Handle SECURITYCAPABILITIES->PASSPHRASECAPABLE
-  //
-  if (PropertyChecker (MemoryCs->SecurityCapabilities->PassphraseCapable, ProvisionMode)) {
-    BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/PassphraseCapable", ConfigureLang);
-    if (BooleanValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->SecurityCapabilities->PassphraseCapable != *BooleanValue)) {
-        IntegerValue = AllocatePool (sizeof (*IntegerValue));
-        if (IntegerValue != NULL) {
-          *IntegerValue                                     = (BooleanValue ? 0x01 : 0x00);
-          MemoryCs->SecurityCapabilities->PassphraseCapable = IntegerValue;
-          PropertyChanged                                   = TRUE;
-          UnusedProperty                                    = FALSE;
+    //
+    // Handle SECURITYCAPABILITIES->MAXPASSPHRASECOUNT
+    //
+    if (PropertyChecker (MemoryCs->SecurityCapabilities->MaxPassphraseCount, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/MaxPassphraseCount", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->SecurityCapabilities->MaxPassphraseCount != *NumericValue)) {
+          MemoryCs->SecurityCapabilities->MaxPassphraseCount = NumericValue;
+          PropertyChanged                                    = TRUE;
         }
       }
     }
-  }
 
-  //
-  // Handle SECURITYCAPABILITIES->PASSPHRASELOCKLIMIT
-  //
-  if (PropertyChecker (MemoryCs->SecurityCapabilities->PassphraseLockLimit, ProvisionMode)) {
-    NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/PassphraseLockLimit", ConfigureLang);
-    if (NumericValue != NULL) {
-      if (ProvisionMode || (*MemoryCs->SecurityCapabilities->PassphraseLockLimit != *NumericValue)) {
-        MemoryCs->SecurityCapabilities->PassphraseLockLimit = NumericValue;
-        PropertyChanged                                     = TRUE;
-        UnusedProperty                                      = FALSE;
+    //
+    // Handle SECURITYCAPABILITIES->PASSPHRASECAPABLE
+    //
+    if (PropertyChecker (MemoryCs->SecurityCapabilities->PassphraseCapable, ProvisionMode)) {
+      BooleanValue = GetPropertyBooleanValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/PassphraseCapable", ConfigureLang);
+      if (BooleanValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->SecurityCapabilities->PassphraseCapable != *BooleanValue)) {
+          IntegerValue = AllocatePool (sizeof (*IntegerValue));
+          if (IntegerValue != NULL) {
+            *IntegerValue                                     = (BooleanValue ? 0x01 : 0x00);
+            MemoryCs->SecurityCapabilities->PassphraseCapable = IntegerValue;
+            PropertyChanged                                   = TRUE;
+          }
+        }
       }
     }
-  }
 
-  if (UnusedProperty) {
-    FreePool (MemoryCs->SecurityCapabilities);
-    MemoryCs->SecurityCapabilities = NULL;
+    //
+    // Handle SECURITYCAPABILITIES->PASSPHRASELOCKLIMIT
+    //
+    if (PropertyChecker (MemoryCs->SecurityCapabilities->PassphraseLockLimit, ProvisionMode)) {
+      NumericValue = GetPropertyNumericValue (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, L"SecurityCapabilities/PassphraseLockLimit", ConfigureLang);
+      if (NumericValue != NULL) {
+        if (ProvisionMode || (*MemoryCs->SecurityCapabilities->PassphraseLockLimit != *NumericValue)) {
+          MemoryCs->SecurityCapabilities->PassphraseLockLimit = NumericValue;
+          PropertyChanged                                     = TRUE;
+        }
+      }
+    }
+
+    //
+    // Handle SECURITYCAPABILITIES->SECURITYSTATES
+    //
+    //// ****** Warning ******
+    // Unsupported array type:
+    //
   }
 
   //
@@ -2035,18 +2152,17 @@ ProvisioningMemoryResource (
   IN  EFI_STRING                       ConfigureLang
   )
 {
-  CHAR8       *MemoryJson;
+  CHAR8       *Json;
   EFI_STATUS  Status;
-  CHAR8       *NewResourceLocation;
-  CHAR8       *NewKey;
+  EFI_STRING  NewResourceLocation;
   CHAR8       *EtagStr;
   CHAR8       ResourceId[16];
-  CHAR8       NewUri[255];
 
   if (IS_EMPTY_STRING (ConfigureLang) || (Private == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
+  EtagStr = NULL;
   AsciiSPrint (ResourceId, sizeof (ResourceId), "%d", Index);
 
   Status = ProvisioningMemoryProperties (
@@ -2055,55 +2171,45 @@ ProvisioningMemoryResource (
              ResourceId,
              ConfigureLang,
              TRUE,
-             &MemoryJson
+             &Json
              );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, provisioning resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
     return Status;
   }
 
-  Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, MemoryJson, &NewResourceLocation, &EtagStr);
+  Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, &NewResourceLocation, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, post memory resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, post Memory resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
     goto RELEASE_RESOURCE;
   }
 
-  NewUri[0] = '\0';
+  ASSERT (NewResourceLocation != NULL);
 
   //
   // Keep location of new resource.
   //
   if (NewResourceLocation != NULL) {
-    //
-    // Find key
-    //
-    NewKey = AsciiStrStr (NewResourceLocation, RESOURCE_SCHEMA);
-    if (NewKey != NULL) {
-      NewKey += 6;
-      //
-      // skip '/'
-      //
-      if (NewKey[0] == '/') {
-        NewKey++;
-      }
-
-      SetConfigureLangWithkey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, NewKey, Index);
-      AsciiSPrint (NewUri, sizeof (NewUri), "%a[%a]", Private->Uri, NewKey);
-      FreePool (NewResourceLocation);
-    }
+    RedfisSetRedfishUri (ConfigureLang, NewResourceLocation);
   }
 
   //
   // Handle Etag
   //
   if (EtagStr != NULL) {
-    SetEtagWithUri (EtagStr, NewUri);
+    SetEtagWithUri (EtagStr, NewResourceLocation);
     FreePool (EtagStr);
   }
 
 RELEASE_RESOURCE:
 
-  FreePool (MemoryJson);
+  if (NewResourceLocation != NULL) {
+    FreePool (NewResourceLocation);
+  }
+
+  if (Json != NULL) {
+    FreePool (Json);
+  }
 
   return Status;
 }
@@ -2123,12 +2229,18 @@ ProvisioningMemoryResources (
 
   Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &UnifiedConfigureLangList);
   if (EFI_ERROR (Status) || (UnifiedConfigureLangList.Count == 0)) {
-    DEBUG ((DEBUG_ERROR, "%a, No HII question found with redpath: %s: %r\n", __FUNCTION__, REDPATH_ARRAY_PATTERN, Status));
+    DEBUG ((DEBUG_ERROR, "%a, No HII question found with configure language: %s: %r\n", __FUNCTION__, REDPATH_ARRAY_PATTERN, Status));
     return EFI_NOT_FOUND;
   }
 
+  //
+  // Set the configuration language in the RESOURCE_INFORMATION_EXCHANGE.
+  // This information is sent back to the parent resource (e.g. the collection driver).
+  //
+  EdkIIRedfishResourceSetConfigureLang (&UnifiedConfigureLangList);
+
   for (Index = 0; Index < UnifiedConfigureLangList.Count; Index++) {
-    DEBUG ((DEBUG_INFO, "[%d] create memory resource from: %s\n", UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang));
+    DEBUG ((DEBUG_INFO, "[%d] create Memory resource from: %s\n", UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang));
     ProvisioningMemoryResource (Private, UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang);
     FreePool (UnifiedConfigureLangList.List[Index].ConfigureLang);
   }
@@ -2141,14 +2253,70 @@ ProvisioningMemoryExistResource (
   IN  REDFISH_RESOURCE_COMMON_PRIVATE  *Private
   )
 {
+  EFI_STATUS  Status;
+  EFI_STRING  ConfigureLang;
+  CHAR8       *EtagStr;
+  CHAR8       *Json;
+
   if (Private == NULL) {
     return EFI_INVALID_PARAMETER;
   }
 
-  Private->Json = JsonDumpString (RedfishJsonInPayload (Private->Payload), EDKII_JSON_COMPACT);
-  ASSERT (Private->Json != NULL);
+  EtagStr       = NULL;
+  Json          = NULL;
+  ConfigureLang = NULL;
 
-  return RedfishUpdateResourceCommon (Private, Private->Json);
+  ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
+  if (ConfigureLang == NULL) {
+    return EFI_NOT_FOUND;
+  }
+
+  Status = ProvisioningMemoryProperties (
+             Private->JsonStructProtocol,
+             MemoryEmptyJson,
+             NULL,
+             ConfigureLang,
+             TRUE,
+             &Json
+             );
+  if (EFI_ERROR (Status)) {
+    if (Status == EFI_NOT_FOUND) {
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s ignored. Nothing changed\n", __FUNCTION__, ConfigureLang));
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a, provisioning existing resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    }
+
+    goto ON_RELEASE;
+  }
+
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __FUNCTION__, ConfigureLang));
+  //
+  // PUT back to instance
+  //
+  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+  }
+
+  //
+  // Handle Etag
+  //
+  if (EtagStr != NULL) {
+    SetEtagWithUri (EtagStr, Private->Uri);
+    FreePool (EtagStr);
+  }
+
+ON_RELEASE:
+
+  if (Json != NULL) {
+    FreePool (Json);
+  }
+
+  if (ConfigureLang != NULL) {
+    FreePool (ConfigureLang);
+  }
+
+  return Status;
 }
 
 /**
@@ -2196,9 +2364,6 @@ RedfishCheckResourceCommon (
   EFI_STRING  *ConfigureLangList;
   UINTN       Count;
   EFI_STRING  Property;
-  CHAR8       *PropertyAscii;
-  UINTN       BuffSize;
-  CHAR8       *Match;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
@@ -2216,27 +2381,16 @@ RedfishCheckResourceCommon (
 
   Status = EFI_SUCCESS;
   for (Index = 0; Index < Count; Index++) {
-    Property = GetPropertyFromConfigureLang (ConfigureLangList[Index]);
+    Property = GetPropertyFromConfigureLang (Private->Uri, ConfigureLangList[Index]);
     if (Property == NULL) {
       continue;
     }
 
-    DEBUG ((DEBUG_INFO, "[%d] check resource from: %s\n", Index, Property));
-
-    BuffSize      = StrLen (Property) + 1;
-    PropertyAscii = AllocatePool (BuffSize);
-    UnicodeStrToAsciiStrS (Property, PropertyAscii, BuffSize);
-
-    //
-    // check to see if it is partial match.
-    //
-    Match = AsciiStrStr (Json, PropertyAscii);
-    if ((Match == NULL) || (AsciiStrnCmp (Match, PropertyAscii, AsciiStrLen (PropertyAscii)) != 0)) {
+    DEBUG ((DEBUG_INFO, "%a, [%d] check attribute for: %s\n", __FUNCTION__, Index, Property));
+    if (!MatchPropertyWithJsonContext (Property, Json)) {
+      DEBUG ((DEBUG_INFO, "%a, property is missing: %s\n", __FUNCTION__, Property));
       Status = EFI_NOT_FOUND;
-      DEBUG ((DEBUG_ERROR, "%a, property %a is missing\n", __FUNCTION__, PropertyAscii));
     }
-
-    FreePool (PropertyAscii);
   }
 
   FreePool (ConfigureLangList);
@@ -2257,40 +2411,34 @@ RedfishCheckResourceCommon (
 EFI_STATUS
 RedfishUpdateResourceCommon (
   IN     REDFISH_RESOURCE_COMMON_PRIVATE  *Private,
-  IN     CHAR8                            *Json
+  IN     CHAR8                            *InputJson
   )
 {
   EFI_STATUS  Status;
-  CHAR8       *MemoryJson;
-  CHAR8       *ArrayKey;
+  CHAR8       *Json;
   EFI_STRING  ConfigureLang;
   CHAR8       *EtagStr;
 
-  if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
+  if ((Private == NULL) || IS_EMPTY_STRING (InputJson)) {
     return EFI_INVALID_PARAMETER;
   }
 
-  MemoryJson    = NULL;
+  EtagStr       = NULL;
+  Json          = NULL;
   ConfigureLang = NULL;
-  ArrayKey      = NULL;
 
-  Status = GetArraykeyFromUri (Private->Uri, &ArrayKey);
-  if (EFI_ERROR (Status)) {
-    return Status;
-  }
-
-  ConfigureLang = GetConfigureLangByKey (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, NULL, ArrayKey);
+  ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
   if (ConfigureLang == NULL) {
     return EFI_NOT_FOUND;
   }
 
   Status = ProvisioningMemoryProperties (
              Private->JsonStructProtocol,
-             Json,
+             InputJson,
              NULL,
              ConfigureLang,
              FALSE,
-             &MemoryJson
+             &Json
              );
   if (EFI_ERROR (Status)) {
     if (Status == EFI_NOT_FOUND) {
@@ -2306,9 +2454,9 @@ RedfishUpdateResourceCommon (
   //
   // PUT back to instance
   //
-  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, MemoryJson, &EtagStr);
+  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, post memory resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
   }
 
   //
@@ -2321,17 +2469,83 @@ RedfishUpdateResourceCommon (
 
 ON_RELEASE:
 
-  if (MemoryJson != NULL) {
-    FreePool (MemoryJson);
+  if (Json != NULL) {
+    FreePool (Json);
   }
 
   if (ConfigureLang != NULL) {
     FreePool (ConfigureLang);
   }
 
-  if (ArrayKey != NULL) {
-    FreePool (ArrayKey);
+  return Status;
+}
+
+/**
+  Identify resource from given URI.
+
+  @param[in]   This                Pointer to REDFISH_RESOURCE_COMMON_PRIVATE instance.
+  @param[in]   Json                The JSON to consume.
+
+  @retval EFI_SUCCESS              Value is returned successfully.
+  @retval Others                   Some error happened.
+
+**/
+EFI_STATUS
+RedfishIdentifyResourceCommon (
+  IN     REDFISH_RESOURCE_COMMON_PRIVATE  *Private,
+  IN     CHAR8                            *Json
+  )
+{
+  BOOLEAN                                      Supported;
+  EFI_STATUS                                   Status;
+  EFI_STRING                                   EndOfChar;
+  REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  ConfigLangList;
+
+  Supported = RedfishIdentifyResource (Private->Uri, Private->Json);
+  if (Supported) {
+    Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigLangList);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __FUNCTION__, Status));
+      return Status;
+    }
+
+    if (ConfigLangList.Count == 0) {
+      return EFI_SUCCESS;
+    }
+
+    EndOfChar = StrStr (ConfigLangList.List[0].ConfigureLang, L"}");
+    if (EndOfChar == NULL) {
+      ASSERT (FALSE);
+      return EFI_DEVICE_ERROR;
+    }
+
+    // EndOfChar = StrStr (ConfigLangList.List[0].ConfigureLang, L"}");
+    Status = IsRedpathArray (ConfigLangList.List[0].ConfigureLang, NULL, &EndOfChar);
+    if (EFI_ERROR (Status) && (Status != EFI_NOT_FOUND)) {
+      ASSERT (FALSE);
+      return EFI_DEVICE_ERROR;
+    }
+
+    if (Status != EFI_SUCCESS) {
+      //
+      // This is not the collection redpath.
+      //
+      GetRedpathNodeByIndex (ConfigLangList.List[0].ConfigureLang, 0, &EndOfChar);
+    }
+
+    *(++EndOfChar) = '\0';
+    //
+    // Keep URI and ConfigLang mapping
+    //
+    RedfisSetRedfishUri (ConfigLangList.List[0].ConfigureLang, Private->Uri);
+    //
+    // Set the configuration language in the RESOURCE_INFORMATION_EXCHANGE.
+    // This information is sent back to the parent resource (e.g. the collection driver).
+    //
+    EdkIIRedfishResourceSetConfigureLang (&ConfigLangList);
+    DestroyConfiglanguageList (&ConfigLangList);
+    return EFI_SUCCESS;
   }
 
-  return Status;
+  return EFI_UNSUPPORTED;
 }

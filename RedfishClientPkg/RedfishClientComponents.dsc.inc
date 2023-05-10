@@ -19,7 +19,7 @@
   #
   # Below two modules should be pulled in by build tool.
   #
-  RedfishClientPkg/Features/Memory/V1_7_1/Dxe/RedfishMemoryDxe.inf
+  RedfishClientPkg/Features/Memory/V1_7_1/Dxe/MemoryDxe.inf
   RedfishClientPkg/Features/MemoryCollectionDxe/MemoryCollectionDxe.inf
 
   !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
