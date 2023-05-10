@@ -1,7 +1,7 @@
 /** @file
   Common header file for RedfishETagDxe driver.
 
-  (C) Copyright 2021 Hewlett Packard Enterprise Development LP<BR>
+  (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -11,6 +11,7 @@
 #define REDFISH_ETAG_DXE_H_
 
 #include <Uefi.h>
+#include <RedfishBase.h>
 
 //
 // Libraries
@@ -30,7 +31,6 @@
 #include <Guid/VariableFormat.h>
 
 #define ETAG_VARIABLE_NAME  L"RedfishETag"
-#define IS_EMPTY_STRING(a)  ((a) == NULL || (a)[0] == '\0')
 #define ETAG_DEBUG_ENABLED  0x00
 
 //
