@@ -1,6 +1,7 @@
 /** @file
 
   (C) Copyright 2018-2021 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -11,8 +12,6 @@
 
 #ifndef REDFISH_CS_DATA_TYPE_H_
 #define REDFISH_CS_DATA_TYPE_H_
-
-#include <jansson.h>
 
 typedef char                RedfishCS_char;
 typedef int                 RedfishCS_bool;
