@@ -2,6 +2,7 @@
   Redfish feature utility library implementation
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -1971,7 +1972,7 @@ RedfishGetUri (
   //
   // String which has no ConfigLang remaining
   //
-  if (Head != '\0') {
+  if (Head[0] != '\0') {
     StrCatS (ResultStr, MAX_REDFISH_URL_LEN, Head);
   }
 
@@ -3234,7 +3235,7 @@ AddRedfishBooleanArray (
   RedfishCS_bool_Array  *BooleanArrayBuffer;
   RedfishCS_bool_Array  *PreArrayBuffer;
 
-  if ((Head == NULL) || (BooleanArrayBuffer == NULL) || (ArraySize == 0)) {
+  if ((Head == NULL) || (BooleanArray == NULL) || (ArraySize == 0)) {
     return EFI_INVALID_PARAMETER;
   }
 

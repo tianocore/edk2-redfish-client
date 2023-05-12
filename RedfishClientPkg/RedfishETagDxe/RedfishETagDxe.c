@@ -1,6 +1,7 @@
 /** @file
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -401,16 +402,16 @@ SaveETagList (
   //
   Status = GetVariable2 (
              VariableName,
-             &mRedfishVariableGuid,
+             &gEfiRedfishClientVariableGuid,
              (VOID *)&Data,
              NULL
              );
   if (!EFI_ERROR (Status)) {
     FreePool (Data);
-    gRT->SetVariable (VariableName, &mRedfishVariableGuid, VARIABLE_ATTRIBUTE_NV_BS, 0, NULL);
+    gRT->SetVariable (VariableName, &gEfiRedfishClientVariableGuid, VARIABLE_ATTRIBUTE_NV_BS, 0, NULL);
   }
 
-  return gRT->SetVariable (VariableName, &mRedfishVariableGuid, VARIABLE_ATTRIBUTE_NV_BS, VarSize, (VOID *)VarData);
+  return gRT->SetVariable (VariableName, &gEfiRedfishClientVariableGuid, VARIABLE_ATTRIBUTE_NV_BS, VarSize, (VOID *)VarData);
 }
 
 /**
@@ -446,7 +447,7 @@ InitialETagList (
   //
   Status = GetVariable2 (
              VariableName,
-             &mRedfishVariableGuid,
+             &gEfiRedfishClientVariableGuid,
              (VOID *)&VarData,
              &VariableSize
              );

@@ -2,6 +2,7 @@
   Redfish resource config library implementation
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -17,7 +18,7 @@
 #include <Library/RedfishPlatformConfigLib.h>
 
 EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL           *mRedfishResourceConfigProtocol = NULL;
-EFI_HANDLE                                       medfishResourceConfigProtocolHandle;
+EFI_HANDLE                                       mCachedHandle;
 EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL  mRedfishFeatureInterchangeData;
 REDFISH_SCHEMA_INFO                              mSchemaInfoCache;
 
@@ -256,7 +257,7 @@ GetRedfishResourceConfigProtocol (
         (AsciiStrCmp (Schema->Errata, mSchemaInfoCache.Errata) == 0))
     {
       if (Handle != NULL) {
-        *Handle = medfishResourceConfigProtocolHandle;
+        *Handle = mCachedHandle;
       }
 
       return mRedfishResourceConfigProtocol;
@@ -302,8 +303,8 @@ GetRedfishResourceConfigProtocol (
   }
 
   if (Found) {
-    medfishResourceConfigProtocolHandle = HandleBuffer[Index];
-    mRedfishResourceConfigProtocol      = Protocol;
+    mCachedHandle                  = HandleBuffer[Index];
+    mRedfishResourceConfigProtocol = Protocol;
     CopyMem (&mSchemaInfoCache, Schema, sizeof (REDFISH_SCHEMA_INFO));
     if (Handle != NULL) {
       *Handle = HandleBuffer[Index];
@@ -379,7 +380,7 @@ EdkIIRedfishResourceSetConfigureLang (
   EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL  *Interface;
 
   Status = gBS->HandleProtocol (
-                  medfishResourceConfigProtocolHandle,
+                  mCachedHandle,
                   &gEdkIIRedfishFeatureInterchangeDataProtocolGuid,
                   (VOID **)&Interface
                   );

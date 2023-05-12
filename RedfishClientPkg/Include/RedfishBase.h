@@ -2,6 +2,7 @@
   Redfish base header file.
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -16,7 +17,6 @@
 ///
 /// This GUID is used for an EFI Variable that stores the Redfish data.
 ///
-EFI_GUID  mRedfishVariableGuid = { 0x91c46a3d, 0xed1a, 0x477b, { 0xa5, 0x33, 0x87, 0x2d, 0xcd, 0xb0, 0xfc, 0xc1 }
-};
+extern EFI_GUID  gEfiRedfishClientVariableGuid;
 
 #endif
