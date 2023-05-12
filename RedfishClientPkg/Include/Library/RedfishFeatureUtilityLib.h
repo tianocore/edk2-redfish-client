@@ -2,6 +2,7 @@
   This file defines the Redfish Feature Utility Library interface.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -13,6 +14,8 @@
 #include <Library/RedfishLib.h>
 #include <Protocol/EdkIIRedfishPlatformConfig.h>
 #include <RedfishJsonStructure/RedfishCsCommon.h>
+
+#define REDFISH_ENABLE_SYSTEM_REBOOT()  PcdSetBoolS(PcdRedfishSystemRebootRequired, TRUE)
 
 //
 // Definition of REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG

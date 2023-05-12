@@ -3,6 +3,7 @@
   for EDK2 Redfish Feature driver registration.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -13,13 +14,14 @@
 EFI_EVENT                        mEdkIIRedfishFeatureDriverStartupEvent;
 REDFISH_FEATURE_STARTUP_CONTEXT  mFeatureDriverStartupContext;
 REDFISH_FEATURE_INTERNAL_DATA    *ResourceUriNodeList;
-
-RESOURCE_INFORMATION_EXCHANGE  *mInformationExchange;
+RESOURCE_INFORMATION_EXCHANGE    *mInformationExchange;
 
 /**
   Setup the information to deliver to child feature/collection driver.
+
   @param[in]  ThisList                 REDFISH_FEATURE_INTERNAL_DATA instance.
   @param[in]  ParentConfgLanguageUri   Parent configure language URI.
+
 **/
 EFI_STATUS
 SetupExchangeInformationInfo (
@@ -70,7 +72,9 @@ SetupExchangeInformationInfo (
 
 /**
   Destroy the exchange information.
+
   @param[in]  ThisList  REDFISH_FEATURE_INTERNAL_DATA instance.
+
 **/
 EFI_STATUS
 DestroryExchangeInformation (
@@ -239,8 +243,10 @@ RedfishFeatureDriverStartup (
   )
 {
   REDFISH_FEATURE_STARTUP_CONTEXT  *StartupContext;
+  UINT16                           RebootTimeout;
 
   StartupContext = (REDFISH_FEATURE_STARTUP_CONTEXT *)Context;
+  RebootTimeout  = PcdGet16 (PcdRedfishSystemRebootTimeout);
   //
   // Invoke EDK2 Redfish feature driver callback to start up
   // the Redfish operations.
@@ -259,6 +265,11 @@ RedfishFeatureDriverStartup (
   }
 
   //
+  // Reset PcdRedfishSystemRebootRequired flag
+  //
+  PcdSetBoolS (PcdRedfishSystemRebootRequired, FALSE);
+
+  //
   // Signal event before doing provisioning
   //
   SignalReadyToProvisioningEvent ();
@@ -272,6 +283,16 @@ RedfishFeatureDriverStartup (
   // Signal event after provisioning finished
   //
   SignalAfterProvisioningEvent ();
+
+  //
+  // If system configuration is changed, reboot system.
+  //
+  if (PcdGetBool (PcdRedfishSystemRebootRequired)) {
+    Print (L"System configuration is changed from RESTful interface. Reboot system in %d seconds...\n", RebootTimeout);
+    gBS->Stall (RebootTimeout * 1000000U);
+    gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
+    CpuDeadLoop ();
+  }
 }
 
 /**
@@ -298,14 +319,14 @@ NewInternalInstance (
   REDFISH_FEATURE_INTERNAL_DATA  *NewInternalData;
 
   if ((PtrToNewInternalData == NULL) || (NodeName == NULL)) {
-    DEBUG ((DEBUG_ERROR, "%a: Inproper given parameters\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: Inproper given parameters\n", __FUNCTION__));
     return EFI_INVALID_PARAMETER;
   }
 
   *PtrToNewInternalData = NULL;
   NewInternalData       = AllocateZeroPool (sizeof (REDFISH_FEATURE_INTERNAL_DATA));
   if (NewInternalData == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: No memory for REDFISH_FEATURE_INTERNAL_DATA\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: No memory for REDFISH_FEATURE_INTERNAL_DATA\n", __FUNCTION__));
     return EFI_OUT_OF_RESOURCES;
   }
 
@@ -334,7 +355,6 @@ NewInternalInstance (
                                        The returned LIST_ENTRY is the address of
                                        ChildList link list.
   @param[out]       MatchNodeEntry     The matched node entry.
-
   @retval EFI_SUCCESS              New entry is inserted successfully.
   @retval EFI_INVALID_PARAMETER    Improper given parameters.
   @retval EFI_OUT_OF_RESOURCES     Lack of memory for the internal data structure.
@@ -357,12 +377,12 @@ InsertRedfishFeatureUriNode (
 
   *MatchNodeEntry = NULL;
   if (NodeName == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: Node name is NULL.\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: Node name is NULL.\n", __FUNCTION__));
     return EFI_INVALID_PARAMETER;
   }
 
   if (NextNodeEntry == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: NextNodeEntry can't be NULL.\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: NextNodeEntry can't be NULL.\n", __FUNCTION__));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -467,7 +487,7 @@ RedfishFeatureRegister (
   BOOLEAN                        ItsCollection;
 
   if ((FeatureManagedUri == NULL) || (Callback == NULL)) {
-    DEBUG ((DEBUG_ERROR, "%a: The given parameter is invalid\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: The given parameter is invalid\n", __FUNCTION__));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -483,7 +503,7 @@ RedfishFeatureRegister (
   while ((Index < UriLength)) {
     if ((Index - AnchorIndex + 1) >= MaxNodeNameLength) {
       // Increase one for the NULL terminator
-      DEBUG ((DEBUG_ERROR, "%a: the length of node name is >= MaxNodeNameLength\n", __func__));
+      DEBUG ((DEBUG_ERROR, "%a: the length of node name is >= MaxNodeNameLength\n", __FUNCTION__));
       ASSERT (FALSE);
     }
 
@@ -548,7 +568,7 @@ RedfishFeatureRegister (
     //
     // No URI node was created
     //
-    DEBUG ((DEBUG_ERROR, "%a: No URI node is added\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: No URI node is added\n", __FUNCTION__));
     return EFI_INVALID_PARAMETER;
   }
 
