@@ -2,6 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -265,6 +266,7 @@ ProvisioningBiosResource (
   )
 {
   CHAR8       *Json;
+  CHAR8       *JsonWithAddendum;
   EFI_STATUS  Status;
   EFI_STRING  NewResourceLocation;
   CHAR8       *EtagStr;
@@ -288,6 +290,38 @@ ProvisioningBiosResource (
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, provisioning resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
     return Status;
+  }
+
+  //
+  // Check and see if platform has OEM data or not
+  //
+  Status = RedfishGetOemData (
+             Private->Uri,
+             RESOURCE_SCHEMA,
+             RESOURCE_SCHEMA_VERSION,
+             Json,
+             &JsonWithAddendum
+             );
+  if (!EFI_ERROR (Status) && (JsonWithAddendum != NULL)) {
+    FreePool (Json);
+    Json             = JsonWithAddendum;
+    JsonWithAddendum = NULL;
+  }
+
+  //
+  // Check and see if platform has addendum data or not
+  //
+  Status = RedfishGetAddendumData (
+             Private->Uri,
+             RESOURCE_SCHEMA,
+             RESOURCE_SCHEMA_VERSION,
+             Json,
+             &JsonWithAddendum
+             );
+  if (!EFI_ERROR (Status) && (JsonWithAddendum != NULL)) {
+    FreePool (Json);
+    Json             = JsonWithAddendum;
+    JsonWithAddendum = NULL;
   }
 
   Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, &NewResourceLocation, &EtagStr);
@@ -369,6 +403,7 @@ ProvisioningBiosExistResource (
   EFI_STRING  ConfigureLang;
   CHAR8       *EtagStr;
   CHAR8       *Json;
+  CHAR8       *JsonWithAddendum;
 
   if (Private == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -399,6 +434,38 @@ ProvisioningBiosExistResource (
     }
 
     goto ON_RELEASE;
+  }
+
+  //
+  // Check and see if platform has OEM data or not
+  //
+  Status = RedfishGetOemData (
+             Private->Uri,
+             RESOURCE_SCHEMA,
+             RESOURCE_SCHEMA_VERSION,
+             Json,
+             &JsonWithAddendum
+             );
+  if (!EFI_ERROR (Status) && (JsonWithAddendum != NULL)) {
+    FreePool (Json);
+    Json             = JsonWithAddendum;
+    JsonWithAddendum = NULL;
+  }
+
+  //
+  // Check and see if platform has addendum data or not
+  //
+  Status = RedfishGetAddendumData (
+             Private->Uri,
+             RESOURCE_SCHEMA,
+             RESOURCE_SCHEMA_VERSION,
+             Json,
+             &JsonWithAddendum
+             );
+  if (!EFI_ERROR (Status) && (JsonWithAddendum != NULL)) {
+    FreePool (Json);
+    Json             = JsonWithAddendum;
+    JsonWithAddendum = NULL;
   }
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __FUNCTION__, ConfigureLang));
@@ -528,6 +595,7 @@ RedfishUpdateResourceCommon (
 {
   EFI_STATUS  Status;
   CHAR8       *Json;
+  CHAR8       *JsonWithAddendum;
   EFI_STRING  ConfigureLang;
   CHAR8       *EtagStr;
 
@@ -560,6 +628,38 @@ RedfishUpdateResourceCommon (
     }
 
     goto ON_RELEASE;
+  }
+
+  //
+  // Check and see if platform has OEM data or not
+  //
+  Status = RedfishGetOemData (
+             Private->Uri,
+             RESOURCE_SCHEMA,
+             RESOURCE_SCHEMA_VERSION,
+             Json,
+             &JsonWithAddendum
+             );
+  if (!EFI_ERROR (Status) && (JsonWithAddendum != NULL)) {
+    FreePool (Json);
+    Json             = JsonWithAddendum;
+    JsonWithAddendum = NULL;
+  }
+
+  //
+  // Check and see if platform has addendum data or not
+  //
+  Status = RedfishGetAddendumData (
+             Private->Uri,
+             RESOURCE_SCHEMA,
+             RESOURCE_SCHEMA_VERSION,
+             Json,
+             &JsonWithAddendum
+             );
+  if (!EFI_ERROR (Status) && (JsonWithAddendum != NULL)) {
+    FreePool (Json);
+    Json             = JsonWithAddendum;
+    JsonWithAddendum = NULL;
   }
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __FUNCTION__, ConfigureLang));

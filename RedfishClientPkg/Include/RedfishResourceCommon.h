@@ -2,6 +2,7 @@
   Redfish feature driver common header file.
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -30,6 +31,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/RedfishResourceIdentifyLib.h>
 #include <Library/EdkIIRedfishResourceConfigLib.h>
+#include <Library/RedfishAddendumLib.h>
 
 //
 // Protocols
