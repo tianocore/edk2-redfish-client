@@ -1,0 +1,75 @@
+<svg width="2492" height="1877" style="background-color:white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" overflow="hidden">
+  <defs>
+    <clipPath id="clip0">
+      <rect x="278" y="517" width="2492" height="1877"/>
+    </clipPath>
+    <linearGradient x1="2572" y1="1054" x2="2572" y2="1294" gradientUnits="userSpaceOnUse" spreadMethod="reflect" id="fill1">
+      <stop offset="0" stop-color="#D2D2D2"/>
+      <stop offset="0.5" stop-color="#C8C8C8"/>
+      <stop offset="1" stop-color="#C0C0C0"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#clip0)" transform="translate(-278 -517)">
+    <rect x="278" y="958" width="2163" height="876" fill="#DAE3F3" fill-opacity="0.501961"/>
+    <path d="M1.19218-3.22415 20.5371 3.92891 18.1527 10.3772-1.19218 3.22415ZM26.9853 6.31326 46.3302 13.4663 43.9459 19.9146 24.601 12.7616ZM52.7785 15.8507 72.1234 23.0037 69.7391 29.452 50.3942 22.299ZM78.5717 25.3881 97.9166 32.5411 95.5322 38.9894 76.1873 31.8364ZM104.365 34.9255 123.71 42.0785 121.325 48.5268 101.981 41.3738ZM130.158 44.4629 149.503 51.6159 147.119 58.0642 127.774 50.9112ZM155.951 54.0003 175.296 61.1533 172.912 67.6016 153.567 60.4486ZM181.744 63.5377 201.089 70.6908 198.705 77.139 179.36 69.986ZM207.538 73.0751 226.882 80.2282 224.498 86.6765 205.153 79.5234ZM233.331 82.6125 252.676 89.7656 250.291 96.2139 230.946 89.0608ZM259.124 92.1499 278.469 99.303 276.084 105.751 256.74 98.5982ZM284.917 101.687 304.262 108.84 301.878 115.289 282.533 108.136ZM310.71 111.225 330.055 118.378 327.671 124.826 308.326 117.673ZM336.503 120.762 355.848 127.915 353.464 134.363 334.119 127.21ZM362.297 130.3 381.641 137.453 379.257 143.901 359.912 136.748ZM388.09 139.837 407.435 146.99 405.05 153.438 385.705 146.285ZM413.883 149.374 433.228 156.527 430.843 162.976 411.499 155.823ZM439.676 158.912 459.021 166.065 456.637 172.513 437.292 165.36ZM465.469 168.449 484.814 175.602 482.43 182.05 463.085 174.897ZM491.262 177.987 510.607 185.14 508.223 191.588 488.878 184.435ZM517.056 187.524 536.4 194.677 534.016 201.125 514.671 193.972ZM542.849 197.061 562.194 204.214 559.809 210.663 540.464 203.51ZM568.642 206.599 587.987 213.752 585.602 220.2 566.258 213.047ZM594.435 216.136 613.78 223.289 611.396 229.738 592.051 222.584ZM620.228 225.674 639.573 232.827 637.189 239.275 617.844 232.122ZM646.021 235.211 665.366 242.364 662.982 248.812 643.637 241.659ZM671.815 244.748 691.16 251.901 688.775 258.35 669.43 251.197ZM697.608 254.286 716.953 261.439 714.568 267.887 695.224 260.734ZM723.401 263.823 742.746 270.976 740.362 277.425 721.017 270.271ZM744.812 260.745 765.836 283.179 735.275 286.538Z" fill="#70AD47" transform="matrix(1 0 0 -1 594.5 1048.68)"/>
+    <rect x="392.5" y="1881.5" width="622" height="142" stroke="#41719C" stroke-width="4.58333" stroke-miterlimit="8" fill="#5B9BD5"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 652.979 1972)">NIC</text>
+    <rect x="392.5" y="1515.5" width="622" height="251" stroke="#ED7D31" stroke-width="4.58333" stroke-miterlimit="8" fill="#FBE5D6"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 450.739 1657)">UEFI Network Stack</text>
+    <rect x="1703.5" y="1515.5" width="622" height="251" stroke="#C55A11" stroke-width="4.58333" stroke-miterlimit="8" fill="#FFC000"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1773.26 1660)">In</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1828.84 1660)">-</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1852.33 1660)">band channel</text>
+    <rect x="807.5" y="1049.5" width="207" height="287" stroke="#2F5597" stroke-width="4.58333" stroke-miterlimit="8" fill="#ADB9CA"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="46" transform="matrix(1 0 0 1 855.72 1182)">REST </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="46" transform="matrix(1 0 0 1 882.074 1231)">EX</text>
+    <rect x="393.5" y="1194.5" width="400" height="138" stroke="#787878" stroke-width="4.58333" stroke-miterlimit="8" fill="#A5A5A5"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="41" transform="matrix(1 0 0 1 433.577 1254)">Redfish Discover </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="41" transform="matrix(1 0 0 1 512.067 1299)">Protocol</text>
+    <path d="M396.5 2234C396.5 2216.6 410.603 2202.5 428 2202.5L2294 2202.5C2311.4 2202.5 2325.5 2216.6 2325.5 2234L2325.5 2360C2325.5 2377.4 2311.4 2391.5 2294 2391.5L428 2391.5C410.603 2391.5 396.5 2377.4 396.5 2360Z" stroke="#70AD47" stroke-width="4.58333" stroke-miterlimit="8" fill="#FFFFFF" fill-rule="evenodd"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1158.18 2313)">Redfish Service</text>
+    <rect x="396.5" y="519.5" width="1929" height="120" stroke="#000000" stroke-width="4.58333" stroke-miterlimit="8" fill="#767171"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1100.89 596)">Redfish Application</text>
+    <rect x="394.5" y="1048.5" width="400" height="138" stroke="#385723" stroke-width="4.58333" stroke-miterlimit="8" fill="#70AD47"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="46" transform="matrix(1 0 0 1 457.66 1105)">Redfish Config </text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="46" transform="matrix(1 0 0 1 535.851 1155)">Driver</text>
+    <path d="M2375 1054 2729 1054 2769 1094 2769 1294 2375 1294Z" stroke="#A5A5A5" stroke-width="2.29167" stroke-miterlimit="8" fill="url(#fill1)" fill-rule="evenodd"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2474.57 1172)">SMBIOS </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2465.7 1231)">Type 42</text>
+    <rect x="1710" y="1879" width="615" height="142" fill="#4472C4" fill-opacity="0.501961"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="73" transform="matrix(1 0 0 1 1959.59 1972)">HW</text>
+    <rect x="396.5" y="645.5" width="1929" height="120" stroke="#385723" stroke-width="3.4375" stroke-linejoin="round" stroke-miterlimit="10" fill="#70AD47"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 994.903 720)">Redfish Config Handler Protocol</text>
+    <path d="M3.17204-1.3246 11.1196 17.7076 4.77555 20.3568-3.17204 1.3246ZM13.7688 24.0517 21.7164 43.084 15.3723 45.7332 7.42475 26.7009ZM24.3656 49.4281 32.3132 68.4603 25.9691 71.1095 18.0215 52.0773ZM34.9624 74.8044 42.91 93.8366 36.5659 96.4858 28.6183 77.4536ZM45.5592 100.181 53.5068 119.213 47.1627 121.862 39.2151 102.83ZM56.156 125.557 64.1036 144.589 57.7595 147.238 49.8119 128.206ZM66.7528 150.933 74.7004 169.966 68.3563 172.615 60.4087 153.583ZM77.3496 176.31 85.2972 195.342 78.9531 197.991 71.0055 178.959ZM87.9464 201.686 95.894 220.718 89.5499 223.367 81.6023 204.335ZM98.5432 227.062 106.491 246.095 100.147 248.744 92.1991 229.712ZM109.14 252.439 114.093 264.301 107.749 266.95 102.796 255.088ZM121.843 256.098 119.752 286.772 96.4671 266.694Z" fill="#70AD47" transform="matrix(1 0 0 -1 1240.5 1052.27)"/>
+    <path d="M1867.15 1057.88 1849.23 1047.68 1852.63 1041.7 1870.55 1051.91ZM1843.25 1044.28 1825.33 1034.07 1828.73 1028.1 1846.65 1038.3ZM1819.35 1030.67 1801.43 1020.47 1804.83 1014.49 1822.75 1024.7ZM1795.45 1017.07 1777.53 1006.86 1780.93 1000.89 1798.85 1011.09ZM1771.55 1003.46 1753.63 993.258 1757.03 987.284 1774.96 997.488ZM1747.66 989.857 1729.73 979.653 1733.13 973.679 1751.06 983.883ZM1723.76 976.252 1705.83 966.048 1709.23 960.073 1727.16 970.277ZM1699.86 962.647 1681.93 952.443 1685.34 946.468 1703.26 956.672ZM1675.96 949.042 1658.04 938.838 1661.44 932.863 1679.36 943.067ZM1652.06 935.437 1634.14 925.233 1637.54 919.258 1655.46 929.462ZM1628.16 921.831 1610.24 911.628 1613.64 905.653 1631.56 915.857ZM1604.26 908.226 1586.34 898.022 1589.74 892.048 1607.67 902.252ZM1580.37 894.621 1562.44 884.417 1565.84 878.443 1583.77 888.646ZM1556.47 881.016 1538.54 870.812 1541.94 864.837 1559.87 875.041ZM1532.57 867.411 1514.64 857.207 1518.04 851.232 1535.97 861.436ZM1508.67 853.806 1490.74 843.602 1494.15 837.627 1512.07 847.831ZM1484.77 840.2 1466.85 829.997 1470.25 824.022 1488.17 834.226ZM1460.87 826.595 1442.95 816.391 1446.35 810.417 1464.27 820.621ZM1436.97 812.99 1419.05 802.786 1422.45 796.812 1440.37 807.015ZM1413.07 799.385 1395.15 789.181 1398.55 783.206 1416.48 793.41ZM1389.18 785.78 1378.72 779.825 1382.12 773.851 1392.58 779.805ZM1377.6 791.055 1360.5 765.5 1391.2 767.156Z" fill="#70AD47"/>
+    <path d="M0-2.29167 146.945-2.29167 146.945 186.106 144.653 183.814 266.39 183.814 266.39 188.397 142.362 188.397 142.362 0 144.653 2.29167 0 2.29167ZM261.806 172.356 289.306 186.106 261.806 199.856Z" fill="#FF0000" transform="matrix(1.83697e-16 1 1 -1.83697e-16 1360.5 765.5)"/>
+    <path d="M1571.77 1340.5 1571.77 1451.89 1362.5 1451.89 1364.79 1449.6 1364.79 1491.77 1360.21 1491.77 1360.21 1447.3 1569.48 1447.3 1567.19 1449.6 1567.19 1340.5ZM1376.25 1487.19 1362.5 1514.69 1348.75 1487.19Z" fill="#FF0000"/>
+    <path d="M1364.79 1766.5 1364.79 1858.57 1360.21 1858.57 1360.21 1766.5ZM1376.25 1853.99 1362.5 1881.49 1348.75 1853.99Z" fill="#FF0000"/>
+    <path d="M2573.09 1294 2573.09 1422.16 1901.85 1422.16 1901.85 1361.43 1904.15 1361.43 1904.15 1421.01 1903 1419.87 2571.94 1419.87 2570.8 1421.01 2570.8 1294ZM1889.25 1366.01 1903 1338.51 1916.75 1366.01Z" fill="#A5A5A5"/>
+    <path d="M2573.22 1294 2573.22 1421.96 1249.85 1421.96 1249.85 1359.03 1252.15 1359.03 1252.15 1420.81 1251 1419.67 2572.07 1419.67 2570.93 1420.81 2570.93 1294ZM1237.25 1363.61 1251 1336.11 1264.75 1363.61Z" fill="#A5A5A5"/>
+    <path d="M2573.26 1294 2573.26 1422.27 591.854 1422.27 591.854 1354.94 594.146 1354.94 594.146 1421.12 593 1419.98 2572.11 1419.98 2570.97 1421.12 2570.97 1294ZM579.25 1359.52 593 1332.02 606.75 1359.52Z" fill="#A5A5A5"/>
+    <rect x="1465.5" y="1053.5" width="207" height="287" stroke="#2F5597" stroke-width="4.58333" stroke-miterlimit="8" fill="#ADB9CA"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="46" transform="matrix(1 0 0 1 1513.76 1186)">REST </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="46" transform="matrix(1 0 0 1 1540.11 1235)">EX</text>
+    <rect x="1051.5" y="1198.5" width="400" height="139" stroke="#787878" stroke-width="4.58333" stroke-miterlimit="8" fill="#A5A5A5"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="41" transform="matrix(1 0 0 1 1091.62 1258)">Redfish Discover </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="41" transform="matrix(1 0 0 1 1170.11 1303)">Protocol</text>
+    <rect x="1052.5" y="1052.5" width="400" height="138" stroke="#385723" stroke-width="4.58333" stroke-miterlimit="8" fill="#70AD47"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="46" transform="matrix(1 0 0 1 1099.08 1111)">Redfish Config </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="46" transform="matrix(1 0 0 1 1186.17 1160)">Driver</text>
+    <rect x="2117.5" y="1055.5" width="208" height="288" stroke="#2F5597" stroke-width="4.58333" stroke-miterlimit="8" fill="#ADB9CA"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="46" transform="matrix(1 0 0 1 2165.89 1188)">REST </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="46" transform="matrix(1 0 0 1 2192.24 1237)">EX</text>
+    <rect x="1703.5" y="1201.5" width="400" height="138" stroke="#787878" stroke-width="4.58333" stroke-miterlimit="8" fill="#A5A5A5"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="41" transform="matrix(1 0 0 1 1743.75 1260)">Redfish Discover </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="41" transform="matrix(1 0 0 1 1822.23 1305)">Protocol</text>
+    <rect x="1704.5" y="1055.5" width="401" height="138" stroke="#385723" stroke-width="4.58333" stroke-miterlimit="8" fill="#70AD47"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="46" transform="matrix(1 0 0 1 1751.21 1113)">Redfish Config </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="46" transform="matrix(1 0 0 1 1838.3 1162)">Driver</text>
+    <rect x="1051.5" y="1515.5" width="621" height="251" stroke="#ED7D31" stroke-width="4.58333" stroke-miterlimit="8" fill="#FBE5D6"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 1109.41 1657)">UEFI Network Stack</text>
+    <rect x="1051.5" y="1881.5" width="621" height="142" stroke="#41719C" stroke-width="4.58333" stroke-miterlimit="8" fill="#5B9BD5"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1311.65 1972)">NIC</text>
+    <path d="M2.29157-0.020976 3.72062 156.099-0.862519 156.141-2.29157 0.020976ZM15.1365 151.411 1.63881 179.035-12.3623 151.662Z" fill="#FF0000" transform="matrix(-1 0 0 1 1362.14 2023.5)"/>
+  </g>
+</svg>
