@@ -1,0 +1,58 @@
+<svg width="4414" height="1709" style="background-color:white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" overflow="hidden">
+  <defs>
+    <clipPath id="clip0">
+      <rect x="12" y="509" width="4414" height="1709"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip0)" transform="translate(-12 -509)">
+    <rect x="2057.5" y="676.5" width="557" height="128" stroke="#BCBCBC" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#FFFFFF"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 2143.23 758)">Feature Driver</text>
+    <rect x="600.5" y="676.5" width="557" height="128" stroke="#BCBCBC" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#FFFFFF"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 763.66 758)">EDK2 HII</text>
+    <rect x="3408.5" y="676.5" width="587" height="128" stroke="#BCBCBC" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#FFFFFF"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 3499.14 758)">Redfish Service</text>
+    <path d="M2338.94 804.5 2338.94 2102.76 2332.06 2102.76 2332.06 804.5ZM2354.51 2076.99 2335.5 2109.58 2316.49 2076.99C2315.53 2075.35 2316.09 2073.25 2317.73 2072.29 2319.37 2071.34 2321.47 2071.89 2322.43 2073.53L2338.47 2101.03 2332.53 2101.03 2348.57 2073.53C2349.53 2071.89 2351.63 2071.34 2353.27 2072.29 2354.91 2073.25 2355.47 2075.35 2354.51 2076.99Z" fill="#8C8C8C"/>
+    <path d="M871.938 804.5 871.938 2127.85 865.063 2127.85 865.063 804.5ZM887.511 2102.08 868.501 2134.67 849.49 2102.08C848.533 2100.44 849.087 2098.34 850.727 2097.38 852.367 2096.43 854.471 2096.98 855.428 2098.62L871.47 2126.12 865.531 2126.12 881.573 2098.62C882.53 2096.98 884.634 2096.43 886.274 2097.38 887.914 2098.34 888.468 2100.44 887.511 2102.08Z" fill="#8C8C8C"/>
+    <path d="M3710.94 804.5 3710.94 2127.85 3704.06 2127.85 3704.06 804.5ZM3726.51 2102.08 3707.5 2134.67 3688.49 2102.08C3687.53 2100.44 3688.09 2098.34 3689.73 2097.38 3691.37 2096.43 3693.47 2096.98 3694.43 2098.62L3710.47 2126.12 3704.53 2126.12 3720.57 2098.62C3721.53 2096.98 3723.63 2096.43 3725.27 2097.38 3726.91 2098.34 3727.47 2100.44 3726.51 2102.08Z" fill="#8C8C8C"/>
+    <path d="M7.04493e-07-2.86458 1444.53-2.86423 1444.53 2.86494-7.04493e-07 2.86458ZM1439.95-13.7496 1467.45 0.000360892 1439.95 13.7504Z" fill="#8C8C8C" transform="matrix(-1 0 0 1 2335.45 1342)"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 990.014 1568)">3</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1016.37 1568)">. If </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1098.29 1568)">HII question exists and pending value is changed</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1051.89 1628)">Use HII protocol/library to submit new value</text>
+    <path d="M1444.91 1252 1719.91 1252 1719.91 1311 1444.91 1311Z" fill="#FFFF00" fill-rule="evenodd"/>
+    <path d="M1719.91 1252 1844.23 1252 1844.23 1311 1719.91 1311Z" fill="#FFFF00" fill-rule="evenodd"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 990.014 1239)">2. Check and see if there is HII question with lang:</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1051.89 1299)">/</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1078.24 1299)">bios/attributes/</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1444.91 1299)">ATTRIBUTE_</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 1719.91 1299)">NAME</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2378.69 1805)">4. Update current settings to </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2440.56 1865)">/redfish/v1/systems/SYS/Bios </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 3138.38 1865)">(provisioning)</text>
+    <path d="M2335 1079.14 3678.02 1079.14 3678.02 1084.87 2335 1084.86ZM3673.43 1068.25 3700.93 1082 3673.43 1095.75Z" fill="#8C8C8C"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2393.47 968)">1. Use </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2549.88 968)">HTTP “GET” to download pending settings from</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2455.35 1028)">/redfish</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2638.11 1028)">/v1/systems/SYS/Bios/Settings</text>
+    <path d="M2335 1901.14 3678.02 1901.14 3678.02 1906.86 2335 1906.86ZM3673.43 1890.25 3700.93 1904 3673.43 1917.75Z" fill="#8C8C8C"/>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2151.86 2175)">6. </text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2212.01 2175)">System reboot</text>
+    <rect x="298.5" y="959.5" width="377" height="199" stroke="#CDCDCD" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#404040"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 347.29 1046)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 413.749 1105)">driver</text>
+    <rect x="353.5" y="1014.5" width="377" height="199" stroke="#CDCDCD" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#404040"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 402.29 1101)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 468.749 1160)">driver</text>
+    <rect x="408.5" y="1069.5" width="377" height="199" stroke="#CDCDCD" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#404040"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 457.29 1156)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 523.749 1215)">driver</text>
+    <rect x="463.5" y="1124.5" width="377" height="199" stroke="#CDCDCD" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#404040"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 512.29 1211)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 578.749 1270)">driver</text>
+    <path d="M7.04493e-07-2.86458 1444.53-2.86423 1444.53 2.86494-7.04493e-07 2.86458ZM1439.95-13.7496 1467.45 0.000360892 1439.95 13.7504Z" fill="#8C8C8C" transform="matrix(-1 0 0 1 2341.45 1666)"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="83" transform="matrix(1 0 0 1 62.1854 611)">Consume pending </text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="83" transform="matrix(1 0 0 1 687.237 611)">settings:</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="50" transform="matrix(1 0 0 1 62.1854 680)">BMC to BIOS</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 3715.21 1979)">5. BMC reset pending settings</text>
+  </g>
+</svg>

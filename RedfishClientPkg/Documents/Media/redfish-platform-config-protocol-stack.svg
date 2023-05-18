@@ -1,0 +1,99 @@
+<svg width="3433" height="1895" style="background-color:white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" overflow="hidden">
+  <defs>
+    <filter id="fx0" x="-10%" y="-10%" width="120%" height="120%" filterUnits="userSpaceOnUse" primitiveUnits="userSpaceOnUse">
+      <feComponentTransfer color-interpolation-filters="sRGB">
+        <feFuncR type="discrete" tableValues="0 0"/>
+        <feFuncG type="discrete" tableValues="0 0"/>
+        <feFuncB type="discrete" tableValues="0 0"/>
+        <feFuncA type="linear" slope="0.380392" intercept="0"/>
+      </feComponentTransfer>
+      <feGaussianBlur stdDeviation="4.8119 4.8119"/>
+    </filter>
+    <clipPath id="clip1">
+      <rect x="572" y="465" width="3433" height="1895"/>
+    </clipPath>
+    <clipPath id="clip2">
+      <rect x="-5" y="13" width="863" height="130"/>
+    </clipPath>
+    <clipPath id="clip3">
+      <rect x="0" y="0" width="883" height="139"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#clip1)" transform="translate(-572 -465)">
+    <rect x="572" y="1277" width="3256" height="1083" fill="#C0E4FF" fill-opacity="0.4"/>
+    <path d="M654.5 1778.17C654.5 1742.45 683.453 1713.5 719.168 1713.5L1793.83 1713.5C1829.55 1713.5 1858.5 1742.45 1858.5 1778.17L1858.5 2036.83C1858.5 2072.55 1829.55 2101.5 1793.83 2101.5L719.168 2101.5C683.453 2101.5 654.5 2072.55 654.5 2036.83Z" stroke="#A6A6A6" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" stroke-dasharray="36.6667 27.5" fill="none" fill-rule="evenodd"/>
+    <path d="M690 978.669C690 922.518 735.518 877 791.668 877L1586.33 877C1642.48 877 1688 922.518 1688 978.669L1688 1385.33C1688 1441.48 1642.48 1487 1586.33 1487L791.668 1487C735.518 1487 690 1441.48 690 1385.33Z" fill="#D9D9D9" fill-rule="evenodd"/>
+    <rect x="716" y="598" width="945" height="136" fill="#76B900"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1026.14 683)">Setup Menu</text>
+    <rect x="716.5" y="1114.5" width="945" height="136" stroke="#0070C0" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#9E9E9E"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 916.711 1199)">EDK2 Setup Browser</text>
+    <rect x="716" y="952" width="945" height="136" fill="#9E9E9E"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 917.571 1038)">EDK2 Display Engine</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 1122.4 545)">User</text>
+    <rect x="716" y="1289" width="945" height="136" fill="#9E9E9E"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 941.92 1374)">EDK2 HII Database</text>
+    <rect x="716.5" y="1757.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 779.595 1842)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 838.88 1901)">driver</text>
+    <rect x="1124.5" y="1757.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1188 1842)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1247.28 1901)">driver</text>
+    <rect x="882.5" y="1856.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 945.765 1941)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1005.05 2000)">driver</text>
+    <rect x="1313.5" y="1856.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1376.4 1941)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1435.69 2000)">driver</text>
+    <path d="M1191.86 756.917 1191.86 929.504 1186.14 929.504 1186.14 756.917ZM1175.25 761.5 1189 734 1202.75 761.5ZM1202.75 924.92 1189 952.42 1175.25 924.92Z" fill="#8C8C8C"/>
+    <path d="M1185.86 1517.92 1185.86 1690.5 1180.14 1690.5 1180.14 1517.92ZM1169.25 1522.5 1183 1495 1196.75 1522.5ZM1196.75 1685.92 1183 1713.42 1169.25 1685.92Z" fill="#8C8C8C"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1247.51 801)">Graphic protocols</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1247.51 867)">Console input protocols</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1232.43 1574)">EFI Config Access Protocol</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1232.43 1640)">HII Database Protocol</text>
+    <rect x="657.5" y="2152.5" width="1204" height="145" stroke="#008564" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="73" transform="matrix(1 0 0 1 1203.49 2245)">HW</text>
+    <path d="M2422.5 1782C2422.5 1746.38 2451.38 1717.5 2487 1717.5L3562 1717.5C3597.62 1717.5 3626.5 1746.38 3626.5 1782L3626.5 2040C3626.5 2075.62 3597.62 2104.5 3562 2104.5L2487 2104.5C2451.38 2104.5 2422.5 2075.62 2422.5 2040Z" stroke="#A6A6A6" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" stroke-dasharray="36.6667 27.5" fill="none" fill-rule="evenodd"/>
+    <path d="M2457 970.169C2457 912.638 2503.64 866 2561.17 866L3350.83 866C3408.36 866 3455 912.638 3455 970.169L3455 1386.83C3455 1444.36 3408.36 1491 3350.83 1491L2561.17 1491C2503.64 1491 2457 1444.36 2457 1386.83Z" fill="#D9D9D9" fill-rule="evenodd"/>
+    <rect x="2483" y="602" width="945" height="135" fill="#76B900"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 2754.31 687)">Feature drivers</text>
+    <rect x="2483" y="956" width="945" height="302" fill="#0070C0"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 2652.04 1124)">EDK2 HII Utility Library</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 2724.81 549)">Redfish Interface</text>
+    <rect x="2483" y="1291" width="945" height="136" fill="#9E9E9E"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="64" transform="matrix(1 0 0 1 2709.33 1376)">EDK2 HII Database</text>
+    <rect x="2483.5" y="1760.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2532.97 1847)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2599.43 1906)">driver</text>
+    <rect x="2892.5" y="1760.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2941.37 1847)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 3007.83 1906)">driver</text>
+    <rect x="2650.5" y="1860.5" width="376" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2699.14 1947)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 2765.6 2006)">driver</text>
+    <rect x="3080.5" y="1860.5" width="377" height="199" stroke="#656565" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10" fill="#8C8C8C"/>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 3129.78 1947)">Chipset/HII </text>
+    <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 3196.24 2006)">driver</text>
+    <path d="M2958.86 759.917 2958.86 932.542 2953.14 932.542 2953.14 759.917ZM2942.25 764.5 2956 737 2969.75 764.5ZM2969.75 927.959 2956 955.459 2942.25 927.959Z" fill="#8C8C8C"/>
+    <path d="M2953.86 1520.92 2953.86 1693.5 2948.14 1693.5 2948.14 1520.92ZM2937.25 1525.5 2951 1498 2964.75 1525.5ZM2964.75 1688.92 2951 1716.42 2937.25 1688.92Z" fill="#8C8C8C"/>
+    <text fill="#FF0000" font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="700" font-size="55" transform="matrix(1 0 0 1 3007.22 833)">EDKII Redfish Platform Configure Protocol</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="55" transform="matrix(1 0 0 1 3007.22 1592)">EFI Config Access Protocol</text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-style="italic" font-weight="400" font-size="55" transform="matrix(1 0 0 1 3007.22 1658)">HII Database Protocol</text>
+    <rect x="2425.5" y="2155.5" width="1203" height="145" stroke="#008564" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="73" transform="matrix(1 0 0 1 2970.9 2248)">HW</text>
+    <g clip-path="url(#clip2)" filter="url(#fx0)" transform="translate(1645 1071)">
+      <g clip-path="url(#clip3)">
+        <path d="M0.406692-4.48158 800.047 68.0836 799.233 77.0468-0.406692 4.48158ZM796.32 58.4574 822.465 74.6365 793.835 85.8449Z" fill="#0071C5" transform="matrix(1 0 0 -1 16.4999 118.354)"/>
+      </g>
+    </g>
+    <path d="M0.414223-4.56458 800.054 68.0006 799.226 77.1298-0.414223 4.56458ZM796.32 58.4574 822.465 74.6365 793.835 85.8449Z" fill="#0071C5" transform="matrix(1 0 0 -1 1661.5 1182.14)"/>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1783.55 1054)">Move necessary functions </text>
+    <text font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 1783.55 1120)">to library </text>
+    <rect x="1721.5" y="1792.5" width="303" height="193" stroke="#890C58" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 1821 1874)">UEFI </text>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 1780.6 1933)">variable</text>
+    <rect x="3489.5" y="1768.5" width="303" height="194" stroke="#890C58" stroke-width="9.16667" stroke-linejoin="round" stroke-miterlimit="10"/>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 3589.11 1851)">UEFI </text>
+    <text fill="#FFFFFF" font-family="Calibri,Calibri_MSFontService,sans-serif" font-weight="700" font-size="55" transform="matrix(1 0 0 1 3548.71 1910)">variable</text>
+    <path d="M2145.64 1853.11 2293.36 1853.11 2293.36 1890.46 2145.64 1890.46ZM2145.64 1918.54 2293.36 1918.54 2293.36 1955.89 2145.64 1955.89Z" fill="#C0E4FF" fill-rule="evenodd"/>
+  </g>
+</svg>

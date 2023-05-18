@@ -31,13 +31,13 @@ Redfish property with HII option.
 
 The current design of UEFI Redfish Client EDK2 Implementation can already
 support the provisioning of firmware-owned platform Redfish resource, however,
-this requires addtional support on edk2 HII. Therefore, provisioning of
+this requires additional support on edk2 HII. Therefore, provisioning of
 firmware managed platform Redfish resource would be the second stage.
 
 Below are the block diagrams of UEFI Redfish Client EDK2 Implementation.
 
 ## <a name="[0]">EDK2 Redfish Client Implementation Diagrams</a>
-![UEFI Redfish Client Implementation](https://github.com/changab/edk2-staging/blob/edk2-redfish-client/RedfishClientPkg/Documents/Media/RedfishClientDriverStack.svg?raw=true)
+![UEFI Redfish Client Implementation](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/RedfishClientDriverStack.svg?raw=true)
 
 ## EFI EDK2 Redfish Client Framework
 The functionality of each block in the diagrams are described in below sections,
@@ -89,7 +89,7 @@ Redfish service to platform configurations, or vice versa to update platform
 configurations to Redfish service. Both EDK2 Redfish Non-Collection and
 Collection Feature drivers are script auto-generated base on Redfish schema
 naming. The EDK2 Redfish Non-Collection feature driver manages the resource of
-specific Resdifsh resource type, while the EDK2 Redfish Collection feature
+specific Redfish resource type, while the EDK2 Redfish Collection feature
 driver manages the members which have the same resource type in collection
 resource (e.g the ComputerSystem resource and ComputerSystemCollection resource)
 .
@@ -100,18 +100,30 @@ platform configuration format and storage from EDK2 Redfish Feature driver.
 This protocol provides the interfaces to get and set platform configuration with
 the format and configuration storage agnostic to the Redfish feature driver.
 The platform can provide its own EDKII Redfish Platform Config driver instance
-to access platform-specific configuration format and storage. On EDK2 open
-source, EDKII Redfish Platform Config Protocol accesses the platform
-configuration in EDK2 HII defined format.
+to access platform-specific configuration format and storage.
+
+On EDK2 open source, EDKII Redfish Platform Config Protocol accesses the
+platform configuration in EDK2 HII defined format. Below is driver stack diagram
+which implements EDKII Redfish Platform Config Protocol. The protocol driver
+leverages the HII interface to get or set the HII configuration on platform. By
+following the x-uefi-redfish Configure Language defined in UNI file, protocol
+driver can find corresponding HII question for given Redfish attribute. In this
+way, protocol driver creates the mapping between HII questions and Redfish
+attributes.
+
+![platform config](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-platform-config-protocol-stack.svg?raw=true)
 
 Below is the prototype of **EDKII_REDFISH_PLATFORM_CONFIG_PROTOCOL**,
 
 ```C
 struct _EDKII_REDFISH_PLATFORM_CONFIG_PROTOCOL {
-  EDKII_REDFISH_PLATFORM_CONFIG_GET_VALUE             GetValue;
-  EDKII_REDFISH_PLATFORM_CONFIG_SET_VALUE             SetValue;
-  EDKII_REDFISH_PLATFORM_CONFIG_GET_CONFIG_LANG       GetConfigureLang;
-  EDKII_REDFISH_PLATFORM_CONFIG_GET_SUPPORTED_SCHEMA  GetSupportedSchema;
+  UINT64                                                Revision;
+  EDKII_REDFISH_PLATFORM_CONFIG_GET_VALUE               GetValue;
+  EDKII_REDFISH_PLATFORM_CONFIG_SET_VALUE               SetValue;
+  EDKII_REDFISH_PLATFORM_CONFIG_GET_DEFAULT_VALUE       GetDefaultValue;
+  EDKII_REDFISH_PLATFORM_CONFIG_GET_ATTRIBUTE           GetAttribute;
+  EDKII_REDFISH_PLATFORM_CONFIG_GET_CONFIG_LANG         GetConfigureLang;
+  EDKII_REDFISH_PLATFORM_CONFIG_GET_SUPPORTED_SCHEMA    GetSupportedSchema;
 };
 ```
 
@@ -181,11 +193,10 @@ x-uefi-redfish-Processor.v1_0_0
 ```
 #### x-uefi-redfish Configure Language format:
 - The string declared with x-uefi-redfish configure language is a path to the property
-in Redfish resource
+in Redfish schema.
 - The root of path is the Redfish resource type indicated in x-uefi-redfish configure
 language
-- The path is relative to root of Redfish resource type, not related to Redfish service
-- root.
+- The path is relative to root of [Redfish schema](https://redfish.dmtf.org/redfish/schema_index) defined by DMTF, not related to Redfish service root.
 
 #### Examples,
 ```C
@@ -215,7 +226,136 @@ EDK2 Build is responsible to pull the necessary EDK2 Redfish JSON Schema to C
 Structure Convertors and EDK2 Redfish Feature drivers into edk2 build process
 according to the x-uefi-Redfish config language used in the HII VFR forms.
 
+## EDK2 Redfish client feature driver
+![foundation driver stack](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-foundation-driver-stack.svg?raw=true)
+
+Above diagram shows the way how Redfish application (Redfish feature driver) works with Redfish foundation
+drivers and communicate with Redfish service. Redfish feature driver relies on Redfish Config driver to
+provide the information of desired Rest Ex instance. To achieve this, Redfish feature driver has to provide
+EDKII Redfish Config Handler Protocol and Redfish Config driver will use this protocol to deliver Redfish
+service information.
+
+```C
+struct _EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL {
+  EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL_INIT    Init;
+  EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL_STOP    Stop;
+};
+```
+
+![feature driver call flow](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-feature-driver-call-flow.svg?raw=true)
+
+Above diagram shows the details of how Redfish feature core driver invokes Redfish feature drivers. To be called
+by Redfish feature core driver, Redfish feature driver has to register the managed URI to Redfish feature core
+driver. Then Redfish feature core driver learns the dependency of each different feature drivers.
+
+#### Dispatch Redfish feature drivers
+When given event is signaled, Redfish feature core driver starts the operation of invoking Redfish feature drivers
+by following the order from parent node to child node in the Redfish URI hierarchy. In the diagram, the feature
+driver which manages service root will be invoked first. And feature driver which manages computer system collection
+will be invoked at second position. Once Redfish feature core driver walks through entire Redfish URI, the operation
+is stopped.
+
+### Interface between collection feature driver and non-collection feature driver
+Redfish collection resource is a set of Redfish non-collection resource. Redfish collection feature driver works
+with non-collection feature driver to manage them. For example, boot option collection feature driver work with
+boot option feature driver to manage boot options in Redfish service. Computer system collection feature driver
+work with computer system feature driver to manage computer system resource.
+
+The interface between collection feature driver and non-collection feature driver is EDKII Redfish resource config
+protocol.
+
+```C
+struct _EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL {
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL_PROVISIONING    Provisioning;
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL_CONSUME         Consume;
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL_UPDATE          Update;
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL_CHECK           Check;
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL_IDENTIFY        Identify;
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL_GET_INFO        GetInfo;
+};
+```
+
+### Feature driver event
+Two events are defined for feature driver to perform necessary operation at given time.
+- Ready-to-Provisioning event
+  - Feature driver which requires to do operation before Redfish feature driver starts the synchronization can listen to
+    this event. For example, boot option feature driver may want to refresh boot order variable and get latest boot order
+    information before provisioning the boot options to boot options resource.
+- After-Provisioning event
+  - Feature driver which wants to do operation after Redfish feature driver finish the synchronization job can listen to
+    this event.
+
+### Reboot required
+When Redfish feature drivers apply user request to platform, a system reboot is usually required. PCD `gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootRequired` is introduced for this purpose. After Redfish feature
+core driver is done with synchronization job, Redfish feature core driver checks this PCD and perform system reboot when
+PCD is set to `TRUE`.
+
+### Synchronization design between Redfish service and BIOS
+The purpose of Redfish feature driver is to do the synchronization job between Redfish service and BIOS. The operation of synchronization can be simply divided into two types:
+
+#### Provisioning resource
+Below is the flow diagram of provisioning platform configuration to Redfish service at Bios resource. With the x-uefi-redfish
+configure language described in above section, Redfish feature driver collect all BIOS attributes from HII database and populated
+them to Redfish service.
+![provisioning](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-call-flow-provisioning.svg?raw=true)
+
+#### Consume resource
+Below is the flow diagram of consuming user request from Redfish service to platform configuration. Redfish feature driver finds
+corresponding HII question and apply user desired value to platform.
+![pending settings](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-call-flow-pending-settings.svg?raw=true)
+
+Below diagram shows the call flow of EDKII Resource Config Protocol and how to use this protocol to handle synchronization
+job.
+![synchronization](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-synchronization-design.svg?raw=true)
+
+Several interfaces defined in EDKII Redfish Resource Config Protocol work together to support Redfish synchronization:
+- Identify()
+  - This function is used to check if the given Redfish resource is the one the feature driver wants to manage. A platform
+    library `RedfishReesourceIdentifyLib` is introduced for platform to implement its own policy to identify Redfish resource.
+- Check()
+  - This function is used to check the attribute status on Redfish service. If all attributes the feature driver manages
+    are presented in Redfish service, feature driver must provision them already. Otherwise, Provisioning() will be called
+    to perform resource provisioning job.
+- Provisioning()
+  - When this function is called, feature driver will provision all attributes that it managed to Redfish service. This
+    operation usually create new resource at Redfish service and require different operation that specified by Redfish service.
+- Consume()
+  - When there is pending settings in Redfish service, this function is called for feature driver to consume pending settings
+    requested by user.
+- Update()
+  - When platform configuration is updated, this function is called to update configuration changes to Redfish service and
+    Redfish service can show the latest settings on platform.
+
+The EDKII Redfish Resource Addendum Protocol is introduced to provide platform addendum data that Redfish service requires.
+This protocol will be called at Provisioning() and Update() functions so platform can add OEM attribute or any other attribute
+specified by Redfish service.
+
+```C
+struct _EDKII_REDFISH_RESOURCE_ADDENDUM_PROTOCOL {
+  UINT64                                  Revision;    ///< Protocol revision
+  EDKII_REDFISH_RESOURCE_ADDENDUM_OEM     GetOemData;  ///< Get OEM data
+  EDKII_REDFISH_RESOURCE_ADDENDUM_DATA    GetData;     ///< Get addendum data
+};
+```
+
+#### Redfish service implementation
+The idea of Redfish synchronization design is to manage Redfish resource directly by platform firmware. To do this, Redfish
+synchronization functions have to work with Redfish service implementation in BMC firmware. This is because the interface
+between platform firmware and BMC firmware is not defined in any specification.
+Several prerequisites must be satisfied:
+- Platform firmware has permission to manage Redfish resource. BMC has ability to tell the difference between platform request
+  and out-of-band user. This can normally be done by identifying the bootstrap account in HTTP request. The bootstrap account is
+  described in Host Interface specification 1.3.0 section 9.
+- The ability to tell if there is an user who changes to Redfish resource or not. Redfish feature drivers can only be executed at
+  POST time. So the modification to BIOS managed resource is an asynchronous operation. Thus, we need below supports in Redfish service:
+  - ETAG support in HTTP header.
+  - Setting resource support (defined in Redfish specification 1.18 section 9.10).
+  - Redfish Task support to POST and DELETE operation made by user in Redfish collection resource and Redfish actions.
+
+### Redfish Task design
+TBD.
+
 ## The Contributors
-Chang, Abner <abner.chang@hpe.com>\
-Wang, Nickle <nickle.wang@hpe.com>\
+Chang, Abner <abner.chang@amd.com>\
+Wang, Nickle <nicklew@nvidia.com>\
 Chen, Aaron <aaron.chen@hpe.com>
