@@ -47,7 +47,7 @@ RedfishResourceProvisioningResource (
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((DEBUG_INFO, "%a, provisioning in %s mode\n", __FUNCTION__, (PostMode ? L"POST" : L"PATCH")));
+  DEBUG ((DEBUG_INFO, "%a, provisioning in %s mode\n", __func__, (PostMode ? L"POST" : L"PATCH")));
 
   Private = REDFISH_RESOURCE_COMMON_PRIVATE_DATA_FROM_RESOURCE_PROTOCOL (This);
 
@@ -57,7 +57,7 @@ RedfishResourceProvisioningResource (
 
   Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __FUNCTION__, Uri));
+    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
   }
 
@@ -122,7 +122,7 @@ RedfishResourceConsumeResource (
 
   Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __FUNCTION__, Uri));
+    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
   }
 
@@ -169,13 +169,13 @@ RedfishResourceConsumeResource (
   Etag   = NULL;
   Status = GetEtagAndLocation (ExpectedResponse, &Etag, NULL);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to get ETag from HTTP header\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a, failed to get ETag from HTTP header\n", __func__));
   }
 
   Status = RedfishConsumeResourceCommon (Private, Private->Json, Etag);
   if (EFI_ERROR (Status)) {
     if (Status != EFI_ALREADY_STARTED) {
-      DEBUG ((DEBUG_ERROR, "%a, failed to consume resource from: %s: %r\n", __FUNCTION__, Uri, Status));
+      DEBUG ((DEBUG_ERROR, "%a, failed to consume resource from: %s: %r\n", __func__, Uri, Status));
     }
   } else {
     //
@@ -286,7 +286,7 @@ RedfishResourceUpdate (
 
   Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __FUNCTION__, Uri));
+    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
   }
 
@@ -299,7 +299,7 @@ RedfishResourceUpdate (
 
   Status = RedfishUpdateResourceCommon (Private, Private->Json);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to update resource from: %s: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to update resource from: %s: %r\n", __func__, Uri, Status));
   }
 
   //
@@ -355,7 +355,7 @@ RedfishResourceCheck (
 
   Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __FUNCTION__, Uri));
+    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
   }
 
@@ -368,7 +368,7 @@ RedfishResourceCheck (
 
   Status = RedfishCheckResourceCommon (Private, Private->Json);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to check resource from: %s: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to check resource from: %s: %r\n", __func__, Uri, Status));
   }
 
   //
@@ -425,7 +425,7 @@ RedfishResourceIdentify (
 
   Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __FUNCTION__, Uri));
+    DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
   }
 
@@ -438,7 +438,7 @@ RedfishResourceIdentify (
 
   Status = RedfishIdentifyResourceCommon (Private, Private->Json);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, identify %s failed: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, identify %s failed: %r\n", __func__, Uri, Status));
   }
 
   //
@@ -576,7 +576,7 @@ EfiRestJasonStructureProtocolIsReady (
                   (VOID **)&mRedfishResourcePrivate->JsonStructProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEfiRestJsonStructureProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEfiRestJsonStructureProtocolGuid: %r\n", __func__, Status));
   }
 
   gBS->CloseEvent (Event);
@@ -697,7 +697,7 @@ RedfishExternalResourceResourceFeatureCallback (
   //
   ResourceUri = (EFI_STRING)AllocateZeroPool (MAX_URI_LENGTH * sizeof (CHAR16));
   if (ResourceUri == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for full URI.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for full URI.\n", __func__));
     return EFI_OUT_OF_RESOURCES;
   }
 
@@ -715,7 +715,7 @@ RedfishExternalResourceResourceFeatureCallback (
 
   Status = HandleResource (Private, Private->Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, process external resource: %a failed: %r\n", __FUNCTION__, Private->Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, process external resource: %a failed: %r\n", __func__, Private->Uri, Status));
   }
 
   FreePool (Private->Uri);
@@ -752,7 +752,7 @@ EdkIIRedfishFeatureProtocolIsReady (
                   (VOID **)&FeatureProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEdkIIRedfishFeatureProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEdkIIRedfishFeatureProtocolGuid: %r\n", __func__, Status));
     gBS->CloseEvent (Event);
     return;
   }
@@ -764,7 +764,7 @@ EdkIIRedfishFeatureProtocolIsReady (
                               (VOID *)mRedfishResourcePrivate
                               );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to register %s: %r\n", __FUNCTION__, REDFISH_MANAGED_URI, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to register %s: %r\n", __func__, REDFISH_MANAGED_URI, Status));
   }
 
   mRedfishResourcePrivate->FeatureProtocol = FeatureProtocol;

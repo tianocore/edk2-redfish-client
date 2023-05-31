@@ -63,7 +63,7 @@ RedfishIdentifyResource (
                                   (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystem
                                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
     return FALSE;
   }
 
@@ -75,17 +75,17 @@ RedfishIdentifyResource (
 
   Status = AsciiStrToGuid (ComputerSystemCs->UUID, &ResourceUuid);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, fail to get resource UUID: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, fail to get resource UUID: %r\n", __func__, Status));
     return FALSE;
   }
 
   Status = NetLibGetSystemGuid (&SystemUuid);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, fail to get system UUID from SMBIOS: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, fail to get system UUID from SMBIOS: %r\n", __func__, Status));
     return FALSE;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, Identify: System: %g Resource: %g\n", __FUNCTION__, &SystemUuid, &ResourceUuid));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, Identify: System: %g Resource: %g\n", __func__, &SystemUuid, &ResourceUuid));
   if (CompareGuid (&ResourceUuid, &SystemUuid)) {
     Status = EFI_SUCCESS;
   } else {
@@ -125,7 +125,7 @@ RestJasonStructureProtocolIsReady (
                   (VOID **)&mJsonStructProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEfiRestJsonStructureProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEfiRestJsonStructureProtocolGuid: %r\n", __func__, Status));
   }
 
   gBS->CloseEvent (Event);

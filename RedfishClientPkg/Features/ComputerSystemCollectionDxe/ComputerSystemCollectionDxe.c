@@ -32,11 +32,11 @@ HandleResource (
   // Resource match
   //
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, process resource for: %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, process resource for: %s\n", __func__, Uri));
 
   Status = GetRedfishSchemaInfo (Private->RedfishService, Private->JsonStructProtocol, Uri, &SchemaInfo);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to get schema information from: %s %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to get schema information from: %s %r\n", __func__, Uri, Status));
     return Status;
   }
 
@@ -44,21 +44,21 @@ HandleResource (
   // Check and see if this is target resource that we want to handle.
   // Some resource is handled by other provider so we have to make sure this first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%s Identify for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%s Identify for %s\n", __func__, Uri));
   ConfigLang = RedfishGetConfigLanguage (Uri);
   if (ConfigLang == NULL) {
     Status = EdkIIRedfishResourceConfigIdentify (&SchemaInfo, Uri, Private->InformationExchange);
     if (EFI_ERROR (Status)) {
       if (Status == EFI_UNSUPPORTED) {
-        DEBUG ((DEBUG_INFO, "%a, \"%s\" is not handled by us\n", __FUNCTION__, Uri));
+        DEBUG ((DEBUG_INFO, "%a, \"%s\" is not handled by us\n", __func__, Uri));
         return EFI_SUCCESS;
       }
 
-      DEBUG ((DEBUG_ERROR, "%a, fail to identify resource: \"%s\": %r\n", __FUNCTION__, Uri, Status));
+      DEBUG ((DEBUG_ERROR, "%a, fail to identify resource: \"%s\": %r\n", __func__, Uri, Status));
       return Status;
     }
   } else {
-    DEBUG ((REDFISH_DEBUG_TRACE, "%a, history record found: %s\n", __FUNCTION__, ConfigLang));
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a, history record found: %s\n", __func__, ConfigLang));
     //
     // Set exchange information
     //
@@ -70,7 +70,7 @@ HandleResource (
         AllocateZeroPool (sizeof (REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG));
 
       if (Private->InformationExchange->ReturnedInformation.ConfigureLanguageList.List == NULL) {
-        DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG.\n", __FUNCTION__));
+        DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG.\n", __func__));
         return EFI_OUT_OF_RESOURCES;
       }
 
@@ -78,7 +78,7 @@ HandleResource (
       Private->InformationExchange->ReturnedInformation.ConfigureLanguageList.List[0].ConfigureLang =
         (EFI_STRING)AllocateCopyPool (StrSize (ReturnedConfigLang), (VOID *)ReturnedConfigLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, GetArrayIndexFromArrayTypeConfigureLang fail: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, GetArrayIndexFromArrayTypeConfigureLang fail: %r\n", __func__, Status));
     }
 
     FreePool (ConfigLang);
@@ -88,16 +88,16 @@ HandleResource (
   // Check and see if target property exist or not even when collection memeber exists.
   // If not, we sill do provision.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a Check for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a Check for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigCheck (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
     //
     // The target property does not exist, do the provision to create property.
     //
-    DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __FUNCTION__, Uri));
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __func__, Uri));
     Status = EdkIIRedfishResourceConfigProvisionging (&SchemaInfo, Uri, Private->InformationExchange, FALSE);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, failed to provision with GET mode: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, failed to provision with GET mode: %r\n", __func__, Status));
     }
 
     return Status;
@@ -106,19 +106,19 @@ HandleResource (
   //
   // Consume first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to consume resoruce for: %s: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to consume resoruce for: %s: %r\n", __func__, Uri, Status));
   }
 
   //
   // Patch.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a update for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a update for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigUpdate (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to update resoruce for: %s: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to update resoruce for: %s: %r\n", __func__, Uri, Status));
   }
 
   return Status;
@@ -145,7 +145,7 @@ HandleCollectionResource (
     return EFI_NOT_READY;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, process collection for: %s\n", __FUNCTION__, Private->CollectionUri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, process collection for: %s\n", __func__, Private->CollectionUri));
 
   //
   // Convert JSON text to C structure.
@@ -157,7 +157,7 @@ HandleCollectionResource (
                                           (EFI_REST_JSON_STRUCTURE_HEADER **)&Collection
                                           );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -182,7 +182,7 @@ HandleCollectionResource (
       if (MemberUri != NULL) {
         Status = HandleResource (Private, MemberUri);
         if (EFI_ERROR (Status)) {
-          DEBUG ((DEBUG_ERROR, "%a, process ComputerSystemCollection resource: %a failed: %r\n", __FUNCTION__, UriData->Uri, Status));
+          DEBUG ((DEBUG_ERROR, "%a, process ComputerSystemCollection resource: %a failed: %r\n", __func__, UriData->Uri, Status));
         }
 
         FreePool (MemberUri);
@@ -216,19 +216,19 @@ CreateCollectionResource (
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, create resource for collection for: %s\n", __FUNCTION__, Private->CollectionUri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, create resource for collection for: %s\n", __func__, Private->CollectionUri));
 
   Status = GetSupportedSchemaVersion (REDFISH_SCHEMA_NAME, &SchemaInfo);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to find supported schema from HII database: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to find supported schema from HII database: %r\n", __func__, Status));
     return Status;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, supported schema: %a %a.%a.%a\n", __FUNCTION__, SchemaInfo.Schema, SchemaInfo.Major, SchemaInfo.Minor, SchemaInfo.Errata));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, supported schema: %a %a.%a.%a\n", __func__, SchemaInfo.Schema, SchemaInfo.Major, SchemaInfo.Minor, SchemaInfo.Errata));
 
   Status = EdkIIRedfishResourceConfigProvisionging (&SchemaInfo, Private->CollectionUri, Private->InformationExchange, TRUE);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to create resoruce for: %s: %r\n", __FUNCTION__, Private->CollectionUri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to create resoruce for: %s: %r\n", __func__, Private->CollectionUri, Status));
   }
 
   return Status;
@@ -283,14 +283,14 @@ CollectionHandler (
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, collection handler for %s\n", __FUNCTION__, Private->CollectionUri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, collection handler for %s\n", __func__, Private->CollectionUri));
 
   //
   // Query collection from Redfish service.
   //
   Status = GetResourceByUri (Private->RedfishService, Private->CollectionUri, &Private->RedResponse);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, unable to get resource from: %s :%r\n", __FUNCTION__, Private->CollectionUri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, unable to get resource from: %s :%r\n", __func__, Private->CollectionUri, Status));
     goto ON_RELEASE;
   }
 
@@ -368,7 +368,7 @@ RedfishCollectionFeatureCallback (
   //
   ResourceUri = (EFI_STRING)AllocateZeroPool (MAX_URI_LENGTH * sizeof (CHAR16));
   if (ResourceUri == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for full URI.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for full URI.\n", __func__));
     return EFI_OUT_OF_RESOURCES;
   }
 
@@ -386,7 +386,7 @@ RedfishCollectionFeatureCallback (
 
   Status = CollectionHandler (Private);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, CollectionHandler failure: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, CollectionHandler failure: %r\n", __func__, Status));
   }
 
   return EFI_SUCCESS;
@@ -492,7 +492,7 @@ EfiRestJasonStructureProtocolIsReady (
                   (VOID **)&mRedfishCollectionPrivate->JsonStructProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEfiRestJsonStructureProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEfiRestJsonStructureProtocolGuid: %r\n", __func__, Status));
   }
 
   gBS->CloseEvent (Event);
@@ -528,7 +528,7 @@ EdkIIRedfishFeatureProtocolIsReady (
                   (VOID **)&FeatureProtocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEdkIIRedfishFeatureProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to locate gEdkIIRedfishFeatureProtocolGuid: %r\n", __func__, Status));
     gBS->CloseEvent (Event);
     return;
   }
@@ -540,7 +540,7 @@ EdkIIRedfishFeatureProtocolIsReady (
                               (VOID *)mRedfishCollectionPrivate
                               );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to register %s: %r\n", __FUNCTION__, REDFISH_MANAGED_URI, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to register %s: %r\n", __func__, REDFISH_MANAGED_URI, Status));
   }
 
   mRedfishCollectionPrivate->FeatureProtocol = FeatureProtocol;

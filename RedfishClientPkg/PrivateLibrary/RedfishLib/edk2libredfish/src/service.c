@@ -558,7 +558,7 @@ getUriFromServiceEx (
       //
       Status = DecodeResponseContent (ContentEncodedHeader->FieldValue, &ResponseMsg.Body, &ResponseMsg.BodyLength);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a: Failed to decompress the response content %r\n.", __FUNCTION__, Status));
+        DEBUG ((DEBUG_ERROR, "%a: Failed to decompress the response content %r\n.", __func__, Status));
         ret = NULL;
         goto ON_EXIT;
       }
@@ -714,7 +714,7 @@ getUriFromService (
       //
       Status = DecodeResponseContent (ContentEncodedHeader->FieldValue, &ResponseMsg.Body, &ResponseMsg.BodyLength);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a: Failed to decompress the response content %r\n.", __FUNCTION__, Status));
+        DEBUG ((DEBUG_ERROR, "%a: Failed to decompress the response content %r\n.", __func__, Status));
         ret = NULL;
         goto ON_EXIT;
       }
@@ -851,7 +851,7 @@ patchUriFromServiceEx (
   //
   Status = EncodeRequestContent ((CHAR8 *)HTTP_CONTENT_ENCODING_GZIP, (CHAR8 *)content, (VOID **)&EncodedContent, &EncodedContentLen);
   if (Status == EFI_INVALID_PARAMETER) {
-    DEBUG ((DEBUG_ERROR, "%a: Error to encode content.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Error to encode content.\n", __func__));
     ret = NULL;
     goto ON_EXIT;
   } else if (Status == EFI_UNSUPPORTED) {
@@ -1034,7 +1034,7 @@ patchUriFromService (
   //
   Status = EncodeRequestContent ((CHAR8 *)HTTP_CONTENT_ENCODING_GZIP, (CHAR8 *)content, (VOID **)&EncodedContent, &EncodedContentLen);
   if (Status == EFI_INVALID_PARAMETER) {
-    DEBUG ((DEBUG_ERROR, "%a: Error to encode content.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Error to encode content.\n", __func__));
     ret = NULL;
     goto ON_EXIT;
   } else if (Status == EFI_UNSUPPORTED) {

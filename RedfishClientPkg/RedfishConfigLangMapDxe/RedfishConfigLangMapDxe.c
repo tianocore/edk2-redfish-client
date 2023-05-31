@@ -477,7 +477,7 @@ InitialConfigLangMapList (
     //
     Seeker = StrStr (UriPointer, L"|");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -490,7 +490,7 @@ InitialConfigLangMapList (
     //
     Seeker = StrStr (ConfigLangPointer, L"\n");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -637,7 +637,7 @@ RedfishConfigLangMapFlush (
 
   Status = SaveConfigLangMapList (&Private->ConfigLangList, Private->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, save ConfigLangMap list to variable: %s failed: %r\n", __FUNCTION__, Private->VariableName, Status));
+    DEBUG ((DEBUG_ERROR, "%a, save ConfigLangMap list to variable: %s failed: %r\n", __func__, Private->VariableName, Status));
   }
 
   return Status;
@@ -687,7 +687,7 @@ RedfishConfigLangMapDriverUnload (
                     (VOID *)&mRedfishConfigLangMapPrivate->Protocol
                     );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, can not uninstall gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, can not uninstall gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __func__, Status));
       ASSERT (FALSE);
     }
 
@@ -762,7 +762,7 @@ RedfishConfigLangMapDriverEntryPoint (
                   (VOID *)&mRedfishConfigLangMapPrivate->Protocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, can not install gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, can not install gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __func__, Status));
     ASSERT (FALSE);
     goto ON_ERROR;
   }
@@ -779,7 +779,7 @@ RedfishConfigLangMapDriverEntryPoint (
                   &mRedfishConfigLangMapPrivate->ExitBootEvent
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: Fail to register Exit Boot Service event.", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Fail to register Exit Boot Service event.", __func__));
     goto ON_ERROR;
   }
 
@@ -788,7 +788,7 @@ RedfishConfigLangMapDriverEntryPoint (
   //
   Status = InitialConfigLangMapList (&mRedfishConfigLangMapPrivate->ConfigLangList, mRedfishConfigLangMapPrivate->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "%a, Initial ConfigLangMap List: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_INFO, "%a, Initial ConfigLangMap List: %r\n", __func__, Status));
   }
 
   //

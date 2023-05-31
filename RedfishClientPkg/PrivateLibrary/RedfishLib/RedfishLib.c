@@ -919,7 +919,7 @@ RedfishIsValidOdataType (
     }
   }
 
-  DEBUG ((DEBUG_INFO, "%a: This Odata type is not in the list.\n", __FUNCTION__));
+  DEBUG ((DEBUG_INFO, "%a: This Odata type is not in the list.\n", __func__));
   return FALSE;
 }
 

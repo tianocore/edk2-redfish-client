@@ -100,7 +100,7 @@ SignalReadyToProvisioningEvent (
 
   Status = CreateReadyToProvisioningEvent (NULL, NULL, &Event);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to create after provisioning event\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a, failed to create after provisioning event\n", __func__));
     return Status;
   }
 
@@ -127,7 +127,7 @@ SignalAfterProvisioningEvent (
 
   Status = CreateAfterProvisioningEvent (NULL, NULL, &Event);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to create after provisioning event\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a, failed to create after provisioning event\n", __func__));
     return Status;
   }
 

@@ -30,7 +30,7 @@ RedfishIdentifyResource (
   )
 {
   if (!IS_EMPTY_STRING (Uri)) {
-    DEBUG ((DEBUG_VERBOSE, "%a, accept resource: %s\n", __FUNCTION__, Uri));
+    DEBUG ((DEBUG_VERBOSE, "%a, accept resource: %s\n", __func__, Uri));
   }
 
   return TRUE;

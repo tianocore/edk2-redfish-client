@@ -133,7 +133,7 @@ StartUpFeatureDriver (
 
   NextParentUri = (EFI_STRING)AllocateZeroPool (MaxParentUriLength * sizeof (CHAR16));
   if (NextParentUri == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for parent configure language.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for parent configure language.\n", __func__));
     return;
   }
 
@@ -156,7 +156,7 @@ StartUpFeatureDriver (
       }
 
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a: Callback to EDK2 Redfish feature driver fail: %s.\n", __FUNCTION__, ThisList->InformationExchange->SendInformation.FullUri));
+        DEBUG ((DEBUG_ERROR, "%a: Callback to EDK2 Redfish feature driver fail: %s.\n", __func__, ThisList->InformationExchange->SendInformation.FullUri));
       }
     }
 
@@ -187,8 +187,8 @@ StartUpFeatureDriver (
 
           DestroyConfiglanguageList (&ConfigLangList);
         } else {
-          DEBUG ((DEBUG_ERROR, "%a: No InformationTypeCollectionMemberConfigLanguage of %s returned.\n", __FUNCTION__, ThisList->InformationExchange->SendInformation.FullUri));
-          DEBUG ((DEBUG_ERROR, "%a: Redfish service maybe not connected or the network has problems.\n", __FUNCTION__));
+          DEBUG ((DEBUG_ERROR, "%a: No InformationTypeCollectionMemberConfigLanguage of %s returned.\n", __func__, ThisList->InformationExchange->SendInformation.FullUri));
+          DEBUG ((DEBUG_ERROR, "%a: Redfish service maybe not connected or the network has problems.\n", __func__));
           return;
         }
       } else {
@@ -260,7 +260,7 @@ RedfishFeatureDriverStartup (
   //
   mInformationExchange = (RESOURCE_INFORMATION_EXCHANGE *)AllocateZeroPool (sizeof (RESOURCE_INFORMATION_EXCHANGE));
   if (mInformationExchange == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for exchange information.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for exchange information.\n", __func__));
     return;
   }
 

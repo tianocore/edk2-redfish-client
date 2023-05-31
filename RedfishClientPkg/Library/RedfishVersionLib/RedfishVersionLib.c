@@ -111,7 +111,7 @@ RedfishGetVersion (
              &Response
              );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, RedfishGetByService to %a failed: %r\n", __FUNCTION__, REDFISH_ROOT_URI, Status));
+    DEBUG ((DEBUG_ERROR, "%a, RedfishGetByService to %a failed: %r\n", __func__, REDFISH_ROOT_URI, Status));
     if (Response.Payload != NULL) {
       RedfishDumpPayload (Response.Payload);
       RedfishFreeResponse (

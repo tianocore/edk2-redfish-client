@@ -53,7 +53,7 @@ RedfishConsumeResourceCommon (
                                           (EFI_REST_JSON_STRUCTURE_HEADER **)&Bios
                                           );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -66,7 +66,7 @@ RedfishConsumeResourceCommon (
     //
     // No change
     //
-    DEBUG ((DEBUG_INFO, "%a, ETAG: %s has no change, ignore consume action\n", __FUNCTION__, Private->Uri));
+    DEBUG ((DEBUG_INFO, "%a, ETAG: %s has no change, ignore consume action\n", __func__, Private->Uri));
     Status = EFI_ALREADY_STARTED;
     goto ON_RELEASE;
   }
@@ -82,12 +82,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, BiosCs->AttributeRegistry);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -112,7 +112,7 @@ RedfishConsumeResourceCommon (
 
     EmptyPropCs = (RedfishCS_Type_EmptyProp_CS_Data *)BiosCs->Attributes->Prop.ForwardLink;
     if (EmptyPropCs->Header.ResourceType == RedfishCS_Type_JSON) {
-      DEBUG ((DEBUG_ERROR, "%a, Empty property with RedfishCS_Type_JSON type resource is not supported yet. (%s)\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, Empty property with RedfishCS_Type_JSON type resource is not supported yet. (%s)\n", __func__, Private->Uri));
       goto ON_RELEASE;
     }
 
@@ -123,12 +123,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsVagueType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, EmptyPropCs->KeyValuePtr, EmptyPropCs->NunmOfProperties);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -167,7 +167,7 @@ ProvisioningBiosProperties (
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __FUNCTION__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __func__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
 
   *ResultJson     = NULL;
   PropertyChanged = FALSE;
@@ -180,7 +180,7 @@ ProvisioningBiosProperties (
                                  (EFI_REST_JSON_STRUCTURE_HEADER **)&Bios
                                  );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure failure: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure failure: %r\n", __func__, Status));
     return Status;
   }
 
@@ -243,7 +243,7 @@ ProvisioningBiosProperties (
                                  ResultJson
                                  );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToJson() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToJson() failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -288,7 +288,7 @@ ProvisioningBiosResource (
              &Json
              );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, provisioning resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, provisioning resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     return Status;
   }
 
@@ -326,7 +326,7 @@ ProvisioningBiosResource (
 
   Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, &NewResourceLocation, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, post Bios resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, post Bios resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     goto RELEASE_RESOURCE;
   }
 
@@ -375,7 +375,7 @@ ProvisioningBiosResources (
 
   Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &UnifiedConfigureLangList);
   if (EFI_ERROR (Status) || (UnifiedConfigureLangList.Count == 0)) {
-    DEBUG ((DEBUG_ERROR, "%a, No HII question found with configure language: %s: %r\n", __FUNCTION__, REDPATH_ARRAY_PATTERN, Status));
+    DEBUG ((DEBUG_ERROR, "%a, No HII question found with configure language: %s: %r\n", __func__, REDPATH_ARRAY_PATTERN, Status));
     return EFI_NOT_FOUND;
   }
 
@@ -428,9 +428,9 @@ ProvisioningBiosExistResource (
              );
   if (EFI_ERROR (Status)) {
     if (Status == EFI_NOT_FOUND) {
-      DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s ignored. Nothing changed\n", __FUNCTION__, ConfigureLang));
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s ignored. Nothing changed\n", __func__, ConfigureLang));
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, provisioning existing resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      DEBUG ((DEBUG_ERROR, "%a, provisioning existing resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     }
 
     goto ON_RELEASE;
@@ -468,13 +468,13 @@ ProvisioningBiosExistResource (
     JsonWithAddendum = NULL;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __FUNCTION__, ConfigureLang));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __func__, ConfigureLang));
   //
   // PUT back to instance
   //
   Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
 
   //
@@ -550,7 +550,7 @@ RedfishCheckResourceCommon (
 
   Status = RedfishPlatformConfigGetConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigureLangList, &Count);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -565,9 +565,9 @@ RedfishCheckResourceCommon (
       continue;
     }
 
-    DEBUG ((DEBUG_INFO, "%a, [%d] check attribute for: %s\n", __FUNCTION__, Index, Property));
+    DEBUG ((DEBUG_INFO, "%a, [%d] check attribute for: %s\n", __func__, Index, Property));
     if (!MatchPropertyWithJsonContext (Property, Json)) {
-      DEBUG ((DEBUG_INFO, "%a, property is missing: %s\n", __FUNCTION__, Property));
+      DEBUG ((DEBUG_INFO, "%a, property is missing: %s\n", __func__, Property));
       Status = EFI_NOT_FOUND;
     }
   }
@@ -622,9 +622,9 @@ RedfishUpdateResourceCommon (
              );
   if (EFI_ERROR (Status)) {
     if (Status == EFI_NOT_FOUND) {
-      DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s ignored. Nothing changed\n", __FUNCTION__, ConfigureLang));
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s ignored. Nothing changed\n", __func__, ConfigureLang));
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, update resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      DEBUG ((DEBUG_ERROR, "%a, update resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     }
 
     goto ON_RELEASE;
@@ -662,13 +662,13 @@ RedfishUpdateResourceCommon (
     JsonWithAddendum = NULL;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __FUNCTION__, ConfigureLang));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __func__, ConfigureLang));
   //
   // PUT back to instance
   //
   Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
 
   //
@@ -717,7 +717,7 @@ RedfishIdentifyResourceCommon (
   if (Supported) {
     Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigLangList);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __func__, Status));
       return Status;
     }
 
@@ -774,11 +774,11 @@ HandleResource (
   // Resource match
   //
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, process resource for: %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, process resource for: %s\n", __func__, Uri));
 
   Status = GetRedfishSchemaInfo (Private->RedfishService, Private->JsonStructProtocol, Uri, &SchemaInfo);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to get schema information from: %s %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to get schema information from: %s %r\n", __func__, Uri, Status));
     return Status;
   }
 
@@ -786,21 +786,21 @@ HandleResource (
   // Check and see if this is target resource that we want to handle.
   // Some resource is handled by other provider so we have to make sure this first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%s Identify for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%s Identify for %s\n", __func__, Uri));
   ConfigLang = RedfishGetConfigLanguage (Uri);
   if (ConfigLang == NULL) {
     Status = EdkIIRedfishResourceConfigIdentify (&SchemaInfo, Uri, Private->InformationExchange);
     if (EFI_ERROR (Status)) {
       if (Status == EFI_UNSUPPORTED) {
-        DEBUG ((DEBUG_INFO, "%a, \"%s\" is not handled by us\n", __FUNCTION__, Uri));
+        DEBUG ((DEBUG_INFO, "%a, \"%s\" is not handled by us\n", __func__, Uri));
         return EFI_SUCCESS;
       }
 
-      DEBUG ((DEBUG_ERROR, "%a, fail to identify resource: \"%s\": %r\n", __FUNCTION__, Uri, Status));
+      DEBUG ((DEBUG_ERROR, "%a, fail to identify resource: \"%s\": %r\n", __func__, Uri, Status));
       return Status;
     }
   } else {
-    DEBUG ((REDFISH_DEBUG_TRACE, "%a, history record found: %s\n", __FUNCTION__, ConfigLang));
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a, history record found: %s\n", __func__, ConfigLang));
     FreePool (ConfigLang);
   }
 
@@ -808,16 +808,16 @@ HandleResource (
   // Check and see if target property exist or not even when collection memeber exists.
   // If not, we sill do provision.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a Check for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a Check for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigCheck (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
     //
     // The target property does not exist, do the provision to create property.
     //
-    DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __FUNCTION__, Uri));
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __func__, Uri));
     Status = EdkIIRedfishResourceConfigProvisionging (&SchemaInfo, Uri, Private->InformationExchange, FALSE);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, failed to provision with GET mode: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, failed to provision with GET mode: %r\n", __func__, Status));
     }
 
     return Status;
@@ -826,19 +826,19 @@ HandleResource (
   //
   // Consume first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to consume resoruce for: %s: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to consume resoruce for: %s: %r\n", __func__, Uri, Status));
   }
 
   //
   // Patch.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a update for %s\n", __FUNCTION__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a update for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigUpdate (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to update resoruce for: %s: %r\n", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to update resoruce for: %s: %r\n", __func__, Uri, Status));
   }
 
   return Status;

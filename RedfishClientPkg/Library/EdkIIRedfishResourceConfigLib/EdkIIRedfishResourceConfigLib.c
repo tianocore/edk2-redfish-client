@@ -58,7 +58,7 @@ GetRedfishSchemaInfo (
 
   Status = GetResourceByUri (RedfishService, Uri, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to get resource from %s: %r", __FUNCTION__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to get resource from %s: %r", __func__, Uri, Status));
     return Status;
   }
 
@@ -78,7 +78,7 @@ GetRedfishSchemaInfo (
                                  &Header
                                  );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -385,7 +385,7 @@ EdkIIRedfishResourceSetConfigureLang (
                   (VOID **)&Interface
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL is not installed %r", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL is not installed %r", __func__, Status));
     return Status;
   }
 
@@ -394,7 +394,7 @@ EdkIIRedfishResourceSetConfigureLang (
   Interface->ResourceInformationExchage->ReturnedInformation.ConfigureLanguageList.List  =
     AllocateZeroPool (sizeof (REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG) * ConfigLangList->Count);
   if (Interface->ResourceInformationExchage->ReturnedInformation.ConfigureLanguageList.List == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a, Fail to allocate memory for REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG.\n", __func__));
     return EFI_OUT_OF_RESOURCES;
   }
 

@@ -464,7 +464,7 @@ InitialETagList (
     //
     Seeker = AsciiStrStr (UriPointer, "|");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -477,7 +477,7 @@ InitialETagList (
     //
     Seeker = AsciiStrStr (ETagPointer, "\n");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -613,7 +613,7 @@ RedfishETagFlush (
 
   Status = SaveETagList (&Private->ETagList, Private->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, save ETag list to variable: %s failed: %r\n", __FUNCTION__, Private->VariableName, Status));
+    DEBUG ((DEBUG_ERROR, "%a, save ETag list to variable: %s failed: %r\n", __func__, Private->VariableName, Status));
   }
 
   return Status;
@@ -663,7 +663,7 @@ RedfishETagDriverUnload (
                     (VOID *)&mRedfishETagPrivate->Protocol
                     );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, can not uninstall gEdkIIRedfishETagProtocolGuid: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, can not uninstall gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
       ASSERT (FALSE);
     }
 
@@ -734,7 +734,7 @@ RedfishETagDriverEntryPoint (
                   (VOID *)&mRedfishETagPrivate->Protocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, can not install gEdkIIRedfishETagProtocolGuid: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, can not install gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
     ASSERT (FALSE);
     goto ON_ERROR;
   }
@@ -751,7 +751,7 @@ RedfishETagDriverEntryPoint (
                   &mRedfishETagPrivate->Event
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: Fail to register Exit Boot Service event.", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Fail to register Exit Boot Service event.", __func__));
     goto ON_ERROR;
   }
 
@@ -760,7 +760,7 @@ RedfishETagDriverEntryPoint (
   //
   Status = InitialETagList (&mRedfishETagPrivate->ETagList, mRedfishETagPrivate->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "%a, Initial ETag List: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_INFO, "%a, Initial ETag List: %r\n", __func__, Status));
   }
 
   return EFI_SUCCESS;

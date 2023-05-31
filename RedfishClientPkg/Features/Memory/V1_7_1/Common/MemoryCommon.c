@@ -51,7 +51,7 @@ RedfishConsumeResourceCommon (
                                           (EFI_REST_JSON_STRUCTURE_HEADER **)&Memory
                                           );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -64,7 +64,7 @@ RedfishConsumeResourceCommon (
     //
     // No change
     //
-    DEBUG ((DEBUG_INFO, "%a, ETAG: %s has no change, ignore consume action\n", __FUNCTION__, Private->Uri));
+    DEBUG ((DEBUG_INFO, "%a, ETAG: %s has no change, ignore consume action\n", __func__, Private->Uri));
     Status = EFI_ALREADY_STARTED;
     goto ON_RELEASE;
   }
@@ -80,12 +80,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->AllocationAlignmentMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -100,12 +100,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->AllocationIncrementMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -120,12 +120,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericArrayType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->AllowedSpeedsMHz);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -144,12 +144,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->BaseModuleType);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -164,12 +164,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->BusWidthBits);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -184,12 +184,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->CacheSizeMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -204,12 +204,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->CapacityMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -224,12 +224,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->ConfigurationLocked);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -244,12 +244,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->DataWidthBits);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -264,12 +264,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->DeviceID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -284,12 +284,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->DeviceLocator);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -304,12 +304,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->ErrorCorrection);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -324,12 +324,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->FirmwareApiVersion);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -344,12 +344,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->FirmwareRevision);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -364,12 +364,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringArrayType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->FunctionClasses);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -384,12 +384,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->IsRankSpareEnabled);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -404,12 +404,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->IsSpareDeviceEnabled);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -428,12 +428,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->LogicalSizeMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -448,12 +448,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->Manufacturer);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -468,12 +468,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericArrayType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MaxTDPMilliWatts);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -488,12 +488,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemoryDeviceType);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -516,12 +516,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->Channel);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -536,12 +536,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->MemoryController);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -556,12 +556,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->Slot);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -576,12 +576,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->MemoryLocation->Socket);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -604,12 +604,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemorySubsystemControllerManufacturerID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -624,12 +624,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemorySubsystemControllerProductID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -644,12 +644,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->MemoryType);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -668,12 +668,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->ModuleManufacturerID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -688,12 +688,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->ModuleProductID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -708,12 +708,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->NonVolatileSizeMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -736,12 +736,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->OperatingSpeedMhz);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -756,12 +756,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->PartNumber);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -776,12 +776,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PersistentRegionNumberLimit);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -796,12 +796,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PersistentRegionSizeLimitMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -816,12 +816,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PersistentRegionSizeMaxMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -844,12 +844,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PowerManagementPolicy->AveragePowerBudgetMilliWatts);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -864,12 +864,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PowerManagementPolicy->MaxTDPMilliWatts);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -884,12 +884,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->PowerManagementPolicy->PeakPowerBudgetMilliWatts);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -904,12 +904,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->PowerManagementPolicy->PolicyEnabled);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -924,12 +924,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->RankCount);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -960,12 +960,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->SecurityCapabilities->ConfigurationLockCapable);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -980,12 +980,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->SecurityCapabilities->DataLockCapable);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1000,12 +1000,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->SecurityCapabilities->MaxPassphraseCount);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1020,12 +1020,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsBooleanType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (BOOLEAN)*MemoryCs->SecurityCapabilities->PassphraseCapable);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1040,12 +1040,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->SecurityCapabilities->PassphraseLockLimit);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1068,12 +1068,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SecurityState);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1088,12 +1088,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SerialNumber);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1108,12 +1108,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->SpareDeviceCount);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1128,12 +1128,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SubsystemDeviceID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1148,12 +1148,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->SubsystemVendorID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1168,12 +1168,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsStringType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, MemoryCs->VendorID);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1188,12 +1188,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileRegionNumberLimit);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1208,12 +1208,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileRegionSizeLimitMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1228,12 +1228,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileRegionSizeMaxMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1248,12 +1248,12 @@ RedfishConsumeResourceCommon (
     if (ConfigureLang != NULL) {
       Status = ApplyFeatureSettingsNumericType (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, ConfigureLang, (UINTN)*MemoryCs->VolatileSizeMiB);
       if (EFI_ERROR (Status)) {
-        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+        DEBUG ((DEBUG_ERROR, "%a, apply setting for %s failed: %r\n", __func__, ConfigureLang, Status));
       }
 
       FreePool (ConfigureLang);
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __FUNCTION__, Private->Uri));
+      DEBUG ((DEBUG_ERROR, "%a, can not get configure language for URI: %s\n", __func__, Private->Uri));
     }
   }
 
@@ -1296,7 +1296,7 @@ ProvisioningMemoryProperties (
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __FUNCTION__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __func__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
 
   *ResultJson     = NULL;
   PropertyChanged = FALSE;
@@ -1309,7 +1309,7 @@ ProvisioningMemoryProperties (
                                  (EFI_REST_JSON_STRUCTURE_HEADER **)&Memory
                                  );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure failure: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToStructure failure: %r\n", __func__, Status));
     return Status;
   }
 
@@ -2130,7 +2130,7 @@ ProvisioningMemoryProperties (
                                  ResultJson
                                  );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToJson() failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, ToJson() failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -2174,13 +2174,13 @@ ProvisioningMemoryResource (
              &Json
              );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, provisioning resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, provisioning resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     return Status;
   }
 
   Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, &NewResourceLocation, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, post Memory resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, post Memory resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     goto RELEASE_RESOURCE;
   }
 
@@ -2229,7 +2229,7 @@ ProvisioningMemoryResources (
 
   Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &UnifiedConfigureLangList);
   if (EFI_ERROR (Status) || (UnifiedConfigureLangList.Count == 0)) {
-    DEBUG ((DEBUG_ERROR, "%a, No HII question found with configure language: %s: %r\n", __FUNCTION__, REDPATH_ARRAY_PATTERN, Status));
+    DEBUG ((DEBUG_ERROR, "%a, No HII question found with configure language: %s: %r\n", __func__, REDPATH_ARRAY_PATTERN, Status));
     return EFI_NOT_FOUND;
   }
 
@@ -2281,21 +2281,21 @@ ProvisioningMemoryExistResource (
              );
   if (EFI_ERROR (Status)) {
     if (Status == EFI_NOT_FOUND) {
-      DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s ignored. Nothing changed\n", __FUNCTION__, ConfigureLang));
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s ignored. Nothing changed\n", __func__, ConfigureLang));
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, provisioning existing resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      DEBUG ((DEBUG_ERROR, "%a, provisioning existing resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     }
 
     goto ON_RELEASE;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __FUNCTION__, ConfigureLang));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __func__, ConfigureLang));
   //
   // PUT back to instance
   //
   Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
 
   //
@@ -2371,7 +2371,7 @@ RedfishCheckResourceCommon (
 
   Status = RedfishPlatformConfigGetConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigureLangList, &Count);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -2386,9 +2386,9 @@ RedfishCheckResourceCommon (
       continue;
     }
 
-    DEBUG ((DEBUG_INFO, "%a, [%d] check attribute for: %s\n", __FUNCTION__, Index, Property));
+    DEBUG ((DEBUG_INFO, "%a, [%d] check attribute for: %s\n", __func__, Index, Property));
     if (!MatchPropertyWithJsonContext (Property, Json)) {
-      DEBUG ((DEBUG_INFO, "%a, property is missing: %s\n", __FUNCTION__, Property));
+      DEBUG ((DEBUG_INFO, "%a, property is missing: %s\n", __func__, Property));
       Status = EFI_NOT_FOUND;
     }
   }
@@ -2442,21 +2442,21 @@ RedfishUpdateResourceCommon (
              );
   if (EFI_ERROR (Status)) {
     if (Status == EFI_NOT_FOUND) {
-      DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s ignored. Nothing changed\n", __FUNCTION__, ConfigureLang));
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s ignored. Nothing changed\n", __func__, ConfigureLang));
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, update resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+      DEBUG ((DEBUG_ERROR, "%a, update resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     }
 
     goto ON_RELEASE;
   }
 
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __FUNCTION__, ConfigureLang));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __func__, ConfigureLang));
   //
   // PUT back to instance
   //
   Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __FUNCTION__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
 
   //
@@ -2505,7 +2505,7 @@ RedfishIdentifyResourceCommon (
   if (Supported) {
     Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigLangList);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __func__, Status));
       return Status;
     }
 
