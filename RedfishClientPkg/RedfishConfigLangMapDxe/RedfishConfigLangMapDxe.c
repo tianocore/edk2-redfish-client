@@ -238,17 +238,17 @@ DumpConfigLangMapList (
   }
 
   if (IsListEmpty (&ConfigLangMapList->Listheader)) {
-    DEBUG ((DEBUG_INFO, "ConfigLangMap list is empty\n"));
+    DEBUG ((DEBUG_MANAGEABILITY, "ConfigLangMap list is empty\n"));
     return EFI_NOT_FOUND;
   }
 
-  DEBUG ((DEBUG_INFO, "Count: %d Total Size: %d\n", ConfigLangMapList->Count, ConfigLangMapList->TotalSize));
+  DEBUG ((DEBUG_MANAGEABILITY, "Count: %d Total Size: %d\n", ConfigLangMapList->Count, ConfigLangMapList->TotalSize));
   Record = NULL;
   List   = GetFirstNode (&ConfigLangMapList->Listheader);
   while (!IsNull (&ConfigLangMapList->Listheader, List)) {
     Record = REDFISH_CONFIG_LANG_MAP_RECORD_FROM_LIST (List);
 
-    DEBUG ((DEBUG_INFO, "ConfigLang: %s Uri: %s Size: %d\n", Record->ConfigLang, Record->Uri, Record->Size));
+    DEBUG ((DEBUG_MANAGEABILITY, "ConfigLang: %s Uri: %s Size: %d\n", Record->ConfigLang, Record->Uri, Record->Size));
 
     List = GetNextNode (&ConfigLangMapList->Listheader, List);
   }
@@ -788,7 +788,7 @@ RedfishConfigLangMapDriverEntryPoint (
   //
   Status = InitialConfigLangMapList (&mRedfishConfigLangMapPrivate->ConfigLangList, mRedfishConfigLangMapPrivate->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "%a, Initial ConfigLangMap List: %r\n", __func__, Status));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, Initial ConfigLangMap List: %r\n", __func__, Status));
   }
 
   //

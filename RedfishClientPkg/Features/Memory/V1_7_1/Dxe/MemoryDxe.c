@@ -40,7 +40,7 @@ RedfishResourceProvisioningResource (
     return EFI_INVALID_PARAMETER;
   }
 
-  DEBUG ((DEBUG_INFO, "%a, provisioning in %s mode\n", __func__, (PostMode ? L"POST" : L"PATCH")));
+  DEBUG ((DEBUG_MANAGEABILITY, "%a, provisioning in %s mode\n", __func__, (PostMode ? L"POST" : L"PATCH")));
 
   Private = REDFISH_RESOURCE_COMMON_PRIVATE_DATA_FROM_RESOURCE_PROTOCOL (This);
 

@@ -764,7 +764,7 @@ RedfishDumpJsonStringFractions (
     return;
   }
 
-  DEBUG ((DEBUG_INFO, "JSON text:\n"));
+  DEBUG ((DEBUG_MANAGEABILITY, "JSON text:\n"));
   NextFraction = String;
   StrLen       = AsciiStrLen (String);
   if (StrLen == 0) {
@@ -774,13 +774,13 @@ RedfishDumpJsonStringFractions (
   for (Count = 0; Count < (StrLen / StringFractionSize); Count++) {
     BackupChar                           = *(NextFraction + StringFractionSize);
     *(NextFraction + StringFractionSize) = 0;
-    DEBUG ((DEBUG_INFO, "%a", NextFraction));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a", NextFraction));
     *(NextFraction + StringFractionSize) = BackupChar;
     NextFraction                        += StringFractionSize;
   }
 
   if ((StrLen % StringFractionSize) != 0) {
-    DEBUG ((DEBUG_INFO, "%a\n\n", NextFraction));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a\n\n", NextFraction));
   }
 }
 
@@ -919,7 +919,7 @@ RedfishIsValidOdataType (
     }
   }
 
-  DEBUG ((DEBUG_INFO, "%a: This Odata type is not in the list.\n", __func__));
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: This Odata type is not in the list.\n", __func__));
   return FALSE;
 }
 

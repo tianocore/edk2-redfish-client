@@ -50,7 +50,7 @@ HandleResource (
     Status = EdkIIRedfishResourceConfigIdentify (&SchemaInfo, Uri, Private->InformationExchange);
     if (EFI_ERROR (Status)) {
       if (Status == EFI_UNSUPPORTED) {
-        DEBUG ((DEBUG_INFO, "%a, \"%s\" is not handled by us\n", __func__, Uri));
+        DEBUG ((DEBUG_MANAGEABILITY, "%a, \"%s\" is not handled by us\n", __func__, Uri));
         return EFI_SUCCESS;
       }
 

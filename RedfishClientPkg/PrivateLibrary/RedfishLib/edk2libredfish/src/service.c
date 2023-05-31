@@ -461,7 +461,7 @@ getUriFromServiceEx (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: getUriFromServiceEx(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: getUriFromServiceEx(): %a\n", url));
 
   //
   // Step 1: Create HTTP request message with 4 headers:
@@ -621,7 +621,7 @@ getUriFromService (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: getUriFromService(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: getUriFromService(): %a\n", url));
 
   //
   // Step 1: Create HTTP request message with 4 headers:
@@ -782,7 +782,7 @@ patchUriFromServiceEx (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: patchUriFromService(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: patchUriFromService(): %a\n", url));
 
   //
   // Step 1: Create HTTP request message with 4 headers:
@@ -855,7 +855,7 @@ patchUriFromServiceEx (
     ret = NULL;
     goto ON_EXIT;
   } else if (Status == EFI_UNSUPPORTED) {
-    DEBUG ((DEBUG_INFO, "No content coding for %a! Use raw data instead.\n", HTTP_CONTENT_ENCODING_GZIP));
+    DEBUG ((DEBUG_MANAGEABILITY, "No content coding for %a! Use raw data instead.\n", HTTP_CONTENT_ENCODING_GZIP));
     Status = HttpIoSetHeader (HttpIoHeader, "Content-Encoding", HTTP_CONTENT_ENCODING_IDENTITY);
     ASSERT_EFI_ERROR (Status);
   } else {
@@ -965,7 +965,7 @@ patchUriFromService (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: patchUriFromService(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: patchUriFromService(): %a\n", url));
 
   //
   // Step 1: Create HTTP request message with 4 headers:
@@ -1038,7 +1038,7 @@ patchUriFromService (
     ret = NULL;
     goto ON_EXIT;
   } else if (Status == EFI_UNSUPPORTED) {
-    DEBUG ((DEBUG_INFO, "No content coding for %a! Use raw data instead.\n", HTTP_CONTENT_ENCODING_GZIP));
+    DEBUG ((DEBUG_MANAGEABILITY, "No content coding for %a! Use raw data instead.\n", HTTP_CONTENT_ENCODING_GZIP));
     Status = HttpIoSetHeader (HttpIoHeader, "Content-Encoding", HTTP_CONTENT_ENCODING_IDENTITY);
     ASSERT_EFI_ERROR (Status);
   } else {
@@ -1149,7 +1149,7 @@ postUriFromServiceEx (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: postUriFromService(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: postUriFromService(): %a\n", url));
 
   if (contentLength == 0) {
     contentLength = strlen (content);
@@ -1340,7 +1340,7 @@ postUriFromService (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: postUriFromService(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: postUriFromService(): %a\n", url));
 
   if (contentLength == 0) {
     contentLength = strlen (content);
@@ -1522,7 +1522,7 @@ deleteUriFromService (
     return NULL;
   }
 
-  DEBUG ((DEBUG_INFO, "libredfish: deleteUriFromService(): %a\n", url));
+  DEBUG ((DEBUG_MANAGEABILITY, "libredfish: deleteUriFromService(): %a\n", url));
 
   //
   // Step 1: Create HTTP request message with 4 headers:

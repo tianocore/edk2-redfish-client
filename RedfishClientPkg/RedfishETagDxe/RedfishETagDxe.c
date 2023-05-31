@@ -226,17 +226,17 @@ DumpETagList (
   }
 
   if (IsListEmpty (&ETagList->Listheader)) {
-    DEBUG ((DEBUG_INFO, "ETag list is empty\n"));
+    DEBUG ((DEBUG_MANAGEABILITY, "ETag list is empty\n"));
     return EFI_NOT_FOUND;
   }
 
-  DEBUG ((DEBUG_INFO, "Count: %d Total Size: %d\n", ETagList->Count, ETagList->TotalSize));
+  DEBUG ((DEBUG_MANAGEABILITY, "Count: %d Total Size: %d\n", ETagList->Count, ETagList->TotalSize));
   Record = NULL;
   List   = GetFirstNode (&ETagList->Listheader);
   while (!IsNull (&ETagList->Listheader, List)) {
     Record = REDFISH_ETAG_RECORD_FROM_LIST (List);
 
-    DEBUG ((DEBUG_INFO, "ETag: %a Uri: %a Size: %d\n", Record->ETag, Record->Uri, Record->Size));
+    DEBUG ((DEBUG_MANAGEABILITY, "ETag: %a Uri: %a Size: %d\n", Record->ETag, Record->Uri, Record->Size));
 
     List = GetNextNode (&ETagList->Listheader, List);
   }
@@ -760,7 +760,7 @@ RedfishETagDriverEntryPoint (
   //
   Status = InitialETagList (&mRedfishETagPrivate->ETagList, mRedfishETagPrivate->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_INFO, "%a, Initial ETag List: %r\n", __func__, Status));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, Initial ETag List: %r\n", __func__, Status));
   }
 
   return EFI_SUCCESS;

@@ -130,7 +130,7 @@ GetSupportedSchemaVersion (
     return Status;
   }
 
-  DEBUG ((DEBUG_INFO, "Supported schema: %a\n", SupportSchema));
+  DEBUG ((DEBUG_MANAGEABILITY, "Supported schema: %a\n", SupportSchema));
 
   Index      = 0;
   Found      = FALSE;

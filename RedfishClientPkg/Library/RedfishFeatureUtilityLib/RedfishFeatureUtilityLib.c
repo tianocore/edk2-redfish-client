@@ -317,7 +317,7 @@ ApplyFeatureSettingsStringType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Buffer, FeatureValue));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Buffer, FeatureValue));
 
       FreePool (RedfishValue.Value.Buffer);
       RedfishValue.Value.Buffer = FeatureValue;
@@ -383,7 +383,7 @@ ApplyFeatureSettingsNumericType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s from 0x%x to 0x%x\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Integer, FeatureValue));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from 0x%x to 0x%x\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Integer, FeatureValue));
 
       RedfishValue.Value.Integer = (INT64)FeatureValue;
 
@@ -448,7 +448,7 @@ ApplyFeatureSettingsBooleanType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureLang, (RedfishValue.Value.Boolean ? "True" : "False"), (FeatureValue ? "True" : "False")));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureLang, (RedfishValue.Value.Boolean ? "True" : "False"), (FeatureValue ? "True" : "False")));
 
       RedfishValue.Value.Boolean = FeatureValue;
 
@@ -572,7 +572,7 @@ ApplyFeatureSettingsVagueType (
           //
           // Apply settings from redfish
           //
-          DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer, CurrentVagueValuePtr->Value->DataValue.CharPtr));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer, CurrentVagueValuePtr->Value->DataValue.CharPtr));
           FreePool (RedfishValue.Value.Buffer);
           RedfishValue.Value.Buffer = CurrentVagueValuePtr->Value->DataValue.CharPtr;
           Status                    = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, RedfishValue);
@@ -585,7 +585,7 @@ ApplyFeatureSettingsVagueType (
             DEBUG ((DEBUG_ERROR, "%a, apply %a to %a failed: %r\n", __func__, ConfigureKeyLang, CurrentVagueValuePtr->Value->DataValue.CharPtr, Status));
           }
         } else {
-          DEBUG ((DEBUG_INFO, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer, Status));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer, Status));
         }
       } else if (PropertyDatatype == REDFISH_VALUE_TYPE_BOOLEAN) {
         //
@@ -596,7 +596,7 @@ ApplyFeatureSettingsVagueType (
           // Apply settings from redfish
           //
           DEBUG ((
-            DEBUG_INFO,
+            DEBUG_MANAGEABILITY,
             "%a, %a.%a apply %s from %a to %a\n",
             __func__,
             Schema,
@@ -617,7 +617,7 @@ ApplyFeatureSettingsVagueType (
             DEBUG ((DEBUG_ERROR, "%a, apply %s to %a failed: %r\n", __func__, ConfigureKeyLang, (*CurrentVagueValuePtr->Value->DataValue.BoolPtr ? "True" : "False"), Status));
           }
         } else {
-          DEBUG ((DEBUG_INFO, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, (RedfishValue.Value.Boolean ? "True" : "False"), Status));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, (RedfishValue.Value.Boolean ? "True" : "False"), Status));
         }
       } else if (PropertyDatatype == REDFISH_VALUE_TYPE_INTEGER) {
         //
@@ -627,7 +627,7 @@ ApplyFeatureSettingsVagueType (
           //
           // Apply settings from redfish
           //
-          DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s from 0x%x to 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from 0x%x to 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr));
 
           RedfishValue.Value.Integer = (INT64)*CurrentVagueValuePtr->Value->DataValue.Int64Ptr;
           Status                     = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, RedfishValue);
@@ -640,7 +640,7 @@ ApplyFeatureSettingsVagueType (
             DEBUG ((DEBUG_ERROR, "%a, apply %s to 0x%x failed: %r\n", __func__, ConfigureKeyLang, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr, Status));
           }
         } else {
-          DEBUG ((DEBUG_INFO, "%a, %a.%a %s value is: 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, Status));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, Status));
         }
       } else {
         DEBUG ((DEBUG_ERROR, "%a, %a.%a %s Unsupported Redfish property data type\n", __func__, Schema, Version, ConfigureLang));
@@ -775,7 +775,7 @@ ApplyFeatureSettingsStringArrayType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
       FreeArrayTypeRedfishValue (&RedfishValue);
 
       //
@@ -878,7 +878,7 @@ ApplyFeatureSettingsNumericArrayType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
       FreeArrayTypeRedfishValue (&RedfishValue);
 
       //
@@ -976,7 +976,7 @@ ApplyFeatureSettingsBooleanArrayType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_INFO, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
       FreeArrayTypeRedfishValue (&RedfishValue);
 
       //

@@ -64,7 +64,7 @@ RedfishConsumeResourceCommon (
     //
     // No change
     //
-    DEBUG ((DEBUG_INFO, "%a, ETAG: %s has no change, ignore consume action\n", __func__, Private->Uri));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, ETAG: %s has no change, ignore consume action\n", __func__, Private->Uri));
     Status = EFI_ALREADY_STARTED;
     goto ON_RELEASE;
   }
@@ -1324,7 +1324,7 @@ ProvisioningComputerSystemResources (
   EdkIIRedfishResourceSetConfigureLang (&UnifiedConfigureLangList);
 
   for (Index = 0; Index < UnifiedConfigureLangList.Count; Index++) {
-    DEBUG ((DEBUG_INFO, "[%d] create ComputerSystem resource from: %s\n", UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang));
+    DEBUG ((DEBUG_MANAGEABILITY, "[%d] create ComputerSystem resource from: %s\n", UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang));
     ProvisioningComputerSystemResource (Private, UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang);
     FreePool (UnifiedConfigureLangList.List[Index].ConfigureLang);
   }
@@ -1470,9 +1470,9 @@ RedfishCheckResourceCommon (
       continue;
     }
 
-    DEBUG ((DEBUG_INFO, "%a, [%d] check attribute for: %s\n", __func__, Index, Property));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, [%d] check attribute for: %s\n", __func__, Index, Property));
     if (!MatchPropertyWithJsonContext (Property, Json)) {
-      DEBUG ((DEBUG_INFO, "%a, property is missing: %s\n", __func__, Property));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, property is missing: %s\n", __func__, Property));
       Status = EFI_NOT_FOUND;
     }
   }
