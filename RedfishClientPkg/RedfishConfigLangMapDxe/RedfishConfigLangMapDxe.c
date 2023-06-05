@@ -528,6 +528,7 @@ ON_ERROR:
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishConfigLangMapGet (
   IN  EDKII_REDFISH_CONFIG_LANG_MAP_PROTOCOL  *This,
   IN  REDFISH_CONFIG_LANG_MAP_GET_TYPE        QueryStringType,
@@ -577,6 +578,7 @@ RedfishConfigLangMapGet (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishConfigLangMapSet (
   IN  EDKII_REDFISH_CONFIG_LANG_MAP_PROTOCOL  *This,
   IN  EFI_STRING                              ConfigLang,
@@ -622,6 +624,7 @@ RedfishConfigLangMapSet (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishConfigLangMapFlush (
   IN  EDKII_REDFISH_CONFIG_LANG_MAP_PROTOCOL  *This
   )
