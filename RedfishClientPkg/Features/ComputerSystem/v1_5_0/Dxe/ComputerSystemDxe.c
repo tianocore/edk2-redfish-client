@@ -2,6 +2,7 @@
   Redfish feature driver implementation - ComputerSystem
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -11,10 +12,10 @@
 
 extern REDFISH_RESOURCE_COMMON_PRIVATE  *mRedfishResourcePrivate;
 
-EFI_HANDLE  medfishResourceConfigProtocolHandle;
+EFI_HANDLE  mRedfishResourceConfigProtocolHandle;
 
 /**
-  Provising redfish resource by given URI.
+  Provisioning redfish resource by given URI.
 
   @param[in]   This                Pointer to EFI_HP_REDFISH_HII_PROTOCOL instance.
   @param[in]   Uri                 Target URI to create resource.
@@ -26,6 +27,7 @@ EFI_HANDLE  medfishResourceConfigProtocolHandle;
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishResourceProvisioningResource (
   IN     EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *This,
   IN     EFI_STRING                              Uri,
@@ -87,6 +89,7 @@ RedfishResourceProvisioningResource (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishResourceConsumeResource (
   IN     EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *This,
   IN     EFI_STRING                              Uri
@@ -178,18 +181,15 @@ RedfishResourceConsumeResource (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishResourceGetInfo (
   IN     EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *This,
   OUT    REDFISH_SCHEMA_INFO                     *Info
   )
 {
-  REDFISH_RESOURCE_COMMON_PRIVATE  *Private;
-
   if ((This == NULL) || (Info == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
-
-  Private = REDFISH_RESOURCE_COMMON_PRIVATE_DATA_FROM_RESOURCE_PROTOCOL (This);
 
   AsciiStrCpyS (Info->Schema, REDFISH_SCHEMA_STRING_SIZE, RESOURCE_SCHEMA);
   AsciiStrCpyS (Info->Major, REDFISH_SCHEMA_VERSION_SIZE, RESOURCE_SCHEMA_MAJOR);
@@ -210,6 +210,7 @@ RedfishResourceGetInfo (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishResourceUpdate (
   IN     EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *This,
   IN     EFI_STRING                              Uri
@@ -279,6 +280,7 @@ RedfishResourceUpdate (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishResourceCheck (
   IN     EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *This,
   IN     EFI_STRING                              Uri
@@ -349,6 +351,7 @@ RedfishResourceCheck (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishResourceIdentify (
   IN     EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *This,
   IN     EFI_STRING                              Uri
@@ -423,7 +426,7 @@ EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  mRedfishResourceConfig = {
   handler.
 
   @param[in]   This                     Pointer to EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL instance.
-  @param[in]   RedfishConfigServiceInfo Redfish service informaion.
+  @param[in]   RedfishConfigServiceInfo Redfish service information.
 
   @retval EFI_SUCCESS                  The handler has been initialized successfully.
   @retval EFI_DEVICE_ERROR             Failed to create or configure the REST EX protocol instance.
@@ -613,7 +616,7 @@ RedfishResourceEntryPoint (
     return EFI_ALREADY_STARTED;
   }
 
-  medfishResourceConfigProtocolHandle = ImageHandle;
+  mRedfishResourceConfigProtocolHandle = ImageHandle;
 
   mRedfishResourcePrivate = AllocateZeroPool (sizeof (REDFISH_RESOURCE_COMMON_PRIVATE));
   CopyMem (&mRedfishResourcePrivate->ConfigHandler, &mRedfishConfigHandler, sizeof (EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL));
