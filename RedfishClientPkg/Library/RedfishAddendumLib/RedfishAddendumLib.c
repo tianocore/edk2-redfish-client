@@ -129,7 +129,7 @@ RedfishGetAddendumData (
       continue;
     }
 
-    Status = Protocol->ProvisioningCallback (Protocol, &SchemaInfo, JsonValue);
+    Status = Protocol->GetData (Protocol, &SchemaInfo, JsonValue);
     if (!EFI_ERROR (Status)) {
       *JsonWithAddendum = JsonDumpString (JsonValue, EDKII_JSON_COMPACT);
       break;
@@ -232,7 +232,7 @@ RedfishGetOemData (
       continue;
     }
 
-    Status = Protocol->OemCallback (Protocol, &SchemaInfo, JsonValueOem);
+    Status = Protocol->GetOemData (Protocol, &SchemaInfo, JsonValueOem);
     if (!EFI_ERROR (Status)) {
       Status = JsonObjectSetValue (JsonValue, "Oem", JsonValueOem);
       if (!EFI_ERROR (Status)) {
