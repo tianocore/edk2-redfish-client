@@ -2,7 +2,7 @@
   Redfish resource config library implementation
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -125,7 +125,7 @@ GetSupportedSchemaVersion (
     return EFI_INVALID_PARAMETER;
   }
 
-  Status = RedfishPlatformConfigGetSupportedSchema (NULL, &SupportSchema);
+  Status = RedfishPlatformConfigGetSupportedSchema (&SupportSchema);
   if (EFI_ERROR (Status)) {
     return Status;
   }
