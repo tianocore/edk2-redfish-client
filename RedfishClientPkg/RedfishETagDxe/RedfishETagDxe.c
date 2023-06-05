@@ -102,7 +102,7 @@ ON_ERROR:
   @param[in]    Uri   The URI string matching to this ETAG.
   @param[in]    ETag  ETAG string.
 
-  @retval EFI_SUCCESS   ETAG recourd is added.
+  @retval EFI_SUCCESS   ETAG record is added.
   @retval Others        Fail to add ETAG.
 
 **/
@@ -137,7 +137,7 @@ AddETagRecord (
   @param[in]    List    Target ETAG list to be removed.
   @param[in]    Record  Pointer to the instance to be deleted.
 
-  @retval EFI_SUCCESS   ETAG recourd is removed.
+  @retval EFI_SUCCESS   ETAG record is removed.
   @retval Others        Fail to add ETAG.
 
 **/
@@ -357,7 +357,7 @@ SaveETagList (
   }
 
   //
-  // Caculate the total size we need to keep ETag list.
+  // Calculate the total size we need to keep ETag list.
   //
   VarSize = ETagList->TotalSize + 1; // terminator character
   VarData = AllocateZeroPool (VarSize);
@@ -514,6 +514,7 @@ ON_ERROR:
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishETagGet (
   IN  EDKII_REDFISH_ETAG_PROTOCOL  *This,
   IN  CHAR8                        *Uri,
@@ -546,13 +547,14 @@ RedfishETagGet (
 
   @param[in]   This                Pointer to EDKII_REDFISH_ETAG_PROTOCOL instance.
   @param[in]   Uri                 The target Uri which related to ETag.
-  @param[in]   ETag                The ETag to add. If ETag is NULL, the record of correspoonding URI will be removed.
+  @param[in]   ETag                The ETag to add. If ETag is NULL, the record of corresponding URI will be removed.
 
   @retval EFI_SUCCESS              This handler has been stoped successfully.
   @retval Others                   Some error happened.
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishETagSet (
   IN  EDKII_REDFISH_ETAG_PROTOCOL  *This,
   IN  CHAR8                        *Uri,
@@ -579,7 +581,7 @@ RedfishETagSet (
   }
 
   //
-  // When ETag is NULL, it means that we want to remov this record.
+  // When ETag is NULL, it means that we want to remove this record.
   //
   if (ETag == NULL) {
     return Status;
@@ -598,6 +600,7 @@ RedfishETagSet (
 
 **/
 EFI_STATUS
+EFIAPI
 RedfishETagFlush (
   IN  EDKII_REDFISH_ETAG_PROTOCOL  *This
   )

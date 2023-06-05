@@ -36,7 +36,7 @@ EFI_STATUS
 
   @param[in]   This                Pointer to EDKII_REDFISH_ETAG_PROTOCOL instance.
   @param[in]   Uri                 The target Uri which related to ETag.
-  @param[in]   ETag                The ETag to add. If ETag is NULL, the record of correspoonding URI will be removed.
+  @param[in]   ETag                The ETag to add. If ETag is NULL, the record of corresponding URI will be removed.
 
   @retval EFI_SUCCESS              This handler has been stoped successfully.
   @retval Others                   Some error happened.
