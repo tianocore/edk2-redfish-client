@@ -2,10 +2,11 @@
 # Redfish Client FDF include file for [FV*] section of all Architectures.
 #
 # This file can be included to the [FV*] section(s) of a platform FDF file
-# by using "!include RedfishClientPkg/RedfisClientLibs.fdf.inc" to specify the module instances
+# by using "!include RedfishClientPkg/RedfishClientLibs.fdf.inc" to specify the module instances
 # to be built in the firmware volume.
 #
 # (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
+# Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -19,6 +20,7 @@
   INF RedfishClientPkg/Features/ComputerSystem/v1_5_0/Dxe/ComputerSystemDxe.inf
   INF RedfishClientPkg/Features/ComputerSystemCollectionDxe/ComputerSystemCollectionDxe.inf
   INF RedfishClientPkg/Features/Bios/v1_0_9/Dxe/BiosDxe.inf
+  INF RedfishClientPkg/HiiToRedfishMemoryDxe/HiiToRedfishMemoryDxe.inf
 
   !include RedfishClientPkg/RedfishJsonStructureDxe.fdf.inc
   #

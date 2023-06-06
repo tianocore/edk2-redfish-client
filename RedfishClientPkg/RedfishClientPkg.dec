@@ -57,6 +57,8 @@
   ## Include/RedfishBase.h
   gEfiRedfishClientVariableGuid                   = { 0x91c46a3d, 0xed1a, 0x477b, { 0xa5, 0x33, 0x87, 0x2d, 0xcd, 0xb0, 0xfc, 0xc1 } }
 
+  gHiiToRedfishMemoryFormsetGuid                   = { 0XC2BE579E, 0X3C57, 0X499C, { 0XA9, 0XDF, 0XE6, 0X23, 0X8A, 0X49, 0X64, 0XF8 }}
+
 [PcdsFixedAtBuild]
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize|32|UINT32|0x10000001
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize|8|UINT32|0x10000002
