@@ -1,5 +1,6 @@
 #
 #  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+#  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # Auto-generated file by Redfish Schema C Structure Generator.
@@ -47,5 +48,4 @@ LIBRARY_CLASS                  = ComputerSystemCollectionLib | DXE_DRIVER UEFI_A
   #   C4706: assignment within conditional expression
   #
   MSFT:*_*_*_CC_FLAGS = /wd4706
-
-
+  GCC:*_*_*_CC_FLAGS = -Wno-unused-but-set-variable
