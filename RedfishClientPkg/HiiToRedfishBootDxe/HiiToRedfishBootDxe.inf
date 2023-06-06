@@ -1,0 +1,60 @@
+## @file
+#  HII-to-Redfish boot driver.
+#
+#  (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
+#  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = HiiToRedfishBootDxe
+  FILE_GUID                      = F9BA69BD-1EDB-4334-9D57-7E974ADF1361
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = HiiToRedfishBootDxeDriverEntryPoint
+  UNLOAD_IMAGE                   = HiiToRedfishBootDxeDriverUnload
+
+[Sources]
+  HiiToRedfishBootDxe.c
+  HiiToRedfishBootDxe.h
+  HiiToRedfishBootData.h
+  HiiToRedfishBootVfr.vfr
+  HiiToRedfishBootDxeStrings.uni
+  HiiToRedfishBootDxeMap.uni
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PcdLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiLib
+  PrintLib
+  HiiLib
+  UefiBootManagerLib
+  UefiHiiServicesLib
+  RedfishEventLib
+
+[Protocols]
+  gEfiDevicePathProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+
+
+[Guids]
+  gHiiToRedfishBootFormsetGuid
+  gEfiIfrTianoGuid
+
+[Depex]
+  gEfiHiiDatabaseProtocolGuid
+
