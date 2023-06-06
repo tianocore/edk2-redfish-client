@@ -1,0 +1,56 @@
+## @file
+#  HII-to-Redfish BIOS Example driver.
+#
+#  (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
+#  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = HiiToRedfishBiosDxe
+  FILE_GUID                      = 9A7FA287-4038-CB66-DC70-92AE8C0FCF73
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = HiiToRedfishBiosDxeDriverEntryPoint
+  UNLOAD_IMAGE                   = HiiToRedfishBiosDxeDriverUnload
+
+[Sources]
+  HiiToRedfishBiosDxe.c
+  HiiToRedfishBiosDxe.h
+  HiiToRedfishBiosData.h
+  HiiToRedfishBiosVfr.vfr
+  HiiToRedfishBiosDxeStrings.uni
+  HiiToRedfishBiosDxeMap.uni
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PcdLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiLib
+  PrintLib
+  HiiLib
+
+[Protocols]
+  gEfiDevicePathProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+
+
+[Guids]
+  gHiiToRedfishBiosFormsetGuid
+
+[Depex]
+  gEfiHiiDatabaseProtocolGuid
+
