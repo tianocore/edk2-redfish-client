@@ -1,0 +1,61 @@
+# @file
+# GitHub Workflow for build checks
+#
+# Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+name: "RedfishClientPkg Build"
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.bat'
+      - '**/*.md'
+      - '**/*.py'
+      - '**/*.rst'
+      - '**/*.sh'
+      - '**/*.txt'
+
+jobs:
+  edk2-redfish-client-build:
+    strategy:
+          fail-fast: false
+          matrix:
+            include:
+              - Target: "DEBUG"
+                ArchList: "X64"
+                ToolChain: "GCC5"
+              - Target: "RELEASE"
+                ArchList: "X64"
+                ToolChain: "GCC5"
+              - Target: "NOOPT"
+                ArchList: "X64"
+                ToolChain: "GCC5"
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/tianocore/containers/ubuntu-22-dev:latest
+      options: --user root -v ${{ github.workspace }}:/home/edk2
+      env:
+        EDK2_DOCKER_USER_HOME: "/home/edk2"
+    name: edk2 build test
+    steps:
+      - name: checkout edk2
+        uses: actions/checkout@v3
+        with:
+          repository: tianocore/edk2
+          path: ./edk2
+          submodules: recursive
+      - name: checkout edk2-redfish-client
+        uses: actions/checkout@v3
+        with:
+          path: ./edk2-redfish-client
+      - name: edk2 build
+        run: |
+          ./edk2-redfish-client/.github/workflows/build.sh ./edk2 ./edk2-redfish-client ${{ matrix.ArchList }} ${{ matrix.Target }} ${{ matrix.ToolChain }}
+        shell: bash
+

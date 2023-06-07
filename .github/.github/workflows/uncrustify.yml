@@ -1,0 +1,44 @@
+# @file
+# GitHub Workflow for uncrustify check
+#
+# Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+name: "Uncrustify check"
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '**/*.h'
+      - '**/*.c'
+
+jobs:
+  uncrustify-check:
+    runs-on: ubuntu-latest
+    name: Uncrustify check
+    steps:
+      - name: checkout edk2
+        uses: actions/checkout@v3
+        with:
+          repository: tianocore/edk2
+          path: ./edk2
+      - name: checkout edk2-redfish-client
+        uses: actions/checkout@v3
+        with:
+          path: ./edk2-redfish-client
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: uncrustify setup
+        run: |
+          git clone https://projectmu@dev.azure.com/projectmu/Uncrustify/_git/Uncrustify uncrustify-edk2
+          cd uncrustify-edk2
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build .
+          cp uncrustify /usr/local/bin && chmod +x /usr/local/bin/uncrustify
+      - name: uncrustify check changed files
+        run: ./edk2-redfish-client/.github/workflows/uncrustify-check.sh ./edk2/.pytool/Plugin/UncrustifyCheck/uncrustify.cfg ./edk2-redfish-client ${{ github.event.pull_request.commits }}
+        shell: bash
