@@ -1,0 +1,39 @@
+# @file
+# GitHub Workflow for patch check
+#
+# Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+name: "Patch check"
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  patch-check:
+    runs-on: ubuntu-latest
+    name: EDK2 Patch check
+    steps:
+      - name: checkout edk2
+        uses: actions/checkout@v3
+        with:
+          repository: tianocore/edk2
+          path: ./edk2
+      - name: checkout edk2-redfish-client
+        uses: actions/checkout@v3
+        with:
+          path: ./edk2-redfish-client
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: generate format patch
+        run: |
+          mkdir format-patch
+          cd edk2-redfish-client
+          git format-patch --subject-prefix="edk2-redfish-client][PATCH" -${{ github.event.pull_request.commits }} HEAD -O ../edk2/BaseTools/Conf/diff.order -o ../format-patch/
+          ls ../format-patch/
+      - name: run PatchCheck.py
+        run: |
+          ./edk2-redfish-client/.github/workflows/patch-check.sh ./format-patch/ ./edk2/
+        shell: bash
