@@ -31,7 +31,13 @@ fi
 cd "$REPO_PATH"
 
 FAILURE=0
-CHANGED_FILES=$(git diff --name-only HEAD~$NO_COMMITS)
+CHANGED_FILES=$(git diff --name-only HEAD~$NO_COMMITS | grep '\(\.c$\|\.h$\)')
+if [ -z "$CHANGED_FILES" ]
+then
+  echo "No c or h file to run uncrustify check"
+  exit 0
+fi
+
 for file in $CHANGED_FILES
 do
   echo "Uncrustify check file: $file"
