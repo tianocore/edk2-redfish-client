@@ -8,19 +8,19 @@
 
 [Defines]
   INF_VERSION                    = 0x00010006
-  BASE_NAME                      = RedfishResourceIdentifyLibComuterSystem
+  BASE_NAME                      = RedfishResourceIdentifyLibComputerSystem
   FILE_GUID                      = 2AEE2C80-126A-44A6-877E-642F20510D13
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = RedfishResourceIdentifyLib| DXE_DRIVER
-  CONSTRUCTOR                    = RedfishResourceIdentifyComuterSystemConstructor
+  CONSTRUCTOR                    = RedfishResourceIdentifyComputerSystemConstructor
 
 #
 #  VALID_ARCHITECTURES           = IA32 X64 EBC
 #
 
 [Sources]
-  RedfishResourceIdentifyLibComuterSystem.c
+  RedfishResourceIdentifyLibComputerSystem.c
 
 [Packages]
   MdePkg/MdePkg.dec
