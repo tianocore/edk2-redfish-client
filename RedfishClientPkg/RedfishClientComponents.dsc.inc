@@ -28,7 +28,7 @@
   RedfishClientPkg/Features/MemoryCollectionDxe/MemoryCollectionDxe.inf
   RedfishClientPkg/Features/ComputerSystem/v1_5_0/Dxe/ComputerSystemDxe.inf {
     <LibraryClasses>
-      RedfishResourceIdentifyLib|RedfishClientPkg/Library/RedfishResourceIdentifyLibComuterSystem/v1_5_0/RedfishResourceIdentifyLibComuterSystem.inf
+      RedfishResourceIdentifyLib|RedfishClientPkg/Library/RedfishResourceIdentifyLibComputerSystem/v1_5_0/RedfishResourceIdentifyLibComputerSystem.inf
   }
   RedfishClientPkg/Features/ComputerSystemCollectionDxe/ComputerSystemCollectionDxe.inf
   RedfishClientPkg/Features/Bios/v1_0_9/Dxe/BiosDxe.inf
