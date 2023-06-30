@@ -32,7 +32,7 @@ Copyright 2016-2018 Distributed Management Task Force, Inc. All rights reserved.
 
 ## Usage
 
-* ` python redfishProfileSimulatorMain.py [options]`
+* ` python redfishProfileSimulator.py [options]`
 * `[Options]`:
 
         -V,  --Version,--- the program version
