@@ -44,7 +44,7 @@ HandleResource (
   // Check and see if this is target resource that we want to handle.
   // Some resource is handled by other provider so we have to make sure this first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%s Identify for %s\n", __func__, Uri));
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a Identify for %s\n", __func__, Uri));
   ConfigLang = RedfishGetConfigLanguage (Uri);
   if (ConfigLang == NULL) {
     Status = EdkIIRedfishResourceConfigIdentify (&SchemaInfo, Uri, Private->InformationExchange);
