@@ -220,6 +220,10 @@ RedfishResourceConsumeResource (
     Private->Json = NULL;
   }
 
+  if (Etag != NULL) {
+    FreePool (Etag);
+  }
+
   return Status;
 }
 
