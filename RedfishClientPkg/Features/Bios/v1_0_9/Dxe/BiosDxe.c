@@ -128,6 +128,8 @@ RedfishResourceConsumeResource (
     return Status;
   }
 
+  ZeroMem (&RedfishSettingsResponse, sizeof (REDFISH_RESPONSE));
+
   ExpectedResponse   = &Response;
   RedfishSettingsUri = NULL;
   JsonValue          = RedfishJsonInPayload (Response.Payload);
