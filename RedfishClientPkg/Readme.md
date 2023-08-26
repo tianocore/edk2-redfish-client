@@ -40,7 +40,7 @@ Below are the block diagrams of UEFI Redfish Client EDK2 Implementation.
 ![UEFI Redfish Client Implementation](https://github.com/changab/edk2-staging/blob/edk2-redfish-client/RedfishClientPkg/Documents/Media/RedfishClientDriverStack.svg?raw=true)
 
 ## EFI EDK2 Redfish Client Framework
-The functionality of each block in the diagrams are described in belwo sections,
+The functionality of each block in the diagrams are described in below sections,
 
 ### EDK2 Redfish Foundation ***[[1]](#[0])***
 EDK2 Redfish Redfish Foundation provides the facilities of communicating with
@@ -68,7 +68,7 @@ project.
 
 ### EDK2 Redfish JSON Schema to C Structure Convertor ***[[3]](#[0])***
 This is the script auto-generated EDK2 drivers and libraries that provide the
-Redfish schema naming based JSON to C structure and vise versa converters. C
+Redfish schema naming based JSON to C structure and vice versa converters. C
 structure is another representation of Redfish properties other than JSON and
 CSDL(XML). The higher layer Redfish client application can deal with C structure
 instead of using JSON library to manipulate Redfish properties. The script
@@ -85,7 +85,7 @@ sits between **JSON Schema to C Structure converters** and **EFI Platform
 Configuration to Redfish Protocol**. The Redfish feature driver gets and sets
 the platform configuration and incorporates it with Redfish JSON schema C
 structure to manipulate Redfish JSON resources. Then applies the settings from
-Redfish service to platform configurations, or vise versa to update platform
+Redfish service to platform configurations, or vice versa to update platform
 configurations to Redfish service. Both EDK2 Redfish Non-Collection and
 Collection Feature drivers are script auto-generated base on Redfish schema
 naming. The EDK2 Redfish Non-Collection feature driver manages the resource of
