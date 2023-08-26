@@ -97,6 +97,8 @@ RedfishConsumeResourceCommon (
   if (BiosCs->Attributes == NULL) {
     BiosCs->Attributes = AllocateZeroPool (sizeof (RedfishBios_V1_0_9_Attributes_CS));
     ASSERT (BiosCs->Attributes != NULL);
+    // initialize list
+    BiosCs->Attributes->Prop.ForwardLink = &BiosCs->Attributes->Prop;
   }
 
   //
