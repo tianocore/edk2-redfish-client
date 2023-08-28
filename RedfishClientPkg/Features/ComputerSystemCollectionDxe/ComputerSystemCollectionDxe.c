@@ -109,7 +109,7 @@ HandleResource (
   DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to consume resoruce for: %s: %r\n", __func__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to consume resource for: %s: %r\n", __func__, Uri, Status));
   }
 
   //
@@ -118,7 +118,7 @@ HandleResource (
   DEBUG ((REDFISH_DEBUG_TRACE, "%a update for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigUpdate (&SchemaInfo, Uri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to update resoruce for: %s: %r\n", __func__, Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to update resource for: %s: %r\n", __func__, Uri, Status));
   }
 
   return Status;
@@ -228,7 +228,7 @@ CreateCollectionResource (
 
   Status = EdkIIRedfishResourceConfigProvisionging (&SchemaInfo, Private->CollectionUri, Private->InformationExchange, TRUE);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to create resoruce for: %s: %r\n", __func__, Private->CollectionUri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, failed to create resource for: %s: %r\n", __func__, Private->CollectionUri, Status));
   }
 
   return Status;
