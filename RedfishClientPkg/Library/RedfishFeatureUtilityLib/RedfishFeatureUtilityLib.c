@@ -515,6 +515,7 @@ ApplyFeatureSettingsVagueType (
   Status = UnicodeStrToAsciiStrS (ConfigureLang, ConfigureLangAscii, StrLen (ConfigureLang) + 1);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, Convert the configureLang of vague key of %a.%a %s failed: %r\n", __func__, Schema, Version, ConfigureLang, Status));
+    FreePool (ConfigureLangAscii);
     return Status;
   }
 
@@ -803,6 +804,7 @@ ApplyFeatureSettingsStringArrayType (
         RedfishValue.Value.StringArray[Index] = AllocateCopyPool (AsciiStrSize (Buffer->ArrayValue), Buffer->ArrayValue);
         if (RedfishValue.Value.StringArray[Index] == NULL) {
           ASSERT (FALSE);
+          FreePool (RedfishValue.Value.StringArray);
           return EFI_OUT_OF_RESOURCES;
         }
 
@@ -923,6 +925,11 @@ ApplyFeatureSettingsNumericArrayType (
       DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
     }
   }
+
+  for (Index = 0; Index < RedfishValue.ArrayCount; Index++) {
+      FreePool (RedfishValue.Value.StringArray[Index]);
+  }
+  FreePool (RedfishValue.Value.StringArray);
 
   return Status;
 }
@@ -1972,6 +1979,7 @@ RedfishGetUri (
     //
     if (*Target == '\0') {
       DEBUG ((DEBUG_ERROR, "%a, invalid format: %s\n", __func__, ConfigLang));
+      FreePool (ResultStr);
       return NULL;
     }
 
@@ -1983,6 +1991,7 @@ RedfishGetUri (
     TempStrSize  = (ConfigLangLen - RemainingLen + 1) * sizeof (CHAR16);
     TempStr      = AllocateCopyPool (TempStrSize, Head);
     if (TempStr == NULL) {
+      FreePool (ResultStr);
       return NULL;
     }
 
@@ -1996,6 +2005,8 @@ RedfishGetUri (
                                        );
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a, Can not find: %s\n", __func__, TempStr));
+      FreePool (ResultStr);
+      FreePool (TempStr);
       return NULL;
     }
 
@@ -2102,10 +2113,14 @@ GetConfigureLang (
 
   Status = AsciiStrToUnicodeStrS (Uri, UnicodeUri, StringSize);
   if (EFI_ERROR (Status)) {
+    FreePool (UnicodeUri);
     return NULL;
   }
 
   ConfigLang = RedfishGetConfigLanguage (UnicodeUri);
+
+  FreePool (UnicodeUri);
+
   if (ConfigLang == NULL) {
     return NULL;
   }
@@ -2117,10 +2132,13 @@ GetConfigureLang (
   StringSize = StrSize (ConfigLang) + ((AsciiStrLen (PropertyName) + 1) * sizeof (CHAR16));
   ResultStr  = AllocatePool (StringSize);
   if (ResultStr == NULL) {
+    FreePool (ConfigLang);
     return NULL;
   }
 
   UnicodeSPrint (ResultStr, StringSize, L"%s/%a", ConfigLang, PropertyName);
+
+  FreePool (ConfigLang);
 
   return ResultStr;
 }
@@ -2296,8 +2314,11 @@ GetPropertyStringValue (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLangBuffer, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a query current setting for %s failed: %r\n", __func__, Schema, Version, ConfigureLangBuffer, Status));
+    FreePool (ConfigureLangBuffer);
     return NULL;
   }
+
+  FreePool (ConfigureLangBuffer);
 
   if (RedfishValue.Type != RedfishValueTypeString) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string type\n", __func__, Schema, Version, ConfigureLang));
@@ -2354,8 +2375,11 @@ GetPropertyNumericValue (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLangBuffer, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a query current setting for %s failed: %r\n", __func__, Schema, Version, ConfigureLangBuffer, Status));
+    FreePool (ConfigureLangBuffer);
     return NULL;
   }
+
+  FreePool (ConfigureLangBuffer);
 
   if (RedfishValue.Type != RedfishValueTypeInteger) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not numeric type\n", __func__, Schema, Version, ConfigureLang));
@@ -2416,8 +2440,11 @@ GetPropertyBooleanValue (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLangBuffer, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a query current setting for %s failed: %r\n", __func__, Schema, Version, ConfigureLangBuffer, Status));
+    FreePool (ConfigureLangBuffer);
     return NULL;
   }
+
+  FreePool (ConfigureLangBuffer);
 
   if (RedfishValue.Type != RedfishValueTypeBoolean) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not boolean type\n", __func__, Schema, Version, ConfigureLang));
@@ -2517,8 +2544,11 @@ GetPropertyStringArrayValue (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLangBuffer, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a query current setting for %s failed: %r\n", __func__, Schema, Version, ConfigureLangBuffer, Status));
+    FreePool (ConfigureLangBuffer);
     return NULL;
   }
+
+  FreePool (ConfigureLangBuffer);
 
   if (RedfishValue.Type != RedfishValueTypeStringArray) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
@@ -2588,8 +2618,11 @@ GetPropertyNumericArrayValue (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLangBuffer, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a query current setting for %s failed: %r\n", __func__, Schema, Version, ConfigureLangBuffer, Status));
+    FreePool (ConfigureLangBuffer);
     return NULL;
   }
+
+  FreePool (ConfigureLangBuffer);
 
   if (RedfishValue.Type != RedfishValueTypeIntegerArray) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
@@ -2659,8 +2692,11 @@ GetPropertyBooleanArrayValue (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLangBuffer, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a query current setting for %s failed: %r\n", __func__, Schema, Version, ConfigureLangBuffer, Status));
+    FreePool (ConfigureLangBuffer);
     return NULL;
   }
+
+  FreePool (ConfigureLangBuffer);
 
   if (RedfishValue.Type != RedfishValueTypeBooleanArray) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
