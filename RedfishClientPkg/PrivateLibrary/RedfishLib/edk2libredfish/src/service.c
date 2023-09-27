@@ -1773,7 +1773,6 @@ createServiceEnumeratorNoAuth (
   char            *HostStart;
 
   ret = (redfishService *)calloc (1, sizeof (redfishService));
-  ZeroMem (ret, sizeof (redfishService));
   if (initRest (ret, restProtocol) != 0) {
     free (ret);
     return NULL;
