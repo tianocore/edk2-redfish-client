@@ -332,7 +332,7 @@ ApplyFeatureSettingsStringType (
         DEBUG ((DEBUG_ERROR, "%a, apply %s to %s failed: %r\n", __func__, ConfigureLang, FeatureValue, Status));
       }
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is: %s\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Buffer, Status));
+      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Buffer));
     }
   }
 
@@ -462,7 +462,7 @@ ApplyFeatureSettingsBooleanType (
         DEBUG ((DEBUG_ERROR, "%a, apply %s to %a failed: %r\n", __func__, ConfigureLang, (FeatureValue ? "True" : "False"), Status));
       }
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureLang, (RedfishValue.Value.Boolean ? "True" : "False"), Status));
+      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureLang, (RedfishValue.Value.Boolean ? "True" : "False")));
     }
   }
 
@@ -585,7 +585,7 @@ ApplyFeatureSettingsVagueType (
             DEBUG ((DEBUG_ERROR, "%a, apply %a to %a failed: %r\n", __func__, ConfigureKeyLang, CurrentVagueValuePtr->Value->DataValue.CharPtr, Status));
           }
         } else {
-          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer, Status));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer));
         }
       } else if (PropertyDatatype == RedfishValueTypeBoolean) {
         //
@@ -617,7 +617,7 @@ ApplyFeatureSettingsVagueType (
             DEBUG ((DEBUG_ERROR, "%a, apply %s to %a failed: %r\n", __func__, ConfigureKeyLang, (*CurrentVagueValuePtr->Value->DataValue.BoolPtr ? "True" : "False"), Status));
           }
         } else {
-          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, (RedfishValue.Value.Boolean ? "True" : "False"), Status));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, (RedfishValue.Value.Boolean ? "True" : "False")));
         }
       } else if (PropertyDatatype == RedfishValueTypeInteger) {
         //
@@ -640,7 +640,7 @@ ApplyFeatureSettingsVagueType (
             DEBUG ((DEBUG_ERROR, "%a, apply %s to 0x%x failed: %r\n", __func__, ConfigureKeyLang, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr, Status));
           }
         } else {
-          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, Status));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer));
         }
       } else {
         DEBUG ((DEBUG_ERROR, "%a, %a.%a %s Unsupported Redfish property data type\n", __func__, Schema, Version, ConfigureLang));
