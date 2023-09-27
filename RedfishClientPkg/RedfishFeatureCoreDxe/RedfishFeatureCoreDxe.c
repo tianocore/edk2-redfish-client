@@ -331,7 +331,7 @@ NewInternalInstance (
   }
 
   NewInternalData->NodeName = AllocateZeroPool (StrSize (NodeName));
-  StrnCpyS (NewInternalData->NodeName, StrSize (NodeName), (CONST CHAR16 *)NodeName, StrLen (NodeName));
+  StrnCpyS (NewInternalData->NodeName, StrLen (NodeName) + 1, (CONST CHAR16 *)NodeName, StrLen (NodeName));
   NewInternalData->SiblingList = NULL;
   NewInternalData->ChildList   = NULL;
   if (NodeIsCollection) {
