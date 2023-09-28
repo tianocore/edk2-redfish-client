@@ -806,6 +806,7 @@ ApplyFeatureSettingsStringArrayType (
       RedfishValue.Value.StringArray[Index] = AllocateCopyPool (AsciiStrSize (Buffer->ArrayValue), Buffer->ArrayValue);
       if (RedfishValue.Value.StringArray[Index] == NULL) {
         ASSERT (FALSE);
+        FreePool (RedfishValue.Value.StringArray);
         return EFI_OUT_OF_RESOURCES;
       }
 
@@ -827,6 +828,12 @@ ApplyFeatureSettingsStringArrayType (
   } else {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
   }
+
+  for (Index = 0; Index < RedfishValue.ArrayCount; Index++) {
+    FreePool (RedfishValue.Value.StringArray[Index]);
+  }
+
+  FreePool (RedfishValue.Value.StringArray);
 
   return Status;
 }
@@ -927,6 +934,8 @@ ApplyFeatureSettingsNumericArrayType (
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
   }
 
+  FreePool (RedfishValue.Value.IntegerArray);
+
   return Status;
 }
 
@@ -1025,6 +1034,8 @@ ApplyFeatureSettingsBooleanArrayType (
   } else {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
   }
+
+  FreePool (RedfishValue.Value.BooleanArray);
 
   return Status;
 }
