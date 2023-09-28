@@ -763,68 +763,69 @@ ApplyFeatureSettingsStringArrayType (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLang, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s failed: %r\n", __func__, Schema, Version, ConfigureLang, Status));
-  } else {
-    if (RedfishValue.Type != RedfishValueTypeStringArray) {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
-      return EFI_DEVICE_ERROR;
+    return Status;
+  }
+
+  if (RedfishValue.Type != RedfishValueTypeStringArray) {
+    DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
+    return EFI_DEVICE_ERROR;
+  }
+
+  //
+  // If there is no change in array, do nothing
+  //
+  if (!CompareRedfishStringArrayValues (ArrayHead, RedfishValue.Value.StringArray, RedfishValue.ArrayCount)) {
+    //
+    // Apply settings from redfish
+    //
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+    FreeArrayTypeRedfishValue (&RedfishValue);
+
+    //
+    // Convert array from RedfishCS_char_Array to EDKII_REDFISH_VALUE
+    //
+    RedfishValue.ArrayCount = 0;
+    Buffer                  = ArrayHead;
+    while (Buffer != NULL) {
+      RedfishValue.ArrayCount += 1;
+      Buffer                   = Buffer->Next;
     }
 
     //
-    // If there is no change in array, do nothing
+    // Allocate pool for new values
     //
-    if (!CompareRedfishStringArrayValues (ArrayHead, RedfishValue.Value.StringArray, RedfishValue.ArrayCount)) {
-      //
-      // Apply settings from redfish
-      //
-      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
-      FreeArrayTypeRedfishValue (&RedfishValue);
+    RedfishValue.Value.StringArray = AllocatePool (RedfishValue.ArrayCount *sizeof (CHAR8 *));
+    if (RedfishValue.Value.StringArray == NULL) {
+      ASSERT (FALSE);
+      return EFI_OUT_OF_RESOURCES;
+    }
 
-      //
-      // Convert array from RedfishCS_char_Array to EDKII_REDFISH_VALUE
-      //
-      RedfishValue.ArrayCount = 0;
-      Buffer                  = ArrayHead;
-      while (Buffer != NULL) {
-        RedfishValue.ArrayCount += 1;
-        Buffer                   = Buffer->Next;
-      }
-
-      //
-      // Allocate pool for new values
-      //
-      RedfishValue.Value.StringArray = AllocatePool (RedfishValue.ArrayCount *sizeof (CHAR8 *));
-      if (RedfishValue.Value.StringArray == NULL) {
+    Buffer = ArrayHead;
+    Index  = 0;
+    while (Buffer != NULL) {
+      RedfishValue.Value.StringArray[Index] = AllocateCopyPool (AsciiStrSize (Buffer->ArrayValue), Buffer->ArrayValue);
+      if (RedfishValue.Value.StringArray[Index] == NULL) {
         ASSERT (FALSE);
         return EFI_OUT_OF_RESOURCES;
       }
 
-      Buffer = ArrayHead;
-      Index  = 0;
-      while (Buffer != NULL) {
-        RedfishValue.Value.StringArray[Index] = AllocateCopyPool (AsciiStrSize (Buffer->ArrayValue), Buffer->ArrayValue);
-        if (RedfishValue.Value.StringArray[Index] == NULL) {
-          ASSERT (FALSE);
-          return EFI_OUT_OF_RESOURCES;
-        }
-
-        Buffer = Buffer->Next;
-        Index++;
-      }
-
-      ASSERT (Index <= RedfishValue.ArrayCount);
-
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
-      if (!EFI_ERROR (Status)) {
-        //
-        // Configuration changed. Enable system reboot flag.
-        //
-        REDFISH_ENABLE_SYSTEM_REBOOT ();
-      } else {
-        DEBUG ((DEBUG_ERROR, "%a, apply %s array failed: %r\n", __func__, ConfigureLang, Status));
-      }
-    } else {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
+      Buffer = Buffer->Next;
+      Index++;
     }
+
+    ASSERT (Index <= RedfishValue.ArrayCount);
+
+    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+    if (!EFI_ERROR (Status)) {
+      //
+      // Configuration changed. Enable system reboot flag.
+      //
+      REDFISH_ENABLE_SYSTEM_REBOOT ();
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a, apply %s array failed: %r\n", __func__, ConfigureLang, Status));
+    }
+  } else {
+    DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
   }
 
   return Status;
@@ -866,63 +867,64 @@ ApplyFeatureSettingsNumericArrayType (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLang, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s failed: %r\n", __func__, Schema, Version, ConfigureLang, Status));
-  } else {
-    if (RedfishValue.Type != RedfishValueTypeIntegerArray) {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
-      return EFI_DEVICE_ERROR;
+    return Status;
+  }
+
+  if (RedfishValue.Type != RedfishValueTypeIntegerArray) {
+    DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
+    return EFI_DEVICE_ERROR;
+  }
+
+  //
+  // If there is no change in array, do nothing
+  //
+  if (!CompareRedfishNumericArrayValues (ArrayHead, RedfishValue.Value.IntegerArray, RedfishValue.ArrayCount)) {
+    //
+    // Apply settings from redfish
+    //
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+    FreeArrayTypeRedfishValue (&RedfishValue);
+
+    //
+    // Convert array from RedfishCS_int64_Array to EDKII_REDFISH_VALUE
+    //
+    RedfishValue.ArrayCount = 0;
+    Buffer                  = ArrayHead;
+    while (Buffer != NULL) {
+      RedfishValue.ArrayCount += 1;
+      Buffer                   = Buffer->Next;
     }
 
     //
-    // If there is no change in array, do nothing
+    // Allocate pool for new values
     //
-    if (!CompareRedfishNumericArrayValues (ArrayHead, RedfishValue.Value.IntegerArray, RedfishValue.ArrayCount)) {
-      //
-      // Apply settings from redfish
-      //
-      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
-      FreeArrayTypeRedfishValue (&RedfishValue);
+    RedfishValue.Value.IntegerArray = AllocatePool (RedfishValue.ArrayCount * sizeof (INT64));
+    if (RedfishValue.Value.IntegerArray == NULL) {
+      ASSERT (FALSE);
+      return EFI_OUT_OF_RESOURCES;
+    }
 
-      //
-      // Convert array from RedfishCS_int64_Array to EDKII_REDFISH_VALUE
-      //
-      RedfishValue.ArrayCount = 0;
-      Buffer                  = ArrayHead;
-      while (Buffer != NULL) {
-        RedfishValue.ArrayCount += 1;
-        Buffer                   = Buffer->Next;
-      }
+    Buffer = ArrayHead;
+    Index  = 0;
+    while (Buffer != NULL) {
+      RedfishValue.Value.IntegerArray[Index] = (INT64)*Buffer->ArrayValue;
+      Buffer                                 = Buffer->Next;
+      Index++;
+    }
 
+    ASSERT (Index <= RedfishValue.ArrayCount);
+
+    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+    if (!EFI_ERROR (Status)) {
       //
-      // Allocate pool for new values
+      // Configuration changed. Enable system reboot flag.
       //
-      RedfishValue.Value.IntegerArray = AllocatePool (RedfishValue.ArrayCount * sizeof (INT64));
-      if (RedfishValue.Value.IntegerArray == NULL) {
-        ASSERT (FALSE);
-        return EFI_OUT_OF_RESOURCES;
-      }
-
-      Buffer = ArrayHead;
-      Index  = 0;
-      while (Buffer != NULL) {
-        RedfishValue.Value.IntegerArray[Index] = (INT64)*Buffer->ArrayValue;
-        Buffer                                 = Buffer->Next;
-        Index++;
-      }
-
-      ASSERT (Index <= RedfishValue.ArrayCount);
-
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
-      if (!EFI_ERROR (Status)) {
-        //
-        // Configuration changed. Enable system reboot flag.
-        //
-        REDFISH_ENABLE_SYSTEM_REBOOT ();
-      } else {
-        DEBUG ((DEBUG_ERROR, "%a, apply %s array failed: %r\n", __func__, ConfigureLang, Status));
-      }
+      REDFISH_ENABLE_SYSTEM_REBOOT ();
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
+      DEBUG ((DEBUG_ERROR, "%a, apply %s array failed: %r\n", __func__, ConfigureLang, Status));
     }
+  } else {
+    DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
   }
 
   return Status;
@@ -964,63 +966,64 @@ ApplyFeatureSettingsBooleanArrayType (
   Status = RedfishPlatformConfigGetValue (Schema, Version, ConfigureLang, &RedfishValue);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, %a.%a %s failed: %r\n", __func__, Schema, Version, ConfigureLang, Status));
-  } else {
-    if (RedfishValue.Type != RedfishValueTypeBooleanArray) {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
-      return EFI_DEVICE_ERROR;
+    return Status;
+  }
+
+  if (RedfishValue.Type != RedfishValueTypeBooleanArray) {
+    DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is not string array type\n", __func__, Schema, Version, ConfigureLang));
+    return EFI_DEVICE_ERROR;
+  }
+
+  //
+  // If there is no change in array, do nothing
+  //
+  if (!CompareRedfishBooleanArrayValues (ArrayHead, RedfishValue.Value.BooleanArray, RedfishValue.ArrayCount)) {
+    //
+    // Apply settings from redfish
+    //
+    DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+    FreeArrayTypeRedfishValue (&RedfishValue);
+
+    //
+    // Convert array from RedfishCS_int64_Array to EDKII_REDFISH_VALUE
+    //
+    RedfishValue.ArrayCount = 0;
+    Buffer                  = ArrayHead;
+    while (Buffer != NULL) {
+      RedfishValue.ArrayCount += 1;
+      Buffer                   = Buffer->Next;
     }
 
     //
-    // If there is no change in array, do nothing
+    // Allocate pool for new values
     //
-    if (!CompareRedfishBooleanArrayValues (ArrayHead, RedfishValue.Value.BooleanArray, RedfishValue.ArrayCount)) {
-      //
-      // Apply settings from redfish
-      //
-      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
-      FreeArrayTypeRedfishValue (&RedfishValue);
+    RedfishValue.Value.BooleanArray = AllocatePool (RedfishValue.ArrayCount * sizeof (BOOLEAN));
+    if (RedfishValue.Value.BooleanArray == NULL) {
+      ASSERT (FALSE);
+      return EFI_OUT_OF_RESOURCES;
+    }
 
-      //
-      // Convert array from RedfishCS_int64_Array to EDKII_REDFISH_VALUE
-      //
-      RedfishValue.ArrayCount = 0;
-      Buffer                  = ArrayHead;
-      while (Buffer != NULL) {
-        RedfishValue.ArrayCount += 1;
-        Buffer                   = Buffer->Next;
-      }
+    Buffer = ArrayHead;
+    Index  = 0;
+    while (Buffer != NULL) {
+      RedfishValue.Value.BooleanArray[Index] = (BOOLEAN)*Buffer->ArrayValue;
+      Buffer                                 = Buffer->Next;
+      Index++;
+    }
 
+    ASSERT (Index <= RedfishValue.ArrayCount);
+
+    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+    if (!EFI_ERROR (Status)) {
       //
-      // Allocate pool for new values
+      // Configuration changed. Enable system reboot flag.
       //
-      RedfishValue.Value.BooleanArray = AllocatePool (RedfishValue.ArrayCount * sizeof (BOOLEAN));
-      if (RedfishValue.Value.BooleanArray == NULL) {
-        ASSERT (FALSE);
-        return EFI_OUT_OF_RESOURCES;
-      }
-
-      Buffer = ArrayHead;
-      Index  = 0;
-      while (Buffer != NULL) {
-        RedfishValue.Value.BooleanArray[Index] = (BOOLEAN)*Buffer->ArrayValue;
-        Buffer                                 = Buffer->Next;
-        Index++;
-      }
-
-      ASSERT (Index <= RedfishValue.ArrayCount);
-
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
-      if (!EFI_ERROR (Status)) {
-        //
-        // Configuration changed. Enable system reboot flag.
-        //
-        REDFISH_ENABLE_SYSTEM_REBOOT ();
-      } else {
-        DEBUG ((DEBUG_ERROR, "%a, apply %s array failed: %r\n", __func__, ConfigureLang, Status));
-      }
+      REDFISH_ENABLE_SYSTEM_REBOOT ();
     } else {
-      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
+      DEBUG ((DEBUG_ERROR, "%a, apply %s array failed: %r\n", __func__, ConfigureLang, Status));
     }
+  } else {
+    DEBUG ((DEBUG_ERROR, "%a, %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
   }
 
   return Status;
