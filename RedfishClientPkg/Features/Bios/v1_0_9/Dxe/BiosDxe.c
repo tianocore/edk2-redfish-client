@@ -718,6 +718,7 @@ RedfishExternalResourceResourceFeatureCallback (
   Private->Uri = RedfishGetUri (ResourceUri);
   if (Private->Uri == NULL) {
     ASSERT (FALSE);
+    FreePool (ResourceUri);
     return EFI_OUT_OF_RESOURCES;
   }
 
@@ -727,6 +728,7 @@ RedfishExternalResourceResourceFeatureCallback (
   }
 
   FreePool (Private->Uri);
+  FreePool (ResourceUri);
   return Status;
 }
 
