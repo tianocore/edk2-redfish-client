@@ -1457,7 +1457,7 @@ RedfishCheckResourceCommon (
 
   Status = RedfishPlatformConfigGetConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigureLangList, &Count);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __func__, Status));
+    DEBUG ((DEBUG_ERROR, "%a, RedfishPlatformConfigGetConfigureLang failed: %r\n", __func__, Status));
     return Status;
   }
 
@@ -1591,7 +1591,7 @@ RedfishIdentifyResourceCommon (
   if (Supported) {
     Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigLangList);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, BiosConfigToRedfishGetConfigureLangRegex failed: %r\n", __func__, Status));
+      DEBUG ((DEBUG_ERROR, "%a, RedfishFeatureGetUnifiedArrayTypeConfigureLang failed: %r\n", __func__, Status));
       return Status;
     }
 
