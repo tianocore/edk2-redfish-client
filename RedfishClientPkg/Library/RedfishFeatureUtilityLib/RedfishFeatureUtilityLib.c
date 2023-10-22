@@ -507,7 +507,7 @@ ApplyFeatureSettingsNumericType (
       //
       // Apply settings from redfish
       //
-      DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a apply %s from 0x%x to 0x%x\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Integer, FeatureValue));
+      DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from 0x%lx to 0x%lx\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Integer, (INT64)FeatureValue));
 
       RedfishValue.Value.Integer = (INT64)FeatureValue;
 
@@ -521,7 +521,7 @@ ApplyFeatureSettingsNumericType (
         DEBUG ((DEBUG_ERROR, "%a: apply %s to 0x%x failed: %r\n", __func__, ConfigureLang, FeatureValue, Status));
       }
     } else {
-      DEBUG ((DEBUG_ERROR, "%a: %a.%a %s value is: 0x%x\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Integer));
+      DEBUG ((DEBUG_ERROR, "%a, %a.%a %s value is: 0x%lx\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Integer));
     }
   }
 
@@ -754,7 +754,7 @@ ApplyFeatureSettingsVagueType (
           //
           // Apply settings from redfish
           //
-          DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a apply %s from 0x%x to 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from 0x%lx to 0x%lx\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr));
 
           RedfishValue.Value.Integer = (INT64)*CurrentVagueValuePtr->Value->DataValue.Int64Ptr;
           Status                     = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, RedfishValue);
@@ -764,10 +764,10 @@ ApplyFeatureSettingsVagueType (
             //
             REDFISH_ENABLE_SYSTEM_REBOOT ();
           } else {
-            DEBUG ((DEBUG_ERROR, "%a: apply %s to 0x%x failed: %r\n", __func__, ConfigureKeyLang, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr, Status));
+            DEBUG ((DEBUG_ERROR, "%a, apply %s to 0x%lx failed: %r\n", __func__, ConfigureKeyLang, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr, Status));
           }
         } else {
-          DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a %s value is: 0x%x\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer));
+          DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a %s value is: 0x%lx\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer));
         }
       } else {
         DEBUG ((DEBUG_ERROR, "%a: %a.%a %s Unsupported Redfish property data type\n", __func__, Schema, Version, ConfigureLang));
