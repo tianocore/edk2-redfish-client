@@ -319,14 +319,14 @@ NewInternalInstance (
   REDFISH_FEATURE_INTERNAL_DATA  *NewInternalData;
 
   if ((PtrToNewInternalData == NULL) || (NodeName == NULL)) {
-    DEBUG ((DEBUG_ERROR, "%a: Inproper given parameters\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Inproper given parameters\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
 
   *PtrToNewInternalData = NULL;
   NewInternalData       = AllocateZeroPool (sizeof (REDFISH_FEATURE_INTERNAL_DATA));
   if (NewInternalData == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: No memory for REDFISH_FEATURE_INTERNAL_DATA\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: No memory for REDFISH_FEATURE_INTERNAL_DATA\n", __func__));
     return EFI_OUT_OF_RESOURCES;
   }
 
@@ -377,12 +377,12 @@ InsertRedfishFeatureUriNode (
 
   *MatchNodeEntry = NULL;
   if (NodeName == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: Node name is NULL.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: Node name is NULL.\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
 
   if (NextNodeEntry == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a: NextNodeEntry can't be NULL.\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: NextNodeEntry can't be NULL.\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -487,7 +487,7 @@ RedfishFeatureRegister (
   BOOLEAN                        ItsCollection;
 
   if ((FeatureManagedUri == NULL) || (Callback == NULL)) {
-    DEBUG ((DEBUG_ERROR, "%a: The given parameter is invalid\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: The given parameter is invalid\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -503,7 +503,7 @@ RedfishFeatureRegister (
   while ((Index < UriLength)) {
     if ((Index - AnchorIndex + 1) >= MaxNodeNameLength) {
       // Increase one for the NULL terminator
-      DEBUG ((DEBUG_ERROR, "%a: the length of node name is >= MaxNodeNameLength\n", __FUNCTION__));
+      DEBUG ((DEBUG_ERROR, "%a: the length of node name is >= MaxNodeNameLength\n", __func__));
       ASSERT (FALSE);
     }
 
@@ -568,7 +568,7 @@ RedfishFeatureRegister (
     //
     // No URI node was created
     //
-    DEBUG ((DEBUG_ERROR, "%a: No URI node is added\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a: No URI node is added\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
 
