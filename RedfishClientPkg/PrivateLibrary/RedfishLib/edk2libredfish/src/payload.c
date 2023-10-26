@@ -10,6 +10,7 @@
 
   Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -629,7 +630,7 @@ getOpResult (
   }
 
   stringProp = prop->json;
-  jsonType   =  json_get_type (prop->json);
+  jsonType   =  JsonGetType (prop->json);
   switch (jsonType) {
     case JSON_OBJECT:
       stringProp = json_object_get (prop->json, propName);
