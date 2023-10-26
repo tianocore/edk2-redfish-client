@@ -331,6 +331,12 @@ NewInternalInstance (
   }
 
   NewInternalData->NodeName = AllocateZeroPool (StrSize (NodeName));
+  if (NewInternalData->NodeName == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: No memory for NodeName\n", __func__));
+    FreePool (NewInternalData);
+    return EFI_OUT_OF_RESOURCES;
+  }
+
   StrnCpyS (NewInternalData->NodeName, StrLen (NodeName) + 1, (CONST CHAR16 *)NodeName, StrLen (NodeName));
   NewInternalData->SiblingList = NULL;
   NewInternalData->ChildList   = NULL;
