@@ -45,6 +45,7 @@
   UefiRuntimeServicesTableLib
   PrintLib
   HttpLib
+  RedfishDebugLib
 
 [Protocols]
   gEdkIIRedfishETagProtocolGuid           ## CONSUMED ##
