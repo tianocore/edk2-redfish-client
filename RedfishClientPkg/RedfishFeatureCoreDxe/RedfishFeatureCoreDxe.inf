@@ -47,6 +47,7 @@
 
 [Protocols]
   gEdkIIRedfishFeatureProtocolGuid    ## BY_START
+  gEdkiiRedfishOverrideProtocolGuid   ## CONSUMED
 
 [Pcd]
   gEfiRedfishClientPkgTokenSpaceGuid.PcdEdkIIRedfishFeatureDriverStartupEventGuid
