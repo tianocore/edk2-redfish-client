@@ -31,10 +31,11 @@
 
 [LibraryClasses]
   BaseLib
+  BaseMemoryLib
   DebugLib
   MemoryAllocationLib
   PcdLib
-  RedfishLib
+  RedfishHttpLib
   JsonLib
 
 [Protocols]

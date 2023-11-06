@@ -2,6 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -2190,7 +2191,7 @@ ProvisioningMemoryResource (
   // Keep location of new resource.
   //
   if (NewResourceLocation != NULL) {
-    RedfisSetRedfishUri (ConfigureLang, NewResourceLocation);
+    RedfishSetRedfishUri (ConfigureLang, NewResourceLocation);
   }
 
   //
@@ -2537,7 +2538,7 @@ RedfishIdentifyResourceCommon (
     //
     // Keep URI and ConfigLang mapping
     //
-    RedfisSetRedfishUri (ConfigLangList.List[0].ConfigureLang, Private->Uri);
+    RedfishSetRedfishUri (ConfigLangList.List[0].ConfigureLang, Private->Uri);
     //
     // Set the configuration language in the RESOURCE_INFORMATION_EXCHANGE.
     // This information is sent back to the parent resource (e.g. the collection driver).

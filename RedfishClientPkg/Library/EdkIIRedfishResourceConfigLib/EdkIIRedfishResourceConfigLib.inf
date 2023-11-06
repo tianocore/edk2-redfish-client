@@ -38,6 +38,7 @@
   MemoryAllocationLib
   RedfishFeatureUtilityLib
   RedfishPlatformConfigLib
+  RedfishHttpLib
 
 [Protocols]
   gEdkIIRedfishResourceConfigProtocolGuid   ## CONSUMES ##
