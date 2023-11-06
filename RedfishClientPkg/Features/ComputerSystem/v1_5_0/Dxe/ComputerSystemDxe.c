@@ -50,7 +50,8 @@ RedfishResourceProvisioningResource (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -66,12 +67,7 @@ RedfishResourceProvisioningResource (
   // Release resource
   //
   if (Private->Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
+    RedfishHttpFreeResource (&Response);
     Private->Payload = NULL;
   }
 
@@ -110,7 +106,8 @@ RedfishResourceConsumeResource (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -150,12 +147,7 @@ RedfishResourceConsumeResource (
   // Release resource
   //
   if (Private->Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
+    RedfishHttpFreeResource (&Response);
     Private->Payload = NULL;
   }
 
@@ -234,7 +226,8 @@ RedfishResourceUpdate (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -256,12 +249,7 @@ RedfishResourceUpdate (
   // Release resource
   //
   if (Private->Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
+    RedfishHttpFreeResource (&Response);
     Private->Payload = NULL;
   }
 
@@ -304,7 +292,8 @@ RedfishResourceCheck (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -326,12 +315,7 @@ RedfishResourceCheck (
   // Release resource
   //
   if (Private->Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
+    RedfishHttpFreeResource (&Response);
     Private->Payload = NULL;
   }
 
@@ -375,7 +359,8 @@ RedfishResourceIdentify (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -397,12 +382,7 @@ RedfishResourceIdentify (
   // Release resource
   //
   if (Private->Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
+    RedfishHttpFreeResource (&Response);
     Private->Payload = NULL;
   }
 

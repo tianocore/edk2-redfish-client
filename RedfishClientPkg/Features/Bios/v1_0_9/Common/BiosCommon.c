@@ -267,18 +267,22 @@ ProvisioningBiosResource (
   IN  EFI_STRING                       ConfigureLang
   )
 {
-  CHAR8       *Json;
-  CHAR8       *JsonWithAddendum;
-  EFI_STATUS  Status;
-  EFI_STRING  NewResourceLocation;
-  CHAR8       *EtagStr;
-  CHAR8       ResourceId[16];
+  CHAR8             *Json;
+  CHAR8             *JsonWithAddendum;
+  EFI_STATUS        Status;
+  EFI_STRING        NewResourceLocation;
+  CHAR8             *EtagStr;
+  CHAR8             ResourceId[16];
+  REDFISH_RESPONSE  Response;
 
   if (IS_EMPTY_STRING (ConfigureLang) || (Private == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
-  EtagStr = NULL;
+  EtagStr             = NULL;
+  Json                = NULL;
+  NewResourceLocation = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
   AsciiSPrint (ResourceId, sizeof (ResourceId), "%d", Index);
 
   Status = ProvisioningBiosProperties (
@@ -326,9 +330,15 @@ ProvisioningBiosResource (
     JsonWithAddendum = NULL;
   }
 
-  Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, &NewResourceLocation, &EtagStr);
+  Status = RedfishHttpPostResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, post Bios resource for %s failed: %r\n", __func__, ConfigureLang, Status));
+    goto RELEASE_RESOURCE;
+  }
+
+  Status = GetEtagAndLocation (&Response, &EtagStr, &NewResourceLocation);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a, get ETag and location failed: %r\n", __func__, Status));
     goto RELEASE_RESOURCE;
   }
 
@@ -358,6 +368,8 @@ RELEASE_RESOURCE:
   if (Json != NULL) {
     FreePool (Json);
   }
+
+  RedfishHttpFreeResource (&Response);
 
   return Status;
 }
@@ -401,11 +413,12 @@ ProvisioningBiosExistResource (
   IN  REDFISH_RESOURCE_COMMON_PRIVATE  *Private
   )
 {
-  EFI_STATUS  Status;
-  EFI_STRING  ConfigureLang;
-  CHAR8       *EtagStr;
-  CHAR8       *Json;
-  CHAR8       *JsonWithAddendum;
+  EFI_STATUS        Status;
+  EFI_STRING        ConfigureLang;
+  CHAR8             *EtagStr;
+  CHAR8             *Json;
+  CHAR8             *JsonWithAddendum;
+  REDFISH_RESPONSE  Response;
 
   if (Private == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -414,6 +427,7 @@ ProvisioningBiosExistResource (
   EtagStr       = NULL;
   Json          = NULL;
   ConfigureLang = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
 
   ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
   if (ConfigureLang == NULL) {
@@ -472,11 +486,17 @@ ProvisioningBiosExistResource (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __func__, ConfigureLang));
   //
-  // PUT back to instance
+  // PATCH back to instance
   //
-  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
+  Status = RedfishHttpPatchResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
+  }
+
+  Status = GetEtagAndLocation (&Response, &EtagStr, NULL);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a, get ETag failed: %r\n", __func__, Status));
+    goto ON_RELEASE;
   }
 
   //
@@ -496,6 +516,8 @@ ON_RELEASE:
   if (ConfigureLang != NULL) {
     FreePool (ConfigureLang);
   }
+
+  RedfishHttpFreeResource (&Response);
 
   return Status;
 }
@@ -595,11 +617,12 @@ RedfishUpdateResourceCommon (
   IN     CHAR8                            *InputJson
   )
 {
-  EFI_STATUS  Status;
-  CHAR8       *Json;
-  CHAR8       *JsonWithAddendum;
-  EFI_STRING  ConfigureLang;
-  CHAR8       *EtagStr;
+  EFI_STATUS        Status;
+  CHAR8             *Json;
+  CHAR8             *JsonWithAddendum;
+  EFI_STRING        ConfigureLang;
+  CHAR8             *EtagStr;
+  REDFISH_RESPONSE  Response;
 
   if ((Private == NULL) || IS_EMPTY_STRING (InputJson)) {
     return EFI_INVALID_PARAMETER;
@@ -608,6 +631,7 @@ RedfishUpdateResourceCommon (
   EtagStr       = NULL;
   Json          = NULL;
   ConfigureLang = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
 
   ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
   if (ConfigureLang == NULL) {
@@ -666,11 +690,17 @@ RedfishUpdateResourceCommon (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __func__, ConfigureLang));
   //
-  // PUT back to instance
+  // PATCH back to instance
   //
-  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
+  Status = RedfishHttpPatchResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
+  }
+
+  Status = GetEtagAndLocation (&Response, &EtagStr, NULL);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a, get ETag failed: %r\n", __func__, Status));
+    goto ON_RELEASE;
   }
 
   //
@@ -690,6 +720,8 @@ ON_RELEASE:
   if (ConfigureLang != NULL) {
     FreePool (ConfigureLang);
   }
+
+  RedfishHttpFreeResource (&Response);
 
   return Status;
 }
