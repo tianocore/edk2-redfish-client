@@ -45,6 +45,8 @@
   gEdkIIRedfishFeatureInterchangeDataProtocolGuid = { 0x4B8FF71C, 0x4A7B, 0x9478, { 0xB7, 0x81, 0x35, 0x9B, 0x0A, 0xF2, 0x00, 0x91 } }
   ## Include/Protocol/EdkIIRedfishResourceAddendumProtocol.h
   gEdkIIRedfishResourceAddendumProtocolGuid = { 0xda36b12b, 0xaad4, 0x4e90, { 0xba, 0xcb, 0xe3, 0xb5, 0x3b, 0x08, 0xbc, 0x54 } }
+  ## Include/Protocol/EdkIIRedfishHttpProtocol.h
+  gEdkIIRedfishHttpProtocolGuid             = { 0xc3194dd2, 0xc796, 0x4abe, { 0xbd, 0x39, 0x9d, 0xf2, 0xe0, 0x4b, 0x86, 0xbc } }
 
 [Guids]
   ## Include/Guid/RedfishClientPkgTokenSpace.h
@@ -73,6 +75,20 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdDefaultRedfishVersion|L"v1"|VOID*|0x10000004
   ## The number of seconds that the firmware will wait before system reboot
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootTimeout|5|UINT16|0x20000002
+  ## The number of retry when HTTP GET request failed. If the value is 0, there is no retry enabled.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpGetRetry|0|UINT16|0x20000003
+  ## The number of retry when HTTP PUT request failed. If the value is 0, there is no retry enabled.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpPutRetry|0|UINT16|0x20000004
+  ## The number of retry when HTTP PATCH request failed. If the value is 0, there is no retry enabled.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpPatchRetry|0|UINT16|0x20000005
+  ## The number of retry when HTTP POST request failed. If the value is 0, there is no retry enabled.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpPostRetry|0|UINT16|0x20000006
+  ## The number of retry when HTTP DELETE request failed. If the value is 0, there is no retry enabled.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpDeleteRetry|0|UINT16|0x20000007
+  ## The number of second to wait before driver retry HTTP request. If the value is 0, there is no wait before next retry.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpRetryWaitInSecond|1|UINT16|0x20000008
+  ## This is used to disable Redfish HTTP cache function and every request will be sent to Redfish service.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpCacheDisabled|FALSE|BOOLEAN|0x20000009
 
 [PcdsDynamicEx]
   ## The flag used to indicate that system reboot is required due to system configuration change
