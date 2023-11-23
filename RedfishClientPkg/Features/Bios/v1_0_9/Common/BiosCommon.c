@@ -338,7 +338,7 @@ ProvisioningBiosResource (
   // Keep location of new resource.
   //
   if (NewResourceLocation != NULL) {
-    RedfisSetRedfishUri (ConfigureLang, NewResourceLocation);
+    RedfishSetRedfishUri (ConfigureLang, NewResourceLocation);
   }
 
   //
@@ -745,7 +745,7 @@ RedfishIdentifyResourceCommon (
     //
     // Keep URI and ConfigLang mapping
     //
-    RedfisSetRedfishUri (ConfigLangList.List[0].ConfigureLang, Private->Uri);
+    RedfishSetRedfishUri (ConfigLangList.List[0].ConfigureLang, Private->Uri);
     //
     // Set the configuration language in the RESOURCE_INFORMATION_EXCHANGE.
     // This information is sent back to the parent resource (e.g. the collection driver).
