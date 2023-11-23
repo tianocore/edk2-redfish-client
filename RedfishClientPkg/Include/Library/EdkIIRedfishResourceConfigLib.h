@@ -2,6 +2,7 @@
   This file defines the EDKII resource config Library interface.
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -18,7 +19,7 @@
 #include <Protocol/EdkIIRedfishInterchangeData.h>
 
 /**
-  Provising redfish resource by given URI.
+  Provisioning redfish resource by given URI.
 
   @param[in]   Schema              Redfish schema information.
   @param[in]   Uri                 Target URI to create resource.
@@ -32,7 +33,7 @@
 
 **/
 EFI_STATUS
-EdkIIRedfishResourceConfigProvisionging (
+EdkIIRedfishResourceConfigProvisioning (
   IN     REDFISH_SCHEMA_INFO            *Schema,
   IN     EFI_STRING                     Uri,
   IN     RESOURCE_INFORMATION_EXCHANGE  *InformationExchange,
@@ -116,6 +117,7 @@ EdkIIRedfishResourceConfigIdentify (
   Set Configure language of this resource in the
   RESOURCE_INFORMATION_EXCHANGE structure.
 
+  @param[in]   ImageHandle     Pointer to image handle.
   @param[in]   ConfigLangList  Pointer to REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST.
 
   @retval EFI_SUCCESS              Configure language is set.
@@ -125,7 +127,8 @@ EdkIIRedfishResourceConfigIdentify (
 **/
 EFI_STATUS
 EdkIIRedfishResourceSetConfigureLang (
-  REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  *ConfigLangList
+  IN EFI_HANDLE                                   ImageHandle,
+  IN REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  *ConfigLangList
   );
 
 /**
