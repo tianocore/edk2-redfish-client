@@ -1,6 +1,7 @@
 /** @file
 
   (C) Copyright 2018-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -446,6 +447,9 @@ CreateEmptyPropCsJson (
     if (TempJsonObj == NULL) {
       return RedfishCS_status_not_found;
     }
+  } else {
+    // Dump JSON from JsonObj.
+    TempJsonObj = JsonObj;
   }
 
   Status = allocateRecordCsMemory (Cs, sizeof (RedfishCS_Type_EmptyProp_CS_Data), (void **)&CsTypeEmptyPropCS);
