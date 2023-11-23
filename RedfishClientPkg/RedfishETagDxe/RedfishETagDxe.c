@@ -124,7 +124,7 @@ AddETagRecord (
     return EFI_OUT_OF_RESOURCES;
   }
 
-  InsertTailList (&List->Listheader, &NewRecord->List);
+  InsertTailList (&List->ListHeader, &NewRecord->List);
   ++List->Count;
   List->TotalSize += NewRecord->Size;
 
@@ -225,20 +225,20 @@ DumpETagList (
     DEBUG ((DEBUG_ERROR, "%s\n", Msg));
   }
 
-  if (IsListEmpty (&ETagList->Listheader)) {
+  if (IsListEmpty (&ETagList->ListHeader)) {
     DEBUG ((DEBUG_MANAGEABILITY, "ETag list is empty\n"));
     return EFI_NOT_FOUND;
   }
 
   DEBUG ((DEBUG_MANAGEABILITY, "Count: %d Total Size: %d\n", ETagList->Count, ETagList->TotalSize));
   Record = NULL;
-  List   = GetFirstNode (&ETagList->Listheader);
-  while (!IsNull (&ETagList->Listheader, List)) {
+  List   = GetFirstNode (&ETagList->ListHeader);
+  while (!IsNull (&ETagList->ListHeader, List)) {
     Record = REDFISH_ETAG_RECORD_FROM_LIST (List);
 
     DEBUG ((DEBUG_MANAGEABILITY, "ETag: %a Uri: %a Size: %d\n", Record->ETag, Record->Uri, Record->Size));
 
-    List = GetNextNode (&ETagList->Listheader, List);
+    List = GetNextNode (&ETagList->ListHeader, List);
   }
 
   return EFI_SUCCESS;
@@ -304,16 +304,16 @@ ReleaseETagList (
     return EFI_INVALID_PARAMETER;
   }
 
-  if (IsListEmpty (&ETagList->Listheader)) {
+  if (IsListEmpty (&ETagList->ListHeader)) {
     return EFI_SUCCESS;
   }
 
   Record = NULL;
   Next   = NULL;
-  List   = GetFirstNode (&ETagList->Listheader);
-  while (!IsNull (&ETagList->Listheader, List)) {
+  List   = GetFirstNode (&ETagList->ListHeader);
+  while (!IsNull (&ETagList->ListHeader, List)) {
     Record = REDFISH_ETAG_RECORD_FROM_LIST (List);
-    Next   = GetNextNode (&ETagList->Listheader, List);
+    Next   = GetNextNode (&ETagList->ListHeader, List);
 
     DeleteETagRecord (ETagList, Record);
 
@@ -352,14 +352,14 @@ SaveETagList (
     return EFI_INVALID_PARAMETER;
   }
 
-  if (IsListEmpty (&ETagList->Listheader)) {
+  if (IsListEmpty (&ETagList->ListHeader)) {
     return EFI_SUCCESS;
   }
 
   //
   // Calculate the total size we need to keep ETag list.
   //
-  VarSize = ETagList->TotalSize + 1; // terminator character
+  VarSize = ETagList->TotalSize + sizeof (CHAR8); // terminator character
   VarData = AllocateZeroPool (VarSize);
   if (VarData == NULL) {
     return EFI_OUT_OF_RESOURCES;
@@ -367,8 +367,8 @@ SaveETagList (
 
   Seeker = VarData;
   Record = NULL;
-  List   = GetFirstNode (&ETagList->Listheader);
-  while (!IsNull (&ETagList->Listheader, List)) {
+  List   = GetFirstNode (&ETagList->ListHeader);
+  while (!IsNull (&ETagList->ListHeader, List)) {
     Record = REDFISH_ETAG_RECORD_FROM_LIST (List);
 
     StrSize = AsciiStrSize (Record->Uri);
@@ -386,7 +386,7 @@ SaveETagList (
 
     ++Seeker;
 
-    List = GetNextNode (&ETagList->Listheader, List);
+    List = GetNextNode (&ETagList->ListHeader, List);
   }
 
   *Seeker = '\0';
@@ -468,7 +468,7 @@ InitialETagList (
     //
     Seeker = AsciiStrStr (UriPointer, "|");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
+      DEBUG ((DEBUG_ERROR, "%a: data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -481,7 +481,7 @@ InitialETagList (
     //
     Seeker = AsciiStrStr (ETagPointer, "\n");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
+      DEBUG ((DEBUG_ERROR, "%a: data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -532,11 +532,13 @@ RedfishETagGet (
     return EFI_INVALID_PARAMETER;
   }
 
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: %a\n", __func__, Uri));
+
   Private = REDFISH_ETAG_PRIVATE_FROM_THIS (This);
 
   *ETag = NULL;
 
-  Target = FindETagRecord (&Private->ETagList.Listheader, Uri);
+  Target = FindETagRecord (&Private->ETagList.ListHeader, Uri);
   if (Target == NULL) {
     return EFI_NOT_FOUND;
   }
@@ -551,7 +553,8 @@ RedfishETagGet (
 
   @param[in]   This                Pointer to EDKII_REDFISH_ETAG_PROTOCOL instance.
   @param[in]   Uri                 The target Uri which related to ETag.
-  @param[in]   ETag                The ETag to add. If ETag is NULL, the record of corresponding URI will be removed.
+  @param[in]   ETag                The ETag to add. If ETag is NULL, the record of
+                                   corresponding URI will be removed.
 
   @retval EFI_SUCCESS              This handler has been stoped successfully.
   @retval Others                   Some error happened.
@@ -573,10 +576,12 @@ RedfishETagSet (
     return EFI_INVALID_PARAMETER;
   }
 
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: %a -> %a\n", __func__, Uri, (ETag == NULL ? "NULL" : ETag)));
+
   Private = REDFISH_ETAG_PRIVATE_FROM_THIS (This);
 
   Status = EFI_NOT_FOUND;
-  Target = FindETagRecord (&Private->ETagList.Listheader, Uri);
+  Target = FindETagRecord (&Private->ETagList.ListHeader, Uri);
   if (Target != NULL) {
     //
     // Remove old one and create new one.
@@ -620,14 +625,16 @@ RedfishETagFlush (
 
   Status = SaveETagList (&Private->ETagList, Private->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, save ETag list to variable: %s failed: %r\n", __func__, Private->VariableName, Status));
+    DEBUG ((DEBUG_ERROR, "%a: save ETag list to variable: %s failed: %r\n", __func__, Private->VariableName, Status));
   }
+
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: save ETag list to variable: %s\n", __func__, Private->VariableName));
 
   return Status;
 }
 
 /**
-  Callback function executed when the ExitBootService event group is signaled.
+  Callback function executed when the AfterProvisioning event group is signaled.
 
   @param[in]   Event    Event whose notification function is being invoked.
   @param[out]  Context  Pointer to the Context buffer
@@ -635,13 +642,13 @@ RedfishETagFlush (
 **/
 VOID
 EFIAPI
-RedfishETagOnExitBootService (
+RedfishETagOnRedfishAfterProvisioning (
   IN  EFI_EVENT  Event,
   OUT VOID       *Context
   )
 {
   //
-  // Memory is about to be released. Keep list into variable.
+  // Redfish provisioning is finished. Keep ETag into variable.
   //
   RedfishETagFlush (&mRedfishETagPrivate->Protocol);
 }
@@ -670,7 +677,7 @@ RedfishETagDriverUnload (
                     (VOID *)&mRedfishETagPrivate->Protocol
                     );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, can not uninstall gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
+      DEBUG ((DEBUG_ERROR, "%a: can not uninstall gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
       ASSERT (FALSE);
     }
 
@@ -725,7 +732,7 @@ RedfishETagDriverEntryPoint (
     return EFI_OUT_OF_RESOURCES;
   }
 
-  InitializeListHead (&mRedfishETagPrivate->ETagList.Listheader);
+  InitializeListHead (&mRedfishETagPrivate->ETagList.ListHeader);
   mRedfishETagPrivate->VariableName = AllocateCopyPool (StrSize (ETAG_VARIABLE_NAME), ETAG_VARIABLE_NAME);
   if (mRedfishETagPrivate->VariableName == NULL) {
     Status = EFI_OUT_OF_RESOURCES;
@@ -742,33 +749,30 @@ RedfishETagDriverEntryPoint (
                   (VOID *)&mRedfishETagPrivate->Protocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, can not install gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
+    DEBUG ((DEBUG_ERROR, "%a: can not install gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
     ASSERT (FALSE);
-    goto ON_ERROR;
-  }
-
-  //
-  // Create Exit Boot Service event.
-  //
-  Status = gBS->CreateEventEx (
-                  EVT_NOTIFY_SIGNAL,
-                  TPL_CALLBACK,
-                  RedfishETagOnExitBootService,
-                  NULL,
-                  &gEfiEventExitBootServicesGuid,
-                  &mRedfishETagPrivate->Event
-                  );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: Fail to register Exit Boot Service event.", __func__));
     goto ON_ERROR;
   }
 
   //
   // Read existing record from variable.
   //
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: Initial ETag List from variable: %s\n", __func__, mRedfishETagPrivate->VariableName));
   Status = InitialETagList (&mRedfishETagPrivate->ETagList, mRedfishETagPrivate->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_MANAGEABILITY, "%a, Initial ETag List: %r\n", __func__, Status));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: Initial ETag List: %r\n", __func__, Status));
+  }
+
+  //
+  // Register after provisioning event
+  //
+  Status = CreateAfterProvisioningEvent (
+             RedfishETagOnRedfishAfterProvisioning,
+             NULL,
+             &mRedfishETagPrivate->Event
+             );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to register after-provisioning event: %r\n", __func__, Status));
   }
 
   return EFI_SUCCESS;

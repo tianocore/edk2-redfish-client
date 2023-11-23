@@ -2,6 +2,7 @@
   Common header file for RedfishETagDxe driver.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -25,6 +26,7 @@
 #include <Library/UefiDriverEntryPoint.h>
 #include <Library/UefiLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
+#include <Library/RedfishEventLib.h>
 
 #include <Protocol/EdkIIRedfishETagProtocol.h>
 
@@ -49,7 +51,7 @@ typedef struct {
 // Definition of REDFISH_ETAG_LIST
 //
 typedef struct {
-  LIST_ENTRY    Listheader;
+  LIST_ENTRY    ListHeader;
   UINTN         TotalSize;
   UINTN         Count;
 } REDFISH_ETAG_LIST;
