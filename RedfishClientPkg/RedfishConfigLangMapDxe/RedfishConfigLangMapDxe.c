@@ -102,7 +102,7 @@ ON_ERROR:
   @param[in]    Uri         The URI string matching to this ConfigLang.
   @param[in]    ConfigLang  ConfigLang string.
 
-  @retval EFI_SUCCESS   config language map recourd is added.
+  @retval EFI_SUCCESS   config language map record is added.
   @retval Others        Fail to add config language map.
 
 **/
@@ -124,7 +124,7 @@ AddConfigLangMapRecord (
     return EFI_OUT_OF_RESOURCES;
   }
 
-  InsertTailList (&List->Listheader, &NewRecord->List);
+  InsertTailList (&List->ListHeader, &NewRecord->List);
   ++List->Count;
   List->TotalSize += NewRecord->Size;
 
@@ -137,7 +137,7 @@ AddConfigLangMapRecord (
   @param[in]    List    Target config language map list to be removed.
   @param[in]    Record  Pointer to the instance to be deleted.
 
-  @retval EFI_SUCCESS   config language map recourd is removed.
+  @retval EFI_SUCCESS   config language map record is removed.
   @retval Others        Fail to add config language map.
 
 **/
@@ -237,20 +237,20 @@ DumpConfigLangMapList (
     DEBUG ((DEBUG_ERROR, "%s\n", Msg));
   }
 
-  if (IsListEmpty (&ConfigLangMapList->Listheader)) {
+  if (IsListEmpty (&ConfigLangMapList->ListHeader)) {
     DEBUG ((DEBUG_MANAGEABILITY, "ConfigLangMap list is empty\n"));
     return EFI_NOT_FOUND;
   }
 
   DEBUG ((DEBUG_MANAGEABILITY, "Count: %d Total Size: %d\n", ConfigLangMapList->Count, ConfigLangMapList->TotalSize));
   Record = NULL;
-  List   = GetFirstNode (&ConfigLangMapList->Listheader);
-  while (!IsNull (&ConfigLangMapList->Listheader, List)) {
+  List   = GetFirstNode (&ConfigLangMapList->ListHeader);
+  while (!IsNull (&ConfigLangMapList->ListHeader, List)) {
     Record = REDFISH_CONFIG_LANG_MAP_RECORD_FROM_LIST (List);
 
     DEBUG ((DEBUG_MANAGEABILITY, "ConfigLang: %s Uri: %s Size: %d\n", Record->ConfigLang, Record->Uri, Record->Size));
 
-    List = GetNextNode (&ConfigLangMapList->Listheader, List);
+    List = GetNextNode (&ConfigLangMapList->ListHeader, List);
   }
 
   return EFI_SUCCESS;
@@ -317,16 +317,16 @@ ReleaseConfigLangMapList (
     return EFI_INVALID_PARAMETER;
   }
 
-  if (IsListEmpty (&ConfigLangMapList->Listheader)) {
+  if (IsListEmpty (&ConfigLangMapList->ListHeader)) {
     return EFI_SUCCESS;
   }
 
   Record = NULL;
   Next   = NULL;
-  List   = GetFirstNode (&ConfigLangMapList->Listheader);
-  while (!IsNull (&ConfigLangMapList->Listheader, List)) {
+  List   = GetFirstNode (&ConfigLangMapList->ListHeader);
+  while (!IsNull (&ConfigLangMapList->ListHeader, List)) {
     Record = REDFISH_CONFIG_LANG_MAP_RECORD_FROM_LIST (List);
-    Next   = GetNextNode (&ConfigLangMapList->Listheader, List);
+    Next   = GetNextNode (&ConfigLangMapList->ListHeader, List);
 
     DeleteConfigLangMapRecord (ConfigLangMapList, Record);
 
@@ -365,12 +365,12 @@ SaveConfigLangMapList (
     return EFI_INVALID_PARAMETER;
   }
 
-  if (IsListEmpty (&ConfigLangMapList->Listheader)) {
+  if (IsListEmpty (&ConfigLangMapList->ListHeader)) {
     return EFI_SUCCESS;
   }
 
   //
-  // Caculate the total size we need to keep ConfigLangMap list.
+  // Calculate the total size we need to keep ConfigLangMap list.
   //
   VarSize = ConfigLangMapList->TotalSize + sizeof (CHAR16); // terminator character
   VarData = AllocateZeroPool (VarSize);
@@ -380,29 +380,29 @@ SaveConfigLangMapList (
 
   Seeker = (EFI_STRING)VarData;
   Record = NULL;
-  List   = GetFirstNode (&ConfigLangMapList->Listheader);
-  while (!IsNull (&ConfigLangMapList->Listheader, List)) {
+  List   = GetFirstNode (&ConfigLangMapList->ListHeader);
+  while (!IsNull (&ConfigLangMapList->ListHeader, List)) {
     Record = REDFISH_CONFIG_LANG_MAP_RECORD_FROM_LIST (List);
 
     StringSize = StrSize (Record->Uri);
     CopyMem (Seeker, Record->Uri, StringSize);
 
     Seeker += (StringSize / sizeof (CHAR16) - 1);
-    *Seeker = '|';
+    *Seeker = L'|';
     ++Seeker;
 
     StringSize = StrSize (Record->ConfigLang);
     CopyMem (Seeker, Record->ConfigLang, StringSize);
 
     Seeker += (StringSize / sizeof (CHAR16) - 1);
-    *Seeker = '\n';
+    *Seeker = L'\n';
 
     ++Seeker;
 
-    List = GetNextNode (&ConfigLangMapList->Listheader, List);
+    List = GetNextNode (&ConfigLangMapList->ListHeader, List);
   }
 
-  *Seeker = '\0';
+  *Seeker = L'\0';
 
  #if CONFIG_LANG_MAP_DEBUG_ENABLED
   DumpRawBuffer (VarData, VarSize);
@@ -481,7 +481,7 @@ InitialConfigLangMapList (
     //
     Seeker = StrStr (UriPointer, L"|");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
+      DEBUG ((DEBUG_ERROR, "%a: data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -494,7 +494,7 @@ InitialConfigLangMapList (
     //
     Seeker = StrStr (ConfigLangPointer, L"\n");
     if (Seeker == NULL) {
-      DEBUG ((DEBUG_ERROR, "%a, data corrupted\n", __func__));
+      DEBUG ((DEBUG_ERROR, "%a: data corrupted\n", __func__));
       Status = EFI_DEVICE_ERROR;
       goto ON_ERROR;
     }
@@ -548,11 +548,13 @@ RedfishConfigLangMapGet (
     return EFI_INVALID_PARAMETER;
   }
 
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: type: 0x%x %s\n", __func__, QueryStringType, QueryString));
+
   Private = REDFISH_CONFIG_LANG_MAP_PRIVATE_FROM_THIS (This);
 
   *ResultString = NULL;
 
-  Target = FindConfigLangMapRecord (&Private->ConfigLangList.Listheader, QueryString, (QueryStringType == RedfishGetTypeUri));
+  Target = FindConfigLangMapRecord (&Private->ConfigLangList.ListHeader, QueryString, (QueryStringType == RedfishGetTypeUri));
   if (Target == NULL) {
  #if CONFIG_LANG_MAP_DEBUG_ENABLED
     DumpConfigLangMapList (&Private->ConfigLangList, L"EFI_NOT_FOUND");
@@ -597,10 +599,12 @@ RedfishConfigLangMapSet (
     return EFI_INVALID_PARAMETER;
   }
 
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: %s -> %s\n", __func__, ConfigLang, (Uri == NULL ? L"NULL" : Uri)));
+
   Private = REDFISH_CONFIG_LANG_MAP_PRIVATE_FROM_THIS (This);
 
   Status = EFI_NOT_FOUND;
-  Target = FindConfigLangMapRecord (&Private->ConfigLangList.Listheader, ConfigLang, FALSE);
+  Target = FindConfigLangMapRecord (&Private->ConfigLangList.ListHeader, ConfigLang, FALSE);
   if (Target != NULL) {
     //
     // Remove old one and create new one.
@@ -609,7 +613,7 @@ RedfishConfigLangMapSet (
   }
 
   //
-  // When Uri is NULL, it means that we want to remov this record.
+  // When Uri is NULL, it means that we want to remove this record.
   //
   if (Uri == NULL) {
     return Status;
@@ -644,14 +648,16 @@ RedfishConfigLangMapFlush (
 
   Status = SaveConfigLangMapList (&Private->ConfigLangList, Private->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, save ConfigLangMap list to variable: %s failed: %r\n", __func__, Private->VariableName, Status));
+    DEBUG ((DEBUG_ERROR, "%a: save ConfigLangMap list to variable: %s failed: %r\n", __func__, Private->VariableName, Status));
   }
+
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: save Config Language map to variable: %s\n", __func__, Private->VariableName));
 
   return Status;
 }
 
 /**
-  Callback function executed when the ExitBootService event group is signaled.
+  Callback function executed when the AfterProvisioning event group is signaled.
 
   @param[in]   Event    Event whose notification function is being invoked.
   @param[out]  Context  Pointer to the Context buffer
@@ -659,13 +665,13 @@ RedfishConfigLangMapFlush (
 **/
 VOID
 EFIAPI
-RedfishConfigLangMapOnExitBootService (
+RedfishConfigLangMapOnAfterProvisioning  (
   IN  EFI_EVENT  Event,
   OUT VOID       *Context
   )
 {
   //
-  // Memory is about to be released. Keep list into variable.
+  // Redfish provisioning is finished. Keep list into variable.
   //
   RedfishConfigLangMapFlush (&mRedfishConfigLangMapPrivate->Protocol);
 }
@@ -694,7 +700,7 @@ RedfishConfigLangMapDriverUnload (
                     (VOID *)&mRedfishConfigLangMapPrivate->Protocol
                     );
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, can not uninstall gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __func__, Status));
+      DEBUG ((DEBUG_ERROR, "%a: can not uninstall gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __func__, Status));
       ASSERT (FALSE);
     }
 
@@ -753,7 +759,7 @@ RedfishConfigLangMapDriverEntryPoint (
     return EFI_OUT_OF_RESOURCES;
   }
 
-  InitializeListHead (&mRedfishConfigLangMapPrivate->ConfigLangList.Listheader);
+  InitializeListHead (&mRedfishConfigLangMapPrivate->ConfigLangList.ListHeader);
   mRedfishConfigLangMapPrivate->VariableName = AllocateCopyPool (StrSize (CONFIG_LANG_MAP_VARIABLE_NAME), CONFIG_LANG_MAP_VARIABLE_NAME);
   if (mRedfishConfigLangMapPrivate->VariableName == NULL) {
     Status = EFI_OUT_OF_RESOURCES;
@@ -770,40 +776,25 @@ RedfishConfigLangMapDriverEntryPoint (
                   (VOID *)&mRedfishConfigLangMapPrivate->Protocol
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, can not install gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __func__, Status));
+    DEBUG ((DEBUG_ERROR, "%a: can not install gEdkIIRedfishConfigLangMapProtocolGuid: %r\n", __func__, Status));
     ASSERT (FALSE);
-    goto ON_ERROR;
-  }
-
-  //
-  // Create Exit Boot Service event.
-  //
-  Status = gBS->CreateEventEx (
-                  EVT_NOTIFY_SIGNAL,
-                  TPL_CALLBACK,
-                  RedfishConfigLangMapOnExitBootService,
-                  NULL,
-                  &gEfiEventExitBootServicesGuid,
-                  &mRedfishConfigLangMapPrivate->ExitBootEvent
-                  );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: Fail to register Exit Boot Service event.", __func__));
     goto ON_ERROR;
   }
 
   //
   // Read existing record from variable.
   //
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: Initial ConfigLangMap List from variable: %s\n", __func__, mRedfishConfigLangMapPrivate->VariableName));
   Status = InitialConfigLangMapList (&mRedfishConfigLangMapPrivate->ConfigLangList, mRedfishConfigLangMapPrivate->VariableName);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_MANAGEABILITY, "%a, Initial ConfigLangMap List: %r\n", __func__, Status));
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: Initial ConfigLangMap List: %r\n", __func__, Status));
   }
 
   //
   // Register after provisioning event
   //
   Status = CreateAfterProvisioningEvent (
-             RedfishConfigLangMapOnExitBootService,
+             RedfishConfigLangMapOnAfterProvisioning,
              NULL,
              &mRedfishConfigLangMapPrivate->ProvisionEvent
              );

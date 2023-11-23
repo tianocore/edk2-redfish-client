@@ -49,7 +49,7 @@ typedef struct {
 // Definition of REDFISH_CONFIG_LANG_MAP_LIST
 //
 typedef struct {
-  LIST_ENTRY    Listheader;
+  LIST_ENTRY    ListHeader;
   UINTN         TotalSize;
   UINTN         Count;
 } REDFISH_CONFIG_LANG_MAP_LIST;
