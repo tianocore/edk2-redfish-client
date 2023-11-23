@@ -109,6 +109,119 @@ GetArraykeyFromUri (
 
 /**
 
+  This function query ETag from given URI string and keep it in database.
+
+  @param[in]  Service               Redfish service instance to make query.
+  @param[in]  Uri                   URI to query ETag.
+  @param[in]  CheckPendingSettings  Set this to true and @Redfish.Settings will
+                                    be handled together. FALSE otherwise.
+
+  @retval     EFI_SUCCESS     ETAG and URI are applied successfully.
+  @retval     Others          Errors occur.
+
+**/
+EFI_STATUS
+SetEtagFromUri (
+  IN  REDFISH_SERVICE  *RedfishService,
+  IN  EFI_STRING       Uri,
+  IN  BOOLEAN          CheckPendingSettings
+  )
+{
+  EFI_STATUS        Status;
+  CHAR8             *Etag;
+  CHAR8             *AsciiUri;
+  REDFISH_RESPONSE  Response;
+  EFI_STRING        PendingSettingUri;
+
+  if ((RedfishService == NULL) || IS_EMPTY_STRING (Uri)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  AsciiUri          = NULL;
+  Etag              = NULL;
+  PendingSettingUri = NULL;
+
+  Status = RedfishLocateProtocol ((VOID **)&mEtagProtocol, &gEdkIIRedfishETagProtocolGuid);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: fail to locate gEdkIIRedfishETagProtocolGuid: %r\n", __func__, Status));
+    return Status;
+  }
+
+  Status = GetResourceByUri (RedfishService, Uri, &Response);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: get resource from: %s failed\n", __func__, Uri));
+    return Status;
+  }
+
+  //
+  // Find etag in HTTP response header
+  //
+  Status = GetEtagAndLocation (&Response, &Etag, NULL);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to get ETag from HTTP header\n", __func__));
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  AsciiUri = StrUnicodeToAscii (Uri);
+  if (AsciiUri == NULL) {
+    Status = EFI_OUT_OF_RESOURCES;
+    goto ON_RELEASE;
+  }
+
+  //
+  // Save ETag to variable.
+  //
+  Status = mEtagProtocol->Set (mEtagProtocol, AsciiUri, Etag);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to set ETag %a -> %a\n", __func__, Etag, AsciiUri));
+  }
+
+  if (CheckPendingSettings && (Response.Payload != NULL)) {
+    //
+    // Check to see if there is @Redfish.Settings
+    //
+    Status = GetPendingSettings (
+               RedfishService,
+               Response.Payload,
+               NULL,
+               &PendingSettingUri
+               );
+    if (!EFI_ERROR (Status)) {
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a: @Redfish.Settings found: %s\n", __func__, PendingSettingUri));
+
+      Status = SetEtagFromUri (RedfishService, PendingSettingUri, FALSE);
+    }
+  }
+
+ON_RELEASE:
+
+  if (AsciiUri != NULL) {
+    FreePool (AsciiUri);
+  }
+
+  if (Etag != NULL) {
+    FreePool (Etag);
+  }
+
+  if (PendingSettingUri != NULL) {
+    FreePool (PendingSettingUri);
+  }
+
+  if (Response.Payload != NULL) {
+    RedfishFreeResponse (
+      Response.StatusCode,
+      Response.HeaderCount,
+      Response.Headers,
+      Response.Payload
+      );
+  }
+
+  return Status;
+}
+
+/**
+
   Keep ETAG string and URI string in database.
 
   @param[in]  EtagStr   ETAG string.
@@ -143,7 +256,6 @@ SetEtagWithUri (
   }
 
   mEtagProtocol->Set (mEtagProtocol, AsciiUri, EtagStr);
-  mEtagProtocol->Flush (mEtagProtocol);
 
   FreePool (AsciiUri);
 
@@ -504,6 +616,8 @@ ApplyFeatureSettingsVagueType (
   if (IS_EMPTY_STRING (Schema) || IS_EMPTY_STRING (Version) || IS_EMPTY_STRING (ConfigureLang) || (VagueValuePtr == NULL) || (NumberOfVagueValues == 0)) {
     return EFI_INVALID_PARAMETER;
   }
+
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a: schema: %a %a config lang: %s NumberOfVagueValues: %d\n", __func__, Schema, Version, ConfigureLang, NumberOfVagueValues));
 
   ConfigureLangAscii = AllocatePool (StrLen (ConfigureLang) + 1);
   if (ConfigureLangAscii == NULL) {
@@ -1473,7 +1587,7 @@ DestroyConfiglanguageList (
                                     The memory pointed by ConfigLang must be allocated
                                     through memory allocation interface. Because we will replace
                                     the pointer in this function.
-  @param[in]  MaxtLengthConfigLang  The maximum length of ConfigLang.
+  @param[in]  MaxLengthConfigLang   The maximum length of ConfigLang.
   @param[in]  ConfigLangInstance    Pointer to Collection member instance.
 
   @retval     EFI_SUCCESS     The instance is inserted to the configure language.
@@ -1483,7 +1597,7 @@ DestroyConfiglanguageList (
 EFI_STATUS
 SetResourceConfigLangMemberInstance (
   IN EFI_STRING                              *DestConfigLang,
-  IN UINTN                                   MaxtLengthConfigLang,
+  IN UINTN                                   MaxLengthConfigLang,
   IN REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG  *ConfigLangInstance
   )
 {
@@ -1508,14 +1622,14 @@ SetResourceConfigLangMemberInstance (
     if (ConfigLangInstance->ConfigureLang == NULL) {
       return EFI_INVALID_PARAMETER;
     } else {
-      StrCatS (*DestConfigLang, MaxtLengthConfigLang, ConfigLangInstance->ConfigureLang);
+      StrCatS (*DestConfigLang, MaxLengthConfigLang, ConfigLangInstance->ConfigureLang);
       return EFI_SUCCESS;
     }
   }
 
   MaxStrLength  = StrSize (ThisConfigLang) + StrSize ((EFI_STRING)&InstanceStr);
   NewConfigLang = ThisConfigLang;
-  if (MaxtLengthConfigLang < MaxStrLength) {
+  if (MaxLengthConfigLang < MaxStrLength) {
     NewConfigLang = (EFI_STRING)AllocateZeroPool (MaxStrLength);
     if (NewConfigLang == NULL) {
       DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for NewConfigLang.\n", __func__));
@@ -2191,7 +2305,7 @@ GetConfigureLang (
 
 **/
 EFI_STATUS
-RedfisSetRedfishUri (
+RedfishSetRedfishUri (
   IN    EFI_STRING  ConfigLang,
   IN    EFI_STRING  Uri
   )
@@ -3522,6 +3636,72 @@ CompareRedfishBooleanArrayValues (
   }
 
   return TRUE;
+}
+
+/**
+
+  Check and see if "@Redfish.Settings" exist in given Payload. If found, return the
+  payload and URI to pending settings. Caller has to release "SettingPayload" and
+  "SettingUri".
+
+  @param[in]  Payload         Payload that may contain "@Redfish.Settings"
+  @param[out] SettingPayload  Payload keeps pending settings.
+  @param[out] SettingUri      URI to pending settings.
+
+  @retval     EFI_SUCCESS     Pending settings is found and returned.
+  @retval     Others          Error happens
+
+**/
+EFI_STATUS
+GetPendingSettings (
+  IN  REDFISH_SERVICE   RedfishService,
+  IN  REDFISH_PAYLOAD   Payload,
+  OUT REDFISH_RESPONSE  *SettingResponse,
+  OUT EFI_STRING        *SettingUri
+  )
+{
+  CONST CHAR8       *RedfishSettingsUriKeys[] = { "@Redfish.Settings", "SettingsObject", "@odata.id" };
+  EDKII_JSON_VALUE  JsonValue;
+  UINTN             Index;
+  EFI_STATUS        Status;
+
+  if ((RedfishService == NULL) || (Payload == NULL) || (SettingResponse == NULL) || (SettingUri == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  *SettingUri = NULL;
+  JsonValue   = RedfishJsonInPayload (Payload);
+
+  //
+  // Seeking RedfishSettings URI link.
+  //
+  for (Index = 0; Index < ARRAY_SIZE (RedfishSettingsUriKeys); Index++) {
+    if (JsonValue == NULL) {
+      break;
+    }
+
+    JsonValue = JsonObjectGetValue (JsonValueGetObject (JsonValue), RedfishSettingsUriKeys[Index]);
+  }
+
+  if (JsonValue != NULL) {
+    //
+    // Verify RedfishSettings URI link is valid to retrieve resource or not.
+    //
+    *SettingUri = JsonValueGetUnicodeString (JsonValue);
+    if (*SettingUri == NULL) {
+      return EFI_NOT_FOUND;
+    }
+
+    Status = GetResourceByUri (RedfishService, *SettingUri, SettingResponse);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: @Redfish.Settings exists, get resource from: %s failed: %r\n", __func__, *SettingUri, Status));
+      return Status;
+    }
+
+    return EFI_SUCCESS;
+  }
+
+  return EFI_NOT_FOUND;
 }
 
 /**

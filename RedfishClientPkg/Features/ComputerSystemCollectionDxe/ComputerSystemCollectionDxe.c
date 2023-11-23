@@ -55,7 +55,7 @@ HandleResource (
         return EFI_SUCCESS;
       } else if (Status == EFI_NOT_FOUND) {
         DEBUG ((DEBUG_MANAGEABILITY, "%a: \"%s\" has nothing to handle\n", __func__, Uri));
-        RedfisSetRedfishUri (L"/Systems/{1}", Uri);
+        RedfishSetRedfishUri (L"/Systems/{1}", Uri);
         return EFI_SUCCESS;
       }
 
