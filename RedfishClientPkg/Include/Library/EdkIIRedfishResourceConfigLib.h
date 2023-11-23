@@ -77,6 +77,8 @@ EdkIIRedfishResourceConfigUpdate (
   @param[in]   Uri                 The target URI to consume.
 
   @retval EFI_SUCCESS              Value is returned successfully.
+  @retval EFI_UNSUPPORTED          This resource is not owned by feature driver.
+                                   Caller should ignore this resource.
   @retval Others                   Some error happened.
 
 **/
@@ -94,7 +96,12 @@ EdkIIRedfishResourceConfigCheck (
   @param[in]   InformationExchange Pointer to RESOURCE_INFORMATION_EXCHANGE.
 
   @retval EFI_SUCCESS              This is target resource which we want to handle.
-  @retval EFI_UNSUPPORTED          This is not the target resource.
+  @retval EFI_UNSUPPORTED          This resource is not owned by feature driver.
+                                   Caller should ignore this resource.
+  @retval EFI_NOT_FOUND            This resource is owned by feature driver but there
+                                   is nothing to handle now. Caller may ignore the
+                                   rest of operations like check(), provisioning(),
+                                   consume() and update().
   @retval Others                   Some error happened.
 
 **/
