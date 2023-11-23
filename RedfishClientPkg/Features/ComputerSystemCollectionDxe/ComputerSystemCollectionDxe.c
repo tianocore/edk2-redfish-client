@@ -105,7 +105,7 @@ HandleResource (
     // The target property does not exist, do the provision to create property.
     //
     DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __func__, Uri));
-    Status = EdkIIRedfishResourceConfigProvisionging (&SchemaInfo, Uri, Private->InformationExchange, FALSE);
+    Status = EdkIIRedfishResourceConfigProvisioning (&SchemaInfo, Uri, Private->InformationExchange, FALSE);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: failed to provision with GET mode: %r\n", __func__, Status));
     }
@@ -236,7 +236,7 @@ CreateCollectionResource (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a: supported schema: %a %a.%a.%a\n", __func__, SchemaInfo.Schema, SchemaInfo.Major, SchemaInfo.Minor, SchemaInfo.Errata));
 
-  Status = EdkIIRedfishResourceConfigProvisionging (&SchemaInfo, Private->CollectionUri, Private->InformationExchange, TRUE);
+  Status = EdkIIRedfishResourceConfigProvisioning (&SchemaInfo, Private->CollectionUri, Private->InformationExchange, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: failed to create resource for: %s: %r\n", __func__, Private->CollectionUri, Status));
   }

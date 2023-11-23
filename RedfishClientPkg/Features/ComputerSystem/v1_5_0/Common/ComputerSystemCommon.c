@@ -2,6 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -11,7 +12,8 @@
 
 CHAR8  ComputerSystemEmptyJson[] = "{\"@odata.id\": \"\", \"@odata.type\": \"#ComputerSystem.v1_5_0.ComputerSystem\", \"Id\": \"\", \"Name\": \"\", \"Boot\":{}}";
 
-REDFISH_RESOURCE_COMMON_PRIVATE  *mRedfishResourcePrivate = NULL;
+REDFISH_RESOURCE_COMMON_PRIVATE  *mRedfishResourcePrivate             = NULL;
+EFI_HANDLE                       mRedfishResourceConfigProtocolHandle = NULL;
 
 /**
   Consume resource from given URI.
@@ -1321,7 +1323,7 @@ ProvisioningComputerSystemResources (
   // Set the configuration language in the RESOURCE_INFORMATION_EXCHANGE.
   // This information is sent back to the parent resource (e.g. the collection driver).
   //
-  EdkIIRedfishResourceSetConfigureLang (&UnifiedConfigureLangList);
+  EdkIIRedfishResourceSetConfigureLang (mRedfishResourceConfigProtocolHandle, &UnifiedConfigureLangList);
 
   for (Index = 0; Index < UnifiedConfigureLangList.Count; Index++) {
     DEBUG ((DEBUG_MANAGEABILITY, "[%d] create ComputerSystem resource from: %s\n", UnifiedConfigureLangList.List[Index].Index, UnifiedConfigureLangList.List[Index].ConfigureLang));
@@ -1626,7 +1628,7 @@ RedfishIdentifyResourceCommon (
     // Set the configuration language in the RESOURCE_INFORMATION_EXCHANGE.
     // This information is sent back to the parent resource (e.g. the collection driver).
     //
-    EdkIIRedfishResourceSetConfigureLang (&ConfigLangList);
+    EdkIIRedfishResourceSetConfigureLang (mRedfishResourceConfigProtocolHandle, &ConfigLangList);
     DestroyConfiglanguageList (&ConfigLangList);
     return EFI_SUCCESS;
   }

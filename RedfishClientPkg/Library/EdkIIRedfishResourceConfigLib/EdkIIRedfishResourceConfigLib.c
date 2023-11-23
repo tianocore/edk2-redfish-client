@@ -363,6 +363,7 @@ InstallInterchangeDataProtocol (
   Set Configure language of this resource in the
   RESOURCE_INFORMATION_EXCHANGE structure.
 
+  @param[in]   ImageHandle     Pointer to image handle.
   @param[in]   ConfigLangList  Pointer to REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST.
 
   @retval EFI_SUCCESS              Configure language is set.
@@ -372,20 +373,29 @@ InstallInterchangeDataProtocol (
 **/
 EFI_STATUS
 EdkIIRedfishResourceSetConfigureLang (
-  REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  *ConfigLangList
+  IN EFI_HANDLE                                   ImageHandle,
+  IN REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  *ConfigLangList
   )
 {
   EFI_STATUS                                       Status;
   UINTN                                            Index;
   EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL  *Interface;
 
+  if ((ImageHandle == NULL) || (ConfigLangList == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if ((ConfigLangList->Count == 0) || (ConfigLangList->List == NULL)) {
+    return EFI_NOT_FOUND;
+  }
+
   Status = gBS->HandleProtocol (
-                  mCachedHandle,
+                  ImageHandle,
                   &gEdkIIRedfishFeatureInterchangeDataProtocolGuid,
                   (VOID **)&Interface
                   );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL is not installed %r", __func__, Status));
+    DEBUG ((DEBUG_ERROR, "%a: EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL is not installed on %p: %r\n", __func__, ImageHandle, Status));
     return Status;
   }
 
@@ -422,7 +432,7 @@ EdkIIRedfishResourceSetConfigureLang (
 
 **/
 EFI_STATUS
-EdkIIRedfishResourceConfigProvisionging (
+EdkIIRedfishResourceConfigProvisioning (
   IN     REDFISH_SCHEMA_INFO            *Schema,
   IN     EFI_STRING                     Uri,
   IN     RESOURCE_INFORMATION_EXCHANGE  *InformationExchange,
