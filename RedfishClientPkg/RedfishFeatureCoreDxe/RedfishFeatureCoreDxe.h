@@ -27,8 +27,9 @@
 
 #define MaxNodeNameLength             64
 #define MaxParentUriLength            512
-#define NodeSeperator                 L'/'
-#define UriSeperator                  L';'
+#define NodeSeparator                 L'/'
+#define NodeSeparatorStr              L"/"
+#define UriSeparator                  L';'
 #define NodeIsCollectionLeftBracket   L'{'
 #define NodeIsCollectionRightBracket  L'}'
 #define NodeIsCollectionSymbol        L"/{}"

@@ -20,13 +20,13 @@ RESOURCE_INFORMATION_EXCHANGE    *mInformationExchange;
   Setup the information to deliver to child feature/collection driver.
 
   @param[in]  ThisList                 REDFISH_FEATURE_INTERNAL_DATA instance.
-  @param[in]  ParentConfgLanguageUri   Parent configure language URI.
+  @param[in]  ParentConfigLanguageUri   Parent configure language URI.
 
 **/
 EFI_STATUS
 SetupExchangeInformationInfo (
   IN REDFISH_FEATURE_INTERNAL_DATA  *ThisList,
-  IN EFI_STRING                     ParentConfgLanguageUri
+  IN EFI_STRING                     ParentConfigLanguageUri
   )
 {
   ThisList->InformationExchange->SendInformation.ParentUri = (EFI_STRING)AllocateZeroPool (MaxParentUriLength * sizeof (CHAR16));
@@ -52,7 +52,7 @@ SetupExchangeInformationInfo (
   //
   // Setup parent config language URI
   //
-  StrCpyS (ThisList->InformationExchange->SendInformation.ParentUri, MaxParentUriLength, ParentConfgLanguageUri);
+  StrCpyS (ThisList->InformationExchange->SendInformation.ParentUri, MaxParentUriLength, ParentConfigLanguageUri);
 
   //
   // Full config language URI
@@ -63,7 +63,7 @@ SetupExchangeInformationInfo (
     ThisList->InformationExchange->SendInformation.ParentUri
     );
   if (StrLen (ThisList->InformationExchange->SendInformation.FullUri) != 0) {
-    StrCatS (ThisList->InformationExchange->SendInformation.FullUri, MaxParentUriLength, L"/");
+    StrCatS (ThisList->InformationExchange->SendInformation.FullUri, MaxParentUriLength, NodeSeparatorStr);
   }
 
   StrCatS (ThisList->InformationExchange->SendInformation.FullUri, MaxParentUriLength, ThisList->InformationExchange->SendInformation.PropertyName);
@@ -77,7 +77,7 @@ SetupExchangeInformationInfo (
 
 **/
 EFI_STATUS
-DestroryExchangeInformation (
+DestroyExchangeInformation (
   IN REDFISH_FEATURE_INTERNAL_DATA  *ThisList
   )
 {
@@ -111,7 +111,7 @@ DestroryExchangeInformation (
 }
 
 /**
-  Startup child feature drivers and it's sibing feature drivers.
+  Startup child feature drivers and it's sibling feature drivers.
 
   @param[in]  ThisFeatureDriverList    This feature driver list.
   @param[in]  CurrentConfigLanguageUri The current parent configure language URI.
@@ -121,7 +121,7 @@ DestroryExchangeInformation (
 VOID
 StartUpFeatureDriver (
   IN REDFISH_FEATURE_INTERNAL_DATA    *ThisFeatureDriverList,
-  IN EFI_STRING                       CurrentConfigLanguageUri,
+  IN EFI_STRING                       CurrentConfigLanguageUri OPTIONAL,
   IN REDFISH_FEATURE_STARTUP_CONTEXT  *StartupContext
   )
 {
@@ -130,6 +130,10 @@ StartUpFeatureDriver (
   REDFISH_FEATURE_INTERNAL_DATA                *ThisList;
   REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  ConfigLangList;
   EFI_STRING                                   NextParentUri;
+
+  if ((ThisFeatureDriverList == NULL) || (StartupContext == NULL)) {
+    return;
+  }
 
   NextParentUri = (EFI_STRING)AllocateZeroPool (MaxParentUriLength * sizeof (CHAR16));
   if (NextParentUri == NULL) {
@@ -174,7 +178,7 @@ StartUpFeatureDriver (
           // Copy RESOURCE_INFORMATION_RETURNED then destroy the exchange information.
           //
           CopyConfiglanguageList (&ThisList->InformationExchange->ReturnedInformation.ConfigureLanguageList, &ConfigLangList);
-          DestroryExchangeInformation (ThisList);
+          DestroyExchangeInformation (ThisList);
           //
           // Modify the collection instance according to the returned InformationTypeCollectionMemberConfigLanguage.
           //
@@ -192,6 +196,7 @@ StartUpFeatureDriver (
           return;
         }
       } else {
+        StrCatS (NextParentUri, MaxParentUriLength, NodeSeparatorStr);
         StrCatS (NextParentUri, MaxParentUriLength, ThisList->NodeName);
         StartUpFeatureDriver (ThisList->ChildList, NextParentUri, StartupContext);
       }
@@ -205,7 +210,7 @@ StartUpFeatureDriver (
         NextParentUri[0] = 0;
       }
     } else {
-      DestroryExchangeInformation (ThisList);
+      DestroyExchangeInformation (ThisList);
     }
 
     //
@@ -340,7 +345,7 @@ NewInternalInstance (
   REDFISH_FEATURE_INTERNAL_DATA  *NewInternalData;
 
   if ((PtrToNewInternalData == NULL) || (NodeName == NULL)) {
-    DEBUG ((DEBUG_ERROR, "%a: Inproper given parameters\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: Improper given parameters\n", __func__));
     return EFI_INVALID_PARAMETER;
   }
 
@@ -373,7 +378,7 @@ NewInternalInstance (
   Insert the URI node into internal data structure
 
   @param[in]        HeadEntryToInsert  The head entry to start the searching.
-  @param[in]        PrevisouEntry      Previsou entry.
+  @param[in]        PreviousEntry      Previous entry.
   @param[in]        NodeName           Name of URI node.
   @param[in]        NodeIsCollection   TRUE means the node to add is the collection node.
                                        Otherwise it is a resource node.
@@ -390,7 +395,7 @@ NewInternalInstance (
 EFI_STATUS
 InsertRedfishFeatureUriNode (
   IN REDFISH_FEATURE_INTERNAL_DATA      *HeadEntryToInsert,
-  IN REDFISH_FEATURE_INTERNAL_DATA      **PrevisouEntry,
+  IN REDFISH_FEATURE_INTERNAL_DATA      **PreviousEntry,
   IN EFI_STRING                         NodeName,
   IN BOOLEAN                            NodeIsCollection,
   IN OUT REDFISH_FEATURE_INTERNAL_DATA  **NextNodeEntry,
@@ -422,10 +427,10 @@ InsertRedfishFeatureUriNode (
     if ((HeadEntryToInsert == NULL) && (ResourceUriNodeList == NULL)) {
       ResourceUriNodeList = NewInternalData;
     } else {
-      (*PrevisouEntry)->ChildList = NewInternalData;
+      (*PreviousEntry)->ChildList = NewInternalData;
     }
 
-    *PrevisouEntry = NewInternalData;
+    *PreviousEntry = NewInternalData;
     *NextNodeEntry = NewInternalData->ChildList;
     return EFI_SUCCESS;
   }
@@ -439,12 +444,12 @@ InsertRedfishFeatureUriNode (
     if (StrCmp ((CONST CHAR16 *)ThisInternalData->NodeName, (CONST CHAR16 *)NodeName) == 0) {
       *MatchNodeEntry = ThisInternalData;
       *NextNodeEntry  = ThisInternalData->ChildList;
-      *PrevisouEntry  = ThisInternalData;
+      *PreviousEntry  = ThisInternalData;
       return EFI_SUCCESS;
     }
 
     //
-    // If sibing exist?
+    // If sibling exist?
     //
     if (SiblingList == NULL) {
       Status = NewInternalInstance (&NewInternalData, NodeName, NodeIsCollection);
@@ -453,7 +458,7 @@ InsertRedfishFeatureUriNode (
       }
 
       ThisInternalData->SiblingList = NewInternalData;
-      *PrevisouEntry                = NewInternalData;
+      *PreviousEntry                = NewInternalData;
       *NextNodeEntry                = NewInternalData->ChildList;
       return EFI_SUCCESS;
     }
@@ -483,7 +488,7 @@ InsertRedfishFeatureUriNode (
                                    on Redfish resource which is managed by this Redfish
                                    feature driver.
   @param[in]   Context             The context of the registering feature driver. The pointer
-                                   to the conext is delivered through callback function.
+                                   to the context is delivered through callback function.
   @retval EFI_SUCCESS              Redfish feature driver is registered successfully.
   @retval EFI_SUCCESS              Redfish feature driver is registered successfully.
   @retval EFI_INVALID_PARAMETER    Improper given parameters or fail to register
@@ -535,8 +540,8 @@ RedfishFeatureRegister (
     }
 
     NodeName[Index - AnchorIndex] = *(FeatureManagedUri + Index);
-    if ((NodeName[Index - AnchorIndex] == NodeSeperator) || (NodeName[Index - AnchorIndex] == UriSeperator) || (NodeName[Index - AnchorIndex] == (CHAR16)0)) {
-      if (NodeName[Index - AnchorIndex] == UriSeperator) {
+    if ((NodeName[Index - AnchorIndex] == NodeSeparator) || (NodeName[Index - AnchorIndex] == UriSeparator) || (NodeName[Index - AnchorIndex] == (CHAR16)0)) {
+      if (NodeName[Index - AnchorIndex] == UriSeparator) {
         NewUri = TRUE;
       }
 
@@ -554,7 +559,7 @@ RedfishFeatureRegister (
           Index        += (StrLen (NodeIsCollectionSymbol));
           AnchorIndex  += (StrLen (NodeIsCollectionSymbol));
           ItsCollection = TRUE;
-          if (*(FeatureManagedUri + Index) == UriSeperator) {
+          if (*(FeatureManagedUri + Index) == UriSeparator) {
             NewUri = TRUE;
           }
         }
@@ -569,7 +574,7 @@ RedfishFeatureRegister (
 
       if (NewUri || ((Index + 1) >= UriLength)) {
         //
-        // Setup the callabck and restart the searching for the
+        // Setup the callback and restart the searching for the
         // next URI.
         //
         if (MatchNodeEntry != NULL) {
@@ -639,7 +644,7 @@ EDKII_REDFISH_FEATURE_PROTOCOL  mRedfishFeatureProtocol = {
   @param[in] ImageHandle     Image handle this driver.
   @param[in] SystemTable     Pointer to SystemTable.
 
-  @retval EFI_SUCESS     This function always complete successfully.
+  @retval EFI_SUCCESS     This function always complete successfully.
 
 **/
 EFI_STATUS
