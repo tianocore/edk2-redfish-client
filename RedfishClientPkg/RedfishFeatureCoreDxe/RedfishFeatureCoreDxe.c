@@ -296,9 +296,6 @@ RedfishFeatureDriverStartup (
   // If system configuration is changed, reboot system.
   //
   if (PcdGetBool (PcdRedfishSystemRebootRequired)) {
-    Print (L"System configuration is changed from RESTful interface. Reboot system in %d seconds...\n", RebootTimeout);
-    gBS->Stall (RebootTimeout * 1000000U);
-
     //
     // Call override protocol to notify platform that Redfish is processed
     // and about to reboot system.
@@ -312,9 +309,14 @@ RedfishFeatureDriverStartup (
       Status = RedfishOverride->NotifyPhase (RedfishOverride, EdkiiRedfishPhaseBeforeReboot);
       if (EFI_ERROR (Status)) {
         DEBUG ((DEBUG_ERROR, "%a: abort the reboot because NotifyPhase() returns failure: %r\n", __func__, Status));
-        return;
+        PcdSetBoolS (PcdRedfishSystemRebootRequired, FALSE);
       }
     }
+  }
+
+  if (PcdGetBool (PcdRedfishSystemRebootRequired)) {
+    Print (L"System configuration is changed from RESTful interface. Reboot system in %d seconds...\n", RebootTimeout);
+    gBS->Stall (RebootTimeout * 1000000U);
 
     gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
     CpuDeadLoop ();
