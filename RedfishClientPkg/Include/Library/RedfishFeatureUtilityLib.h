@@ -990,4 +990,32 @@ GetPendingSettings (
   OUT EFI_STRING        *SettingUri
   );
 
+/**
+  This function goes through Head and StringArray to check below:
+  1) Check and see if value in Redfish string array can be found in HII
+  configuration string array. This is to see if there is any invalid
+  values from Redfish.
+  2) Check and see if size of Head is the same as ArraySize.
+  3) Check and see if value in Redfish string array are all the same as the one
+  from HII configuration.
+
+  @param[in]  Head          The head of string array.
+  @param[in]  StringArray   Input string array.
+  @param[in]  ArraySize     The size of StringArray.
+  @param[out] ValueChanged  TRUE when The order of Head is not the same as the order of StringArray.
+                            FALSE when Head and StringArray are identical.
+
+  @retval  EFI_INVALID_PARAMETER  Input parameter is NULL or ArraySize is 0.
+  @retval  EFI_NOT_FOUND          The element in Head cannot be found in StringArray. This is invalid request.
+  @retval  EFI_BAD_BUFFER_SIZE    The size of Head is not the same as the size of StringArray. This is invalid request.
+
+**/
+EFI_STATUS
+ValidateRedfishStringArrayValues (
+  IN RedfishCS_char_Array  *Head,
+  IN CHAR8                 **StringArray,
+  IN UINTN                 ArraySize,
+  OUT BOOLEAN              *ValueChanged
+  );
+
 #endif
