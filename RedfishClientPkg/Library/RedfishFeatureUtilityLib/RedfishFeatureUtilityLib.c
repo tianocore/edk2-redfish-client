@@ -866,6 +866,7 @@ ApplyFeatureSettingsStringArrayType (
   EDKII_REDFISH_VALUE   RedfishValue;
   UINTN                 Index;
   RedfishCS_char_Array  *Buffer;
+  BOOLEAN               ValueChanged;
 
   if (IS_EMPTY_STRING (Schema) || IS_EMPTY_STRING (Version) || IS_EMPTY_STRING (ConfigureLang) || (ArrayHead == NULL)) {
     return EFI_INVALID_PARAMETER;
@@ -886,61 +887,69 @@ ApplyFeatureSettingsStringArrayType (
   }
 
   //
-  // If there is no change in array, do nothing
+  // Validate input string array from BMC to see:
+  // 1) String array from BMC is valid or not.
+  // 2) If there is no change in array, do nothing.
   //
-  if (!CompareRedfishStringArrayValues (ArrayHead, RedfishValue.Value.StringArray, RedfishValue.ArrayCount)) {
-    //
-    // Apply settings from redfish
-    //
-    DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
-    FreeArrayTypeRedfishValue (&RedfishValue);
+  Status = ValidateRedfishStringArrayValues (ArrayHead, RedfishValue.Value.StringArray, RedfishValue.ArrayCount, &ValueChanged);
+  if (!EFI_ERROR (Status)) {
+    if (ValueChanged) {
+      //
+      // Apply settings from redfish
+      //
+      DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a apply %s for array\n", __func__, Schema, Version, ConfigureLang));
+      FreeArrayTypeRedfishValue (&RedfishValue);
 
-    //
-    // Convert array from RedfishCS_char_Array to EDKII_REDFISH_VALUE
-    //
-    RedfishValue.ArrayCount = 0;
-    Buffer                  = ArrayHead;
-    while (Buffer != NULL) {
-      RedfishValue.ArrayCount += 1;
-      Buffer                   = Buffer->Next;
-    }
+      //
+      // Convert array from RedfishCS_char_Array to EDKII_REDFISH_VALUE
+      //
+      RedfishValue.ArrayCount = 0;
+      Buffer                  = ArrayHead;
+      while (Buffer != NULL) {
+        RedfishValue.ArrayCount += 1;
+        Buffer                   = Buffer->Next;
+      }
 
-    //
-    // Allocate pool for new values
-    //
-    RedfishValue.Value.StringArray = AllocatePool (RedfishValue.ArrayCount *sizeof (CHAR8 *));
-    if (RedfishValue.Value.StringArray == NULL) {
-      ASSERT (FALSE);
-      return EFI_OUT_OF_RESOURCES;
-    }
-
-    Buffer = ArrayHead;
-    Index  = 0;
-    while (Buffer != NULL) {
-      RedfishValue.Value.StringArray[Index] = AllocateCopyPool (AsciiStrSize (Buffer->ArrayValue), Buffer->ArrayValue);
-      if (RedfishValue.Value.StringArray[Index] == NULL) {
+      //
+      // Allocate pool for new values
+      //
+      RedfishValue.Value.StringArray = AllocatePool (RedfishValue.ArrayCount *sizeof (CHAR8 *));
+      if (RedfishValue.Value.StringArray == NULL) {
         ASSERT (FALSE);
-        FreePool (RedfishValue.Value.StringArray);
         return EFI_OUT_OF_RESOURCES;
       }
 
-      Buffer = Buffer->Next;
-      Index++;
-    }
+      Buffer = ArrayHead;
+      Index  = 0;
+      while (Buffer != NULL) {
+        RedfishValue.Value.StringArray[Index] = AllocateCopyPool (AsciiStrSize (Buffer->ArrayValue), Buffer->ArrayValue);
+        if (RedfishValue.Value.StringArray[Index] == NULL) {
+          ASSERT (FALSE);
+          FreePool (RedfishValue.Value.StringArray);
+          return EFI_OUT_OF_RESOURCES;
+        }
 
-    ASSERT (Index <= RedfishValue.ArrayCount);
+        Buffer = Buffer->Next;
+        Index++;
+      }
 
-    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
-    if (!EFI_ERROR (Status)) {
-      //
-      // Configuration changed. Enable system reboot flag.
-      //
-      REDFISH_ENABLE_SYSTEM_REBOOT ();
+      ASSERT (Index <= RedfishValue.ArrayCount);
+
+      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+      if (!EFI_ERROR (Status)) {
+        //
+        // Configuration changed. Enable system reboot flag.
+        //
+        REDFISH_ENABLE_SYSTEM_REBOOT ();
+      } else {
+        DEBUG ((DEBUG_ERROR, "%a: apply %s array failed: %r\n", __func__, ConfigureLang, Status));
+      }
     } else {
-      DEBUG ((DEBUG_ERROR, "%a: apply %s array failed: %r\n", __func__, ConfigureLang, Status));
+      DEBUG ((DEBUG_ERROR, "%a: %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
     }
   } else {
-    DEBUG ((DEBUG_ERROR, "%a: %a.%a %s array value has no change\n", __func__, Schema, Version, ConfigureLang));
+    DEBUG ((DEBUG_ERROR, "%a: %a.%a %s array value has invalid element, skip!\n", __func__, Schema, Version, ConfigureLang));
+    Status = EFI_DEVICE_ERROR;
   }
 
   for (Index = 0; Index < RedfishValue.ArrayCount; Index++) {
@@ -3815,6 +3824,98 @@ CompareRedfishPropertyVagueValues (
   }
 
   return TRUE;
+}
+
+/**
+  This function goes through Head and StringArray to check below:
+  1) Check and see if value in Redfish string array can be found in HII
+  configuration string array. This is to see if there is any invalid
+  values from Redfish.
+  2) Check and see if size of Head is the same as ArraySize.
+  3) Check and see if value in Redfish string array are all the same as the one
+  from HII configuration.
+
+  @param[in]  Head          The head of string array.
+  @param[in]  StringArray   Input string array.
+  @param[in]  ArraySize     The size of StringArray.
+  @param[out] ValueChanged  TRUE when The order of Head is not the same as the order of StringArray.
+                            FALSE when Head and StringArray are identical.
+
+  @retval  EFI_INVALID_PARAMETER  Input parameter is NULL or ArraySize is 0.
+  @retval  EFI_NOT_FOUND          The element in Head cannot be found in StringArray. This is invalid request.
+  @retval  EFI_BAD_BUFFER_SIZE    The size of Head is not the same as the size of StringArray. This is invalid request.
+
+**/
+EFI_STATUS
+ValidateRedfishStringArrayValues (
+  IN RedfishCS_char_Array  *Head,
+  IN CHAR8                 **StringArray,
+  IN UINTN                 ArraySize,
+  OUT BOOLEAN              *ValueChanged
+  )
+{
+  UINTN                 Index;
+  UINTN                 ArrayIndex;
+  UINTN                 FirstMismatch;
+  RedfishCS_char_Array  *CharArrayBuffer;
+
+  if ((Head == NULL) || (StringArray == NULL) || (ArraySize == 0) || (ValueChanged == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  *ValueChanged   = FALSE;
+  CharArrayBuffer = Head;
+  Index           = 0;
+  FirstMismatch   = 0;
+  while (CharArrayBuffer != NULL) {
+    //
+    // If the size of Head is bigger than StringArray, we still like to know how many
+    // element in Head. So we have this check to prevent buffer overflow.
+    //
+    if (Index < ArraySize) {
+      //
+      // Check to see if CharArrayBuffer and StringArray are identical at same position.
+      //
+      if (AsciiStrCmp (StringArray[Index], CharArrayBuffer->ArrayValue) != 0) {
+        if (*ValueChanged == FALSE) {
+          *ValueChanged = TRUE;
+          FirstMismatch = Index;
+        }
+
+        //
+        // CharArrayBuffer is not the same as the StringArray at Index. So the
+        // value is changed. But we still have to go through StringArray to see
+        // if CharArrayBuffer can be found in StringArray or not. If not, Head
+        // is invalid input from BMC.
+        //
+        for (ArrayIndex = FirstMismatch; ArrayIndex < ArraySize; ArrayIndex++) {
+          if (AsciiStrCmp (StringArray[ArrayIndex], CharArrayBuffer->ArrayValue) == 0) {
+            break;
+          }
+        }
+
+        if (ArrayIndex == ArraySize) {
+          DEBUG ((DEBUG_ERROR, "%a: input string: %a is not found in HII string list\n", __func__, CharArrayBuffer->ArrayValue));
+          return EFI_NOT_FOUND;
+        }
+      }
+    }
+
+    Index++;
+    CharArrayBuffer = CharArrayBuffer->Next;
+  }
+
+  //
+  // Check to see if the number of string from Redfish equals to the
+  // number of string returned by HII. HII only accepts the same
+  // number of string array due to the design or HII ordered list.
+  //
+  if (Index != ArraySize) {
+    DEBUG ((DEBUG_ERROR, "%a: input string size: %d is not the same as HII string list size: %d\n", __func__, Index, ArraySize));
+    return EFI_BAD_BUFFER_SIZE;
+  }
+
+  return EFI_SUCCESS;
 }
 
 /**
