@@ -562,7 +562,7 @@ EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL  mRedfishConfigHandler = {
 **/
 VOID
 EFIAPI
-EfiRestJasonStructureProtocolIsReady (
+EfiRestJsonStructureProtocolIsReady (
   IN  EFI_EVENT  Event,
   IN  VOID       *Context
   )
@@ -829,7 +829,7 @@ RedfishResourceEntryPoint (
   EfiCreateProtocolNotifyEvent (
     &gEfiRestJsonStructureProtocolGuid,
     TPL_CALLBACK,
-    EfiRestJasonStructureProtocolIsReady,
+    EfiRestJsonStructureProtocolIsReady,
     NULL,
     &Registration
     );
