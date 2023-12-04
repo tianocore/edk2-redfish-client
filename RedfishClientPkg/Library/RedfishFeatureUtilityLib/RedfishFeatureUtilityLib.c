@@ -3118,7 +3118,9 @@ LeaveFunction:
     FreePool (ConfigureLangBuffer);
   }
 
-  FreePool (ConfigureLangList);
+  if (ConfigureLangList != NULL) {
+    FreePool (ConfigureLangList);
+  }
 
   *NumberOfValues = (UINT32)ListCount;
   return FirstEmptyPropKeyValueList;
