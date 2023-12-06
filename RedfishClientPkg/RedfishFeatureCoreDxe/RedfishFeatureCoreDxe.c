@@ -273,6 +273,13 @@ RedfishFeatureDriverStartup (
   }
 
   //
+  // Lower the TPL to TPL_APPLICATION so that
+  // Redfish event and report status code can be
+  // triggered
+  //
+  gBS->RestoreTPL (TPL_APPLICATION);
+
+  //
   // Reset PcdRedfishSystemRebootRequired flag
   //
   PcdSetBoolS (PcdRedfishSystemRebootRequired, FALSE);
@@ -321,6 +328,11 @@ RedfishFeatureDriverStartup (
     gRT->ResetSystem (EfiResetCold, EFI_SUCCESS, 0, NULL);
     CpuDeadLoop ();
   }
+
+  //
+  // Restore to the TPL where this callback handler is called.
+  //
+  gBS->RaiseTPL (REDFISH_FEATURE_CORE_TPL);
 }
 
 /**
@@ -670,7 +682,7 @@ RedfishFeatureCoreEntryPoint (
 
   Status = gBS->CreateEventEx (
                   EVT_NOTIFY_SIGNAL,
-                  TPL_CALLBACK,
+                  REDFISH_FEATURE_CORE_TPL,
                   RedfishFeatureDriverStartup,
                   (CONST VOID *)&mFeatureDriverStartupContext,
                   EventGuid,

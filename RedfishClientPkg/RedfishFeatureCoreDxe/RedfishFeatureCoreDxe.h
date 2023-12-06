@@ -33,6 +33,7 @@
 #define NodeIsCollectionLeftBracket   L'{'
 #define NodeIsCollectionRightBracket  L'}'
 #define NodeIsCollectionSymbol        L"/{}"
+#define REDFISH_FEATURE_CORE_TPL      TPL_CALLBACK
 
 typedef struct _REDFISH_FEATURE_INTERNAL_DATA REDFISH_FEATURE_INTERNAL_DATA;
 struct _REDFISH_FEATURE_INTERNAL_DATA {
