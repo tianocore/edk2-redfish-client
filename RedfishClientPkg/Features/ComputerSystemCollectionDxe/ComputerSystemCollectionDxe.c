@@ -107,7 +107,7 @@ HandleResource (
     DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __func__, Uri));
     Status = EdkIIRedfishResourceConfigProvisioning (&SchemaInfo, Uri, Private->InformationExchange, FALSE);
     if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a: failed to provision with GET mode: %r\n", __func__, Status));
+      DEBUG ((DEBUG_ERROR, "%a: failed to provision with PATCH mode: %r\n", __func__, Status));
     }
 
     return Status;
@@ -385,6 +385,7 @@ RedfishCollectionFeatureCallback (
 
   StrCatS (ResourceUri, MAX_URI_LENGTH, Private->RedfishVersion);
   StrCatS (ResourceUri, MAX_URI_LENGTH, InformationExchange->SendInformation.FullUri);
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: Redfish collection resource URI - %s\n", __func__, ResourceUri));
 
   //
   // Initialize collection path
