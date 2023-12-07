@@ -78,7 +78,12 @@ GetRedfishSchemaInfo (
                                  &Header
                                  );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
+    if (Status == EFI_UNSUPPORTED) {
+      DEBUG ((DEBUG_ERROR, "%a, No proper JSON to C structure converter for this Redfish resource.\n", __func__));
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a, ToStructure() failed: %r\n", __func__, Status));
+    }
+
     return Status;
   }
 

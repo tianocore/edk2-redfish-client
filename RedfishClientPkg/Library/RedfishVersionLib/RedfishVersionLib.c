@@ -140,6 +140,7 @@ RedfishGetVersion (
 
   if (VersionString != NULL) {
     CacheVersion (Service, VersionString);
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: Redfish version - %s\n", __func__, VersionString));
     return VersionString;
   }
 
@@ -150,6 +151,7 @@ ON_ERROR:
     VersionString = REDFISH_VERSION_DEFAULT_STRING;
   }
 
+  DEBUG ((DEBUG_MANAGEABILITY, "%a: Redfish version - %s\n", __func__, VersionString));
   return AllocateCopyPool (StrSize (VersionString), VersionString);
 }
 

@@ -135,6 +135,12 @@ StartUpFeatureDriver (
     return;
   }
 
+  if (CurrentConfigLanguageUri != NULL) {
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: Current Config Language URI - %s\n", __func__, CurrentConfigLanguageUri));
+  } else {
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: Current Config Language URI - Servie Root\n", __func__));
+  }
+
   NextParentUri = (EFI_STRING)AllocateZeroPool (MaxParentUriLength * sizeof (CHAR16));
   if (NextParentUri == NULL) {
     DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for parent configure language.\n", __func__));
@@ -151,6 +157,10 @@ StartUpFeatureDriver (
       ThisList->InformationExchange = mInformationExchange;
       Status                        = SetupExchangeInformationInfo (ThisList, NextParentUri);
       if (!EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_MANAGEABILITY, "%a: Sender exchange information for Collection Feature Driver:\n", __func__));
+        DEBUG ((DEBUG_MANAGEABILITY, "  Parent URI   : %s\n", ThisList->InformationExchange->SendInformation.ParentUri));
+        DEBUG ((DEBUG_MANAGEABILITY, "  Property name: %s\n", ThisList->InformationExchange->SendInformation.PropertyName));
+        DEBUG ((DEBUG_MANAGEABILITY, "  Full URI     : %s\n", ThisList->InformationExchange->SendInformation.FullUri));
         Status = ThisList->Callback (
                              StartupContext->This,
                              StartupContext->Action,
