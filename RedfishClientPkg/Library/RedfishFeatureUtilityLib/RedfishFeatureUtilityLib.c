@@ -1856,7 +1856,8 @@ GetEtagAndLocation (
   }
 
   if (Location != NULL) {
-    *Location = NULL;
+    *Location     = NULL;
+    AsciiLocation = NULL;
 
     if (*(Response->StatusCode) == HTTP_STATUS_200_OK) {
       Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_LOCATION);
