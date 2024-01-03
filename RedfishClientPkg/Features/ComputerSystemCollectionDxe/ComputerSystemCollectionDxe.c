@@ -3,7 +3,7 @@
   Redfish feature driver implementation - ComputerSystemCollection
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -256,17 +256,17 @@ ReleaseCollectionResource (
   //
   // Release resource
   //
-  if (Private->RedResponse.Payload != NULL) {
+  if (Private->Response.Payload != NULL) {
     RedfishFreeResponse (
-      Private->RedResponse.StatusCode,
-      Private->RedResponse.HeaderCount,
-      Private->RedResponse.Headers,
-      Private->RedResponse.Payload
+      Private->Response.StatusCode,
+      Private->Response.HeaderCount,
+      Private->Response.Headers,
+      Private->Response.Payload
       );
-    Private->RedResponse.StatusCode  = NULL;
-    Private->RedResponse.HeaderCount = 0;
-    Private->RedResponse.Headers     = NULL;
-    Private->RedResponse.Payload     = NULL;
+    Private->Response.StatusCode  = NULL;
+    Private->Response.HeaderCount = 0;
+    Private->Response.Headers     = NULL;
+    Private->Response.Payload     = NULL;
   }
 
   if (Private->CollectionJson != NULL) {
@@ -298,13 +298,13 @@ CollectionHandler (
   //
   // Query collection from Redfish service.
   //
-  Status = GetResourceByUri (Private->RedfishService, Private->CollectionUri, &Private->RedResponse);
+  Status = RedfishHttpGetResource (Private->RedfishService, Private->CollectionUri, &Private->Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: unable to get resource from: %s :%r\n", __func__, Private->CollectionUri, Status));
     goto ON_RELEASE;
   }
 
-  Private->CollectionPayload = Private->RedResponse.Payload;
+  Private->CollectionPayload = Private->Response.Payload;
   ASSERT (Private->CollectionPayload != NULL);
 
   Private->CollectionJson = JsonDumpString (RedfishJsonInPayload (Private->CollectionPayload), EDKII_JSON_COMPACT);
@@ -370,7 +370,7 @@ RedfishCollectionFeatureCallback (
   Private->InformationExchange = InformationExchange;
 
   //
-  // Find Redfish version on BMC
+  // Find Redfish version on Redfish service.
   //
   Private->RedfishVersion = RedfishGetVersion (RedfishService);
 
