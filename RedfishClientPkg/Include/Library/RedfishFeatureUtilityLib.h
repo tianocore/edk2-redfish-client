@@ -2,7 +2,7 @@
   This file defines the Redfish Feature Utility Library interface.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -17,25 +17,6 @@
 #include <RedfishJsonStructure/RedfishCsCommon.h>
 
 #define REDFISH_ENABLE_SYSTEM_REBOOT()  PcdSetBoolS(PcdRedfishSystemRebootRequired, TRUE)
-
-/**
-
-  Read redfish resource by given resource URI.
-
-  @param[in]  Service       Redfish service instance to make query.
-  @param[in]  ResourceUri   Target resource URI.
-  @param[out] Response      HTTP response from redfish service.
-
-  @retval     EFI_SUCCESS     Resrouce is returned successfully.
-  @retval     Others          Errors occur.
-
-**/
-EFI_STATUS
-GetResourceByUri (
-  IN  REDFISH_SERVICE   *Service,
-  IN  EFI_STRING        ResourceUri,
-  OUT REDFISH_RESPONSE  *Response
-  );
 
 /**
 

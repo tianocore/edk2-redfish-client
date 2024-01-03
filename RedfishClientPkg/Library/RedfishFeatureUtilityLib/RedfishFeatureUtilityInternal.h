@@ -2,7 +2,7 @@
   Common header file for RedfishFeatureUtilityLib driver.
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -30,6 +30,7 @@
 #include <Library/PrintLib.h>
 #include <Library/HttpLib.h>
 #include <Library/RedfishDebugLib.h>
+#include <Library/RedfishHttpCacheLib.h>
 
 #include <Guid/VariableFormat.h>
 

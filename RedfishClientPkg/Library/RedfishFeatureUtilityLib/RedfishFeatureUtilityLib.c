@@ -2,7 +2,7 @@
   Redfish feature utility library implementation
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -147,7 +147,8 @@ SetEtagFromUri (
     return Status;
   }
 
-  Status = GetResourceByUri (RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -887,8 +888,8 @@ ApplyFeatureSettingsStringArrayType (
   }
 
   //
-  // Validate input string array from BMC to see:
-  // 1) String array from BMC is valid or not.
+  // Validate input string array from Redfish service to see:
+  // 1) String array from Redfish service is valid or not.
   // 2) If there is no change in array, do nothing.
   //
   Status = ValidateRedfishStringArrayValues (ArrayHead, RedfishValue.Value.StringArray, RedfishValue.ArrayCount, &ValueChanged);
@@ -1159,66 +1160,6 @@ ApplyFeatureSettingsBooleanArrayType (
   }
 
   FreePool (RedfishValue.Value.BooleanArray);
-
-  return Status;
-}
-
-/**
-
-  Read redfish resource by given resource URI.
-
-  @param[in]  Service       Redfish service instance to make query.
-  @param[in]  ResourceUri   Target resource URI.
-  @param[out] Response      HTTP response from redfish service.
-
-  @retval     EFI_SUCCESS     Resrouce is returned successfully.
-  @retval     Others          Errors occur.
-
-**/
-EFI_STATUS
-GetResourceByUri (
-  IN  REDFISH_SERVICE   *Service,
-  IN  EFI_STRING        ResourceUri,
-  OUT REDFISH_RESPONSE  *Response
-  )
-{
-  EFI_STATUS  Status;
-  CHAR8       *AsciiResourceUri;
-
-  if ((Service == NULL) || (Response == NULL) || IS_EMPTY_STRING (ResourceUri)) {
-    return EFI_INVALID_PARAMETER;
-  }
-
-  AsciiResourceUri = StrUnicodeToAscii (ResourceUri);
-  if (AsciiResourceUri == NULL) {
-    return EFI_OUT_OF_RESOURCES;
-  }
-
-  //
-  // Get resource from redfish service.
-  //
-  Status = RedfishGetByUri (
-             Service,
-             AsciiResourceUri,
-             Response
-             );
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: RedfishGetByUri to %a failed: %r\n", __func__, AsciiResourceUri, Status));
-    if (Response->Payload != NULL) {
-      RedfishDumpPayload (Response->Payload);
-      RedfishFreeResponse (
-        NULL,
-        0,
-        NULL,
-        Response->Payload
-        );
-      Response->Payload = NULL;
-    }
-  }
-
-  if (AsciiResourceUri != NULL) {
-    FreePool (AsciiResourceUri);
-  }
 
   return Status;
 }
@@ -3704,7 +3645,7 @@ GetPendingSettings (
       return EFI_NOT_FOUND;
     }
 
-    Status = GetResourceByUri (RedfishService, *SettingUri, SettingResponse);
+    Status = RedfishHttpGetResource (RedfishService, *SettingUri, SettingResponse, TRUE);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: @Redfish.Settings exists, get resource from: %s failed: %r\n", __func__, *SettingUri, Status));
       return Status;
@@ -3889,7 +3830,7 @@ ValidateRedfishStringArrayValues (
         // CharArrayBuffer is not the same as the StringArray at Index. So the
         // value is changed. But we still have to go through StringArray to see
         // if CharArrayBuffer can be found in StringArray or not. If not, Head
-        // is invalid input from BMC.
+        // is invalid input from Redfish service.
         //
         for (ArrayIndex = FirstMismatch; ArrayIndex < ArraySize; ArrayIndex++) {
           if (AsciiStrCmp (StringArray[ArrayIndex], CharArrayBuffer->ArrayValue) == 0) {
