@@ -2,6 +2,7 @@
   Redfish feature driver collection common header file.
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -26,6 +27,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/EdkIIRedfishResourceConfigLib.h>
 #include <Library/RedfishVersionLib.h>
+#include <Library/RedfishHttpCacheLib.h>
 
 //
 // Protocols
@@ -46,7 +48,7 @@ typedef struct _REDFISH_COLLECTION_PRIVATE {
   EFI_STRING                               CollectionUri;
   CHAR8                                    *CollectionJson;
   REDFISH_PAYLOAD                          CollectionPayload;
-  REDFISH_RESPONSE                         RedResponse;
+  REDFISH_RESPONSE                         Response;
   EFI_STRING                               RedfishVersion;
 } REDFISH_COLLECTION_PRIVATE;
 
