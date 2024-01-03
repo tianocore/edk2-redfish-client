@@ -2,7 +2,7 @@
   Redfish feature driver implementation - Memory
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -49,7 +49,8 @@ RedfishResourceProvisioningResource (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -71,6 +72,7 @@ RedfishResourceProvisioningResource (
       Response.Headers,
       Response.Payload
       );
+    RedfishHttpResetResource (Uri);
     Private->Payload = NULL;
   }
 
@@ -97,6 +99,9 @@ RedfishResourceConsumeResource (
   REDFISH_RESOURCE_COMMON_PRIVATE  *Private;
   EFI_STATUS                       Status;
   REDFISH_RESPONSE                 Response;
+  EFI_STRING                       PendingSettingUri;
+  REDFISH_RESPONSE                 PendingSettingResponse;
+  REDFISH_RESPONSE                 *ExpectedResponse;
   CHAR8                            *Etag;
 
   if ((This == NULL) || IS_EMPTY_STRING (Uri)) {
@@ -109,14 +114,33 @@ RedfishResourceConsumeResource (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
   }
 
-  Private->Uri     = Uri;
-  Private->Payload = Response.Payload;
+  //
+  // Check and see if "@Redfish.Settings" exist or not.
+  //
+  ZeroMem (&PendingSettingResponse, sizeof (REDFISH_RESPONSE));
+  Status = GetPendingSettings (
+             Private->RedfishService,
+             Response.Payload,
+             &PendingSettingResponse,
+             &PendingSettingUri
+             );
+  if (!EFI_ERROR (Status)) {
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a: @Redfish.Settings found: %s\n", __func__, PendingSettingUri));
+    Private->Uri     = PendingSettingUri;
+    ExpectedResponse = &PendingSettingResponse;
+  } else {
+    Private->Uri     = Uri;
+    ExpectedResponse = &Response;
+  }
+
+  Private->Payload = ExpectedResponse->Payload;
   ASSERT (Private->Payload != NULL);
 
   Private->Json = JsonDumpString (RedfishJsonInPayload (Private->Payload), EDKII_JSON_COMPACT);
@@ -126,7 +150,7 @@ RedfishResourceConsumeResource (
   // Find etag in HTTP response header
   //
   Etag   = NULL;
-  Status = GetEtagAndLocation (&Response, &Etag, NULL);
+  Status = GetEtagAndLocation (ExpectedResponse, &Etag, NULL);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, failed to get ETag from HTTP header\n", __func__));
   }
@@ -149,12 +173,24 @@ RedfishResourceConsumeResource (
   // Release resource
   //
   if (Private->Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
+    if (Response.Payload != NULL) {
+      RedfishFreeResponse (
+        Response.StatusCode,
+        Response.HeaderCount,
+        Response.Headers,
+        Response.Payload
+        );
+    }
+
+    if (PendingSettingResponse.Payload != NULL) {
+      RedfishFreeResponse (
+        PendingSettingResponse.StatusCode,
+        PendingSettingResponse.HeaderCount,
+        PendingSettingResponse.Headers,
+        PendingSettingResponse.Payload
+        );
+    }
+
     Private->Payload = NULL;
   }
 
@@ -233,7 +269,8 @@ RedfishResourceUpdate (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -261,6 +298,7 @@ RedfishResourceUpdate (
       Response.Headers,
       Response.Payload
       );
+    RedfishHttpResetResource (Uri);
     Private->Payload = NULL;
   }
 
@@ -303,7 +341,8 @@ RedfishResourceCheck (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -374,7 +413,8 @@ RedfishResourceIdentify (
     return EFI_NOT_READY;
   }
 
-  Status = GetResourceByUri (Private->RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (Private->RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, get resource from: %s failed\n", __func__, Uri));
     return Status;
