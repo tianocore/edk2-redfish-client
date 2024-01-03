@@ -2,6 +2,7 @@
   Redfish version library implementation
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -10,15 +11,17 @@
 #include <Uefi.h>
 #include <RedfishBase.h>
 #include <Library/BaseLib.h>
+#include <Library/BaseMemoryLib.h>
 #include <Library/DebugLib.h>
 #include <Library/PcdLib.h>
 #include <Library/RedfishLib.h>
 #include <Library/JsonLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/RedfishVersionLib.h>
+#include <Library/RedfishHttpCacheLib.h>
 
 #define REDFISH_VERSION_DEFAULT_STRING  L"v1"
-#define REDFISH_ROOT_URI                "/redfish"
+#define REDFISH_ROOT_URI                L"/redfish"
 
 REDFISH_SERVICE  *mCacheService;
 EFI_STRING       mVersionCache;
@@ -26,7 +29,7 @@ UINTN            mVersionStringSize;
 
 /**
   Cache the redfish service version for later use so we don't have to query
-  HTTP request everytime.
+  HTTP request every time.
 
   @param[in]   Service  Redfish service instance
   @param[in]   Version  Version string to cache
@@ -65,8 +68,8 @@ CacheVersion (
 }
 
 /**
-  Query HTTP request to BMC with given redfish service and return redfish
-  version information. If there is troulbe to get Redfish version on BMC,
+  Query HTTP request to redfish service and return redfish
+  version information. If there is trouble to get Redfish version on service,
   The value of PcdDefaultRedfishVersion is returned.
 
   It's call responsibility to release returned buffer.
@@ -90,6 +93,7 @@ RedfishGetVersion (
   EDKII_JSON_VALUE  Value;
 
   VersionString = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
 
   if (Service == NULL) {
     goto ON_ERROR;
@@ -105,13 +109,14 @@ RedfishGetVersion (
   //
   // Get resource from redfish service.
   //
-  Status = RedfishGetByUri (
+  Status = RedfishHttpGetResource (
              Service,
              REDFISH_ROOT_URI,
-             &Response
+             &Response,
+             TRUE
              );
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, RedfishGetByService to %a failed: %r\n", __func__, REDFISH_ROOT_URI, Status));
+    DEBUG ((DEBUG_ERROR, "%a, RedfishGetByService to %s failed: %r\n", __func__, REDFISH_ROOT_URI, Status));
     if (Response.Payload != NULL) {
       RedfishDumpPayload (Response.Payload);
       RedfishFreeResponse (
@@ -151,18 +156,27 @@ ON_ERROR:
     VersionString = REDFISH_VERSION_DEFAULT_STRING;
   }
 
+  if (Response.Payload != NULL) {
+    RedfishFreeResponse (
+      Response.StatusCode,
+      Response.HeaderCount,
+      Response.Headers,
+      Response.Payload
+      );
+  }
+
   DEBUG ((DEBUG_MANAGEABILITY, "%a: Redfish version - %s\n", __func__, VersionString));
   return AllocateCopyPool (StrSize (VersionString), VersionString);
 }
 
 /**
 
-  Initial redfish version library instace.
+  Initial redfish version library instate.
 
   @param[in] ImageHandle     The image handle.
   @param[in] SystemTable     The system table.
 
-  @retval  EFI_SUCEESS  Install Boot manager menu success.
+  @retval  EFI_SUCCESS  Install Boot manager menu success.
   @retval  Other        Return error status.
 
 **/
