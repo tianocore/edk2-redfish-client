@@ -2,7 +2,7 @@
 #  INF for Redfish feature utility library.
 #
 #  (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-#  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -46,6 +46,7 @@
   PrintLib
   HttpLib
   RedfishDebugLib
+  RedfishHttpCacheLib
 
 [Protocols]
   gEdkIIRedfishETagProtocolGuid           ## CONSUMED ##
