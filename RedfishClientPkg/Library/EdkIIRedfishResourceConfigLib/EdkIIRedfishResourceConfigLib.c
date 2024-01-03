@@ -2,7 +2,7 @@
   Redfish resource config library implementation
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -16,6 +16,7 @@
 #include <Library/EdkIIRedfishResourceConfigLib.h>
 #include <Library/RedfishFeatureUtilityLib.h>
 #include <Library/RedfishPlatformConfigLib.h>
+#include <Library/RedfishHttpCacheLib.h>
 
 EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL           *mRedfishResourceConfigProtocol = NULL;
 EFI_HANDLE                                       mCachedHandle;
@@ -56,7 +57,8 @@ GetRedfishSchemaInfo (
     return EFI_INVALID_PARAMETER;
   }
 
-  Status = GetResourceByUri (RedfishService, Uri, &Response);
+  ZeroMem (&Response, sizeof (Response));
+  Status = RedfishHttpGetResource (RedfishService, Uri, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, failed to get resource from %s: %r", __func__, Uri, Status));
     return Status;
