@@ -3,6 +3,7 @@
 #
 #  (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
 #  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -54,6 +55,7 @@
 
 [Pcd]
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootRequired
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishServiceEtagSupported
 
 [Guids]
 
