@@ -3,6 +3,7 @@
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
 //  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
+//  Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 //
 // Copyright Notice:
 // Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
@@ -215,13 +216,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, RedfishBootOption_V1_0_4_OemActions_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -258,13 +256,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -297,7 +292,7 @@ static RedfishCS_status CS_To_JSON_RelatedItem(json_t *CsJson, char *Key, Redfis
     }
 
     NextArrayItem = NextArray->ArrayValue;
-    // @odata.id 
+    // @odata.id
     if (InsertJsonStringObj (ArrayMember, "@odata.id", NextArrayItem->odata_id) != RedfishCS_status_success) {goto Error;}
 
     if (json_array_append_new (ArrayJson, ArrayMember) != 0) {goto Error;}
@@ -327,25 +322,25 @@ RedfishCS_status CS_To_BootOption_V1_0_4_JSON(RedfishBootOption_V1_0_4_BootOptio
   // Actions
   if (CS_To_JSON_Actions(CsJson, "Actions", CSPtr->Actions) != RedfishCS_status_success) {goto Error;}
 
-  // Alias 
+  // Alias
   if (InsertJsonStringObj (CsJson, "Alias", CSPtr->Alias) != RedfishCS_status_success) {goto Error;}
 
-  // BootOptionEnabled 
+  // BootOptionEnabled
   if (InsertJsonBoolObj (CsJson, "BootOptionEnabled", CSPtr->BootOptionEnabled) != RedfishCS_status_success) {goto Error;}
 
-  // BootOptionReference 
+  // BootOptionReference
   if (InsertJsonStringObj (CsJson, "BootOptionReference", CSPtr->BootOptionReference) != RedfishCS_status_success) {goto Error;}
 
-  // Description 
+  // Description
   if (InsertJsonStringObj (CsJson, "Description", CSPtr->Description) != RedfishCS_status_success) {goto Error;}
 
-  // DisplayName 
+  // DisplayName
   if (InsertJsonStringObj (CsJson, "DisplayName", CSPtr->DisplayName) != RedfishCS_status_success) {goto Error;}
 
-  // Id 
+  // Id
   if (InsertJsonStringObj (CsJson, "Id", CSPtr->Id) != RedfishCS_status_success) {goto Error;}
 
-  // Name 
+  // Name
   if (InsertJsonStringObj (CsJson, "Name", CSPtr->Name) != RedfishCS_status_success) {goto Error;}
 
   // Oem
@@ -354,22 +349,22 @@ RedfishCS_status CS_To_BootOption_V1_0_4_JSON(RedfishBootOption_V1_0_4_BootOptio
   // RelatedItem
   if (CS_To_JSON_RelatedItem(CsJson, "RelatedItem", CSPtr->RelatedItem) != RedfishCS_status_success) {goto Error;}
 
-  // RelatedItem@odata.count 
+  // RelatedItem@odata.count
   if (InsertJsonInt64Obj (CsJson, "RelatedItem@odata.count", CSPtr->RelatedItemodata_count) != RedfishCS_status_success) {goto Error;}
 
-  // UefiDevicePath 
+  // UefiDevicePath
   if (InsertJsonStringObj (CsJson, "UefiDevicePath", CSPtr->UefiDevicePath) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.context 
+  // @odata.context
   if (InsertJsonStringObj (CsJson, "@odata.context", CSPtr->odata_context) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.etag 
+  // @odata.etag
   if (InsertJsonStringObj (CsJson, "@odata.etag", CSPtr->odata_etag) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.id 
+  // @odata.id
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.type 
+  // @odata.type
   if (InsertJsonStringObj (CsJson, "@odata.type", CSPtr->odata_type) != RedfishCS_status_success) {goto Error;}
 
   *JsonText = (RedfishCS_char *)json_dumps(CsJson, JSON_INDENT(2 * 1) | JSON_ENSURE_ASCII);

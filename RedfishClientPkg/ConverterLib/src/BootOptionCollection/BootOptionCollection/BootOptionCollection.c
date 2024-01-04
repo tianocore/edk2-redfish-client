@@ -3,6 +3,7 @@
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
 //  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
+//  Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 //
 // Copyright Notice:
 // Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
@@ -83,13 +84,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -115,34 +113,34 @@ RedfishCS_status CS_To_BootOptionCollection_JSON(RedfishBootOptionCollection_Boo
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
   }
-  // Description 
+  // Description
   if (InsertJsonStringObj (CsJson, "Description", CSPtr->Description) != RedfishCS_status_success) {goto Error;}
 
-  // Members 
+  // Members
   if (InsertJsonLinkArrayObj (CsJson, "Members", &CSPtr->Members) != RedfishCS_status_success) {goto Error;}
 
-  // Members@odata.count 
+  // Members@odata.count
   if (InsertJsonInt64Obj (CsJson, "Members@odata.count", CSPtr->Membersodata_count) != RedfishCS_status_success) {goto Error;}
 
-  // Members@odata.nextLink 
+  // Members@odata.nextLink
   if (InsertJsonStringObj (CsJson, "Members@odata.nextLink", CSPtr->Membersodata_nextLink) != RedfishCS_status_success) {goto Error;}
 
-  // Name 
+  // Name
   if (InsertJsonStringObj (CsJson, "Name", CSPtr->Name) != RedfishCS_status_success) {goto Error;}
 
   // Oem
   if (CS_To_JSON_Oem(CsJson, "Oem", CSPtr->Oem) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.context 
+  // @odata.context
   if (InsertJsonStringObj (CsJson, "@odata.context", CSPtr->odata_context) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.etag 
+  // @odata.etag
   if (InsertJsonStringObj (CsJson, "@odata.etag", CSPtr->odata_etag) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.id 
+  // @odata.id
   if (InsertJsonStringObj (CsJson, "@odata.id", CSPtr->odata_id) != RedfishCS_status_success) {goto Error;}
 
-  // @odata.type 
+  // @odata.type
   if (InsertJsonStringObj (CsJson, "@odata.type", CSPtr->odata_type) != RedfishCS_status_success) {goto Error;}
 
   *JsonText = (RedfishCS_char *)json_dumps(CsJson, JSON_INDENT(2 * 1) | JSON_ENSURE_ASCII);
