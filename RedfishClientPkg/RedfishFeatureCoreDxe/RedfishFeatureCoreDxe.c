@@ -152,6 +152,7 @@ StartUpFeatureDriver (
   }
 
   ThisList = ThisFeatureDriverList;
+  Status   = EFI_SUCCESS;
   while (TRUE) {
     if (ThisList->Callback != NULL) {
       ThisList->InformationExchange = mInformationExchange;
