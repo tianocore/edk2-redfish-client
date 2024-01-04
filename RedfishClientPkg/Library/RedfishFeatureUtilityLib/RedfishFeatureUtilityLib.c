@@ -1856,7 +1856,7 @@ CreatePayloadToPatchResource (
   IN  REDFISH_SERVICE  *Service,
   IN  REDFISH_PAYLOAD  *TargetPayload,
   IN  CHAR8            *Json,
-  OUT CHAR8            **Etag
+  OUT CHAR8            **Etag OPTIONAL
   )
 {
   REDFISH_PAYLOAD   Payload;
@@ -1864,7 +1864,7 @@ CreatePayloadToPatchResource (
   REDFISH_RESPONSE  PostResponse;
   EFI_STATUS        Status;
 
-  if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json) || (Etag == NULL)) {
+  if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
   }
 
