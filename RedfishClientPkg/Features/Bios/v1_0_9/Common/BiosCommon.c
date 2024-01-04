@@ -530,6 +530,7 @@ RedfishProvisioningResourceCommon (
 
   @param[in]   This                Pointer to REDFISH_RESOURCE_COMMON_PRIVATE instance.
   @param[in]   Json                The JSON to consume.
+  @param[in]   HeaderEtag          The Etag string returned in HTTP header.
 
   @retval EFI_SUCCESS              Value is returned successfully.
   @retval Others                   Some error happened.
@@ -538,7 +539,8 @@ RedfishProvisioningResourceCommon (
 EFI_STATUS
 RedfishCheckResourceCommon (
   IN     REDFISH_RESOURCE_COMMON_PRIVATE  *Private,
-  IN     CHAR8                            *Json
+  IN     CHAR8                            *Json,
+  IN     CHAR8                            *HeaderEtag OPTIONAL
   )
 {
   UINTN       Index;
@@ -549,6 +551,17 @@ RedfishCheckResourceCommon (
 
   if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
+  }
+
+  //
+  // Check ETAG to see if we need to check this resource again or not.
+  //
+  if (CheckEtag (Private->Uri, HeaderEtag, NULL)) {
+    //
+    // No change
+    //
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: ETAG: %s has no change, ignore check action\n", __func__, Private->Uri));
+    return EFI_SUCCESS;
   }
 
   Status = RedfishPlatformConfigGetConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigureLangList, &Count);

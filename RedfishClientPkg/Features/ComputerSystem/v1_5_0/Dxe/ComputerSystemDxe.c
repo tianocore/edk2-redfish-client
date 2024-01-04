@@ -330,6 +330,7 @@ RedfishResourceCheck (
   REDFISH_RESOURCE_COMMON_PRIVATE  *Private;
   EFI_STATUS                       Status;
   REDFISH_RESPONSE                 Response;
+  CHAR8                            *Etag;
 
   if ((This == NULL) || IS_EMPTY_STRING (Uri)) {
     return EFI_INVALID_PARAMETER;
@@ -355,7 +356,16 @@ RedfishResourceCheck (
   Private->Json = JsonDumpString (RedfishJsonInPayload (Private->Payload), EDKII_JSON_COMPACT);
   ASSERT (Private->Json != NULL);
 
-  Status = RedfishCheckResourceCommon (Private, Private->Json);
+  //
+  // Find etag in HTTP response header
+  //
+  Etag   = NULL;
+  Status = GetEtagAndLocation (&Response, &Etag, NULL);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to get ETag from HTTP header\n", __func__));
+  }
+
+  Status = RedfishCheckResourceCommon (Private, Private->Json, Etag);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, failed to check resource from: %s: %r\n", __func__, Uri, Status));
   }
