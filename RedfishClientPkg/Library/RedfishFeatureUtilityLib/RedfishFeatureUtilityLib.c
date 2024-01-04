@@ -3,6 +3,7 @@
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -133,6 +134,11 @@ SetEtagFromUri (
   REDFISH_RESPONSE  Response;
   EFI_STRING        PendingSettingUri;
 
+  if (!CheckIsServerEtagSupported ()) {
+    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported\n", __func__));
+    return EFI_SUCCESS;
+  }
+
   if ((RedfishService == NULL) || IS_EMPTY_STRING (Uri)) {
     return EFI_INVALID_PARAMETER;
   }
@@ -157,9 +163,9 @@ SetEtagFromUri (
   //
   // Find etag in HTTP response header
   //
-  Status = GetEtagAndLocation (&Response, &Etag, NULL);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: failed to get ETag from HTTP header\n", __func__));
+  Status = GetHttpResponseEtag (&Response, &Etag);
+  if (EFI_ERROR (Status) && (Status != EFI_UNSUPPORTED)) {
+    DEBUG ((DEBUG_ERROR, "%a: Failed to get ETag from HTTP header\n", __func__));
     Status = EFI_NOT_FOUND;
     goto ON_RELEASE;
   }
@@ -241,6 +247,11 @@ SetEtagWithUri (
   EFI_STATUS  Status;
   CHAR8       *AsciiUri;
 
+  if (!CheckIsServerEtagSupported ()) {
+    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported\n", __func__));
+    return EFI_SUCCESS;
+  }
+
   if (IS_EMPTY_STRING (EtagStr) || IS_EMPTY_STRING (Uri)) {
     return EFI_INVALID_PARAMETER;
   }
@@ -283,6 +294,11 @@ GetEtagWithUri (
   CHAR8       *EtagStr;
 
   if (IS_EMPTY_STRING (Uri)) {
+    return NULL;
+  }
+
+  if (!CheckIsServerEtagSupported ()) {
+    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported\n", __func__));
     return NULL;
   }
 
@@ -1726,44 +1742,39 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
 }
 
 /**
+  Find "ETag" from either HTTP header or Redfish response.
 
-  Find "ETag" and "Location" from either HTTP header or Redfish response.
+  @param[in]  Response        HTTP response
+  @param[out] Etag            String buffer to return ETag
 
-  @param[in]  Response    HTTP response
-  @param[out] Etag        String buffer to return ETag
-  @param[out] Location    String buffer to return Location
-
-  @retval     EFI_SUCCESS     Data is found and returned.
-  @retval     Others          Errors occur.
+  @retval  EFI_SUCCESS            ETag is returned in Etag
+  @retval  EFI_UNSUPPORTED        ETag is unsupported
+  @retval  EFI_INVALID_PARAMETER  Response, Etag or both are NULL.
 
 **/
 EFI_STATUS
-GetEtagAndLocation (
-  IN  REDFISH_RESPONSE *Response,
-  OUT CHAR8 **Etag, OPTIONAL
-  OUT EFI_STRING        *Location    OPTIONAL
+GetHttpResponseEtag (
+  IN  REDFISH_RESPONSE  *Response,
+  OUT CHAR8             **Etag
   )
 {
+  EFI_STATUS        Status;
   EDKII_JSON_VALUE  JsonValue;
   EDKII_JSON_VALUE  OdataValue;
   CHAR8             *OdataString;
-  CHAR8             *AsciiLocation;
   EFI_HTTP_HEADER   *Header;
-  EFI_STATUS        Status;
 
-  if (Response == NULL) {
+  if ((Response == NULL) || (Etag == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
-  if ((Etag == NULL) && (Location == NULL)) {
-    return EFI_SUCCESS;
-  }
-
   Status = EFI_SUCCESS;
-
-  if (Etag != NULL) {
-    *Etag = NULL;
-
+  *Etag  = NULL;
+  if (!CheckIsServerEtagSupported ()) {
+    // Don't look for ETAG header or property in this case.
+    DEBUG ((DEBUG_INFO, "%a: WARNING - No ETag support on Redfish service.\n", __func__));
+    return EFI_UNSUPPORTED;
+  } else {
     if (*(Response->StatusCode) == HTTP_STATUS_200_OK) {
       Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_ETAG);
       if (Header != NULL) {
@@ -1793,49 +1804,92 @@ GetEtagAndLocation (
 
     if (*Etag == NULL) {
       Status = EFI_NOT_FOUND;
-    }
-  }
-
-  if (Location != NULL) {
-    *Location     = NULL;
-    AsciiLocation = NULL;
-
-    if (*(Response->StatusCode) == HTTP_STATUS_200_OK) {
-      Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_LOCATION);
-      if (Header != NULL) {
-        AsciiLocation = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
-        ASSERT (AsciiLocation != NULL);
-      }
-    }
-
-    //
-    // No header is returned. Search payload for location.
-    //
-    if ((*Location == NULL) && (Response->Payload != NULL)) {
-      JsonValue = RedfishJsonInPayload (Response->Payload);
-      if (JsonValue != NULL) {
-        OdataValue = JsonObjectGetValue (JsonValueGetObject (JsonValue), "@odata.id");
-        if (OdataValue != NULL) {
-          OdataString = (CHAR8 *)JsonValueGetAsciiString (OdataValue);
-          if (OdataString != NULL) {
-            AsciiLocation = AllocateCopyPool (AsciiStrSize (OdataString), OdataString);
-            ASSERT (AsciiLocation != NULL);
-          }
-        }
-
-        JsonValueFree (JsonValue);
-      }
-    }
-
-    if (AsciiLocation != NULL) {
-      *Location = StrAsciiToUnicode (AsciiLocation);
-      FreePool (AsciiLocation);
-    } else {
-      Status = EFI_NOT_FOUND;
+      DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve ETag from HTTP response paylaod.\n", __func__));
     }
   }
 
   return Status;
+}
+
+/**
+  Find "Location" from either HTTP header or Redfish response.
+
+  @param[in]  Response        HTTP response
+  @param[out] Location        String buffer to return Location
+
+**/
+EFI_STATUS
+GetHttpResponseLocation (
+  IN  REDFISH_RESPONSE  *Response,
+  OUT EFI_STRING        *Location
+  )
+{
+  EFI_STATUS        Status;
+  EDKII_JSON_VALUE  JsonValue;
+  EDKII_JSON_VALUE  OdataValue;
+  CHAR8             *OdataString;
+  CHAR8             *AsciiLocation;
+  EFI_HTTP_HEADER   *Header;
+
+  if ((Response == NULL) || (Location == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  Status        = EFI_SUCCESS;
+  *Location     = NULL;
+  AsciiLocation = NULL;
+  if (*(Response->StatusCode) == HTTP_STATUS_200_OK) {
+    Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_LOCATION);
+    if (Header != NULL) {
+      AsciiLocation = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
+      ASSERT (AsciiLocation != NULL);
+    }
+  }
+
+  //
+  // No header is returned. Search payload for location.
+  //
+  if ((*Location == NULL) && (Response->Payload != NULL)) {
+    JsonValue = RedfishJsonInPayload (Response->Payload);
+    if (JsonValue != NULL) {
+      OdataValue = JsonObjectGetValue (JsonValueGetObject (JsonValue), "@odata.id");
+      if (OdataValue != NULL) {
+        OdataString = (CHAR8 *)JsonValueGetAsciiString (OdataValue);
+        if (OdataString != NULL) {
+          AsciiLocation = AllocateCopyPool (AsciiStrSize (OdataString), OdataString);
+          ASSERT (AsciiLocation != NULL);
+        }
+      }
+
+      JsonValueFree (JsonValue);
+    }
+  }
+
+  if (AsciiLocation != NULL) {
+    *Location = StrAsciiToUnicode (AsciiLocation);
+    FreePool (AsciiLocation);
+  } else {
+    Status = EFI_NOT_FOUND;
+    DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve Location from HTTP response paylaod.\n", __func__));
+  }
+
+  return Status;
+}
+
+/**
+
+  This function returns a boolean of ETAG support on Redfish service side.
+
+  @retval     TRUE    ETAG is supported on Redfish service.
+  @retval     FALSE   ETAG is not supported on Redfish service.
+
+**/
+BOOLEAN
+CheckIsServerEtagSupported (
+  VOID
+  )
+{
+  return FixedPcdGetBool (PcdRedfishServiceEtagSupported);
 }
 
 /**
@@ -1861,7 +1915,7 @@ CreatePayloadToPatchResource (
 {
   REDFISH_PAYLOAD   Payload;
   EDKII_JSON_VALUE  ResourceJsonValue;
-  REDFISH_RESPONSE  PostResponse;
+  REDFISH_RESPONSE  PatchResponse;
   EFI_STATUS        Status;
 
   if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json)) {
@@ -1876,8 +1930,8 @@ CreatePayloadToPatchResource (
     goto EXIT_FREE_JSON_VALUE;
   }
 
-  ZeroMem (&PostResponse, sizeof (REDFISH_RESPONSE));
-  Status = RedfishPatchToPayload (TargetPayload, Payload, &PostResponse);
+  ZeroMem (&PatchResponse, sizeof (REDFISH_RESPONSE));
+  Status = RedfishPatchToPayload (TargetPayload, Payload, &PatchResponse);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a:%d Failed to PATCH payload to Redfish service.\n", __func__, __LINE__));
 
@@ -1885,7 +1939,7 @@ CreatePayloadToPatchResource (
     DEBUG ((DEBUG_ERROR, "%a: Request:\n", __func__));
     DumpRedfishPayload (DEBUG_ERROR, Payload);
     DEBUG ((DEBUG_ERROR, "%a: Response:\n", __func__));
-    DumpRedfishResponse (__func__, DEBUG_ERROR, &PostResponse);
+    DumpRedfishResponse (__func__, DEBUG_ERROR, &PatchResponse);
     DEBUG_CODE_END ();
     goto EXIT_FREE_JSON_VALUE;
   }
@@ -1893,16 +1947,20 @@ CreatePayloadToPatchResource (
   //
   // Find ETag
   //
-  Status = GetEtagAndLocation (&PostResponse, Etag, NULL);
-  if (EFI_ERROR (Status)) {
+  Status = GetHttpResponseEtag (&PatchResponse, Etag);
+  if (Status == EFI_UNSUPPORTED) {
+    Status = EFI_SUCCESS;
+    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported on Redfish service.\n", __func__));
+  } else {
     Status = EFI_DEVICE_ERROR;
+    DEBUG ((DEBUG_ERROR, "%a: Fail to get Location header nor Location property from HTTP response payload.\n", __func__));
   }
 
   RedfishFreeResponse (
-    PostResponse.StatusCode,
-    PostResponse.HeaderCount,
-    PostResponse.Headers,
-    PostResponse.Payload
+    PatchResponse.StatusCode,
+    PatchResponse.HeaderCount,
+    PatchResponse.Headers,
+    PatchResponse.Payload
     );
 
 EXIT_FREE_JSON_VALUE:
@@ -1935,7 +1993,7 @@ CreatePayloadToPostResource (
   IN  REDFISH_PAYLOAD  *TargetPayload,
   IN  CHAR8            *Json,
   OUT EFI_STRING       *Location,
-  OUT CHAR8            **Etag
+  OUT CHAR8            **Etag OPTIONAL
   )
 {
   REDFISH_PAYLOAD   Payload;
@@ -1943,7 +2001,7 @@ CreatePayloadToPostResource (
   REDFISH_RESPONSE  PostResponse;
   EFI_STATUS        Status;
 
-  if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json) || (Location == NULL) || (Etag == NULL)) {
+  if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json) || (Location == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
@@ -1970,12 +2028,22 @@ CreatePayloadToPostResource (
     goto EXIT_FREE_JSON_VALUE;
   }
 
+  Status = GetHttpResponseEtag (&PostResponse, Etag);
+  if (Status == EFI_UNSUPPORTED) {
+    Status = EFI_SUCCESS;
+    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported on Redfish service.\n", __func__));
+  } else if (EFI_ERROR (Status)) {
+    Status = EFI_DEVICE_ERROR;
+    DEBUG ((DEBUG_ERROR, "%a: Fail to get ETAG header nor ETAG property from HTTP response payload.\n", __func__));
+  }
+
   //
   // per Redfish spec. the URL of new resource will be returned in "Location" header.
   //
-  Status = GetEtagAndLocation (&PostResponse, Etag, Location);
+  Status = GetHttpResponseLocation (&PostResponse, Location);
   if (EFI_ERROR (Status)) {
     Status = EFI_DEVICE_ERROR;
+    DEBUG ((DEBUG_ERROR, "%a: Fail to get Location header nor Location proerty from HTTP response payload.\n", __func__));
   }
 
   RedfishFreeResponse (
@@ -3116,6 +3184,11 @@ CheckEtag (
   )
 {
   CHAR8  *EtagInDb;
+
+  if (!CheckIsServerEtagSupported ()) {
+    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported, always returns FALSE to consume resource (Performance would be reduced).\n", __func__));
+    return FALSE;
+  }
 
   if (IS_EMPTY_STRING (Uri)) {
     return FALSE;

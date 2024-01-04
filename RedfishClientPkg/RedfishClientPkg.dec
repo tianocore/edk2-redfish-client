@@ -3,6 +3,7 @@
 #
 # (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 # Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
@@ -76,6 +77,8 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdDefaultRedfishVersion|L"v1"|VOID*|0x10000004
   ## The number of seconds that the firmware will wait before system reboot
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootTimeout|5|UINT16|0x20000002
+  ## Default capability of Redfish service side ETAG support
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishServiceEtagSupported|TRUE|BOOLEAN|0x10000005
 
 [PcdsDynamicEx]
   ## The flag used to indicate that system reboot is required due to system configuration change

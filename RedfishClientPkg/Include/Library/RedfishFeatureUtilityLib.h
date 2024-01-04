@@ -3,6 +3,7 @@
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -81,7 +82,7 @@ CopyConfiglanguageList (
 
 /**
 
-  Get number of node from the string. Node is seperated by '/'.
+  Get number of node from the string. Node is separated by '/'.
 
   @param[in]  NodeString             The node string to parse.
 
@@ -561,6 +562,19 @@ GetEtagWithUri (
 
 /**
 
+  This function returns a boolean of ETAG support on Redfish service side.
+
+  @retval     TRUE    ETAG is supported on Redfish service.
+  @retval     FALSE   ETAG is not supported on Redfish service.
+
+**/
+BOOLEAN
+CheckIsServerEtagSupported (
+  VOID
+  );
+
+/**
+
   Get @odata.id from give HTTP payload. It's call responsibility to release returned buffer.
 
   @param[in]  Payload             HTTP payload
@@ -931,22 +945,33 @@ CompareRedfishPropertyVagueValues (
   );
 
 /**
+  Find "ETag" from either HTTP header or Redfish response.
 
-  Find "ETag" and "Location" from either HTTP header or Redfish response.
+  @param[in]  Response        HTTP response
+  @param[out] Etag            String buffer to return ETag
 
-  @param[in]  Response    HTTP response
-  @param[out] Etag        String buffer to return ETag
-  @param[out] Location    String buffer to return Location
-
-  @retval     EFI_SUCCESS     Data is found and returned.
-  @retval     Others          Errors occur.
+  @retval  EFI_SUCCESS            ETag is returned in Etag
+  @retval  EFI_UNSUPPORTED        ETag is unsupported
+  @retval  EFI_INVALID_PARAMETER  Response, Etag or both are NULL.
 
 **/
 EFI_STATUS
-GetEtagAndLocation (
-  IN  REDFISH_RESPONSE *Response,
-  OUT CHAR8 **Etag, OPTIONAL
-  OUT EFI_STRING        *Location    OPTIONAL
+GetHttpResponseEtag (
+  IN  REDFISH_RESPONSE  *Response,
+  OUT CHAR8             **Etag
+  );
+
+/**
+  Find "Location" from either HTTP header or Redfish response.
+
+  @param[in]  Response        HTTP response
+  @param[out] Location        String buffer to return Location
+
+**/
+EFI_STATUS
+GetHttpResponseLocation (
+  IN  REDFISH_RESPONSE  *Response,
+  OUT EFI_STRING        *Location
   );
 
 /**

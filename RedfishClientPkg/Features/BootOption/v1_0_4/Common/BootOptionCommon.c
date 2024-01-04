@@ -3,6 +3,7 @@
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -455,9 +456,9 @@ RedfishProvisioningResourceCommon (
   }
 
   //
-  // per Redfish spec. the URL of new resource will be returned in "Location" header.
+  // Per Redfish spec. the URL of new resource will be returned in "Location" header.
   //
-  Status = GetEtagAndLocation (&Response, NULL, &NewResourceLocation);
+  Status = GetHttpResponseLocation (&Response, &NewResourceLocation);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: cannot find new location: %r\n", __func__, Status));
     goto RELEASE_RESOURCE;

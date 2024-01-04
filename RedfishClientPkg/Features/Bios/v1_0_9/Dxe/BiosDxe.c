@@ -3,6 +3,7 @@
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2022-2024, NVIDIA CORPORATION. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -153,14 +154,10 @@ RedfishResourceConsumeResource (
   ASSERT (Private->Json != NULL);
 
   //
-  // Find etag in HTTP response header
+  // Searching for etag in HTTP response header
   //
-  Etag   = NULL;
-  Status = GetEtagAndLocation (ExpectedResponse, &Etag, NULL);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, failed to get ETag from HTTP header\n", __func__));
-  }
-
+  Etag = NULL;
+  GetHttpResponseEtag (ExpectedResponse, &Etag);
   Status = RedfishConsumeResourceCommon (Private, Private->Json, Etag);
   if (EFI_ERROR (Status)) {
     if (Status != EFI_ALREADY_STARTED) {
@@ -365,12 +362,8 @@ RedfishResourceCheck (
   //
   // Find etag in HTTP response header
   //
-  Etag   = NULL;
-  Status = GetEtagAndLocation (&Response, &Etag, NULL);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: failed to get ETag from HTTP header\n", __func__));
-  }
-
+  Etag = NULL;
+  GetHttpResponseEtag (&Response, &Etag);
   Status = RedfishCheckResourceCommon (Private, Private->Json, Etag);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, failed to check resource from: %s: %r\n", __func__, Uri, Status));
