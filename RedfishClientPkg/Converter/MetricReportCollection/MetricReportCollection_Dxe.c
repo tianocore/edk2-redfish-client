@@ -3,19 +3,22 @@
   Redfish schema.
    - MetricReportCollection. 
 
-  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
   Auto-generated file by Redfish Schema C Structure Generator.
   https://github.com/DMTF/Redfish-Schema-C-Struct-Generator
   
   Copyright Notice:
-  Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
-  License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md d
+  Copyright 2019-2024 Distributed Management Task Force, Inc. All rights reserved.
+  License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/main/LICENSE.md d
 
 **/
 #include <Uefi.h>
 #include <Library/BaseLib.h>
+#include <Library/DebugLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiDriverEntryPoint.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
@@ -32,7 +35,7 @@
 CHAR8 mResourceTypeStr [] = "#MetricReportCollection";
 BOOLEAN IsRevisonController = FALSE;
 
-// Support MetricReportCollection  
+// Support MetricReportCollection 
 EFI_REST_JSON_STRUCTURE_SUPPORTED ResourceInterP [] = {
   {
     {
@@ -54,11 +57,11 @@ EFI_REST_JSON_STRUCTURE_PROTOCOL *mRestJsonStructureProt = NULL;
 
 /**
   This function gets the string of revision number.
-  
+
   @param[in]    Str             Odata.type string.
-  @param[in]    StrIndex        Current string index. 
+  @param[in]    StrIndex        Current string index.
   @param[in]    OdataTypeStrLen Odata.type string length
-   
+
   @retval != 0 Number found.
   @retval 0    Number not found.
 
@@ -298,8 +301,8 @@ MetricReportCollectionToStructWrapper (
   
   @param[in]    This            EFI_REST_JSON_STRUCTURE_PROTOCOL instance. 
   @param[in]    InterpProp      Given Restful resource.
-  @param[out]   ResoruceRaw     Resource in RESTfuls service oriented property interpreted from given ResoruceRaw.
-                                Caller has to release the memory allocated for ResoruceRaw using DestoryJson function.
+  @param[out]   ResoruceRaw     Resource in RESTful service oriented property interpreted from given ResoruceRaw.
+                                Caller has to release the memory allocated for ResoruceRaw using DestroyJson function.
 
   @retval EFI_SUCCESS
   @retval Others
@@ -313,10 +316,17 @@ MetricReportCollectionToJson(
   OUT CHAR8 **ResoruceRaw
 )
 {
+  EFI_STATUS RedfishStatus;
+
   if (InterpProp == NULL || ResoruceRaw == NULL) {
     return EFI_INVALID_PARAMETER;
   }
-  return (EFI_STATUS)CS_To_MetricReportCollection_JSON (*((EFI_REDFISH_METRICREPORTCOLLECTION_CS **)((UINT8 *)InterpProp + sizeof (EFI_REST_JSON_STRUCTURE_HEADER))), ResoruceRaw);  
+  DEBUG((DEBUG_MANAGEABILITY, "%a: Call to CS_To_MetricReportCollection_JSON\n", __func__));
+  RedfishStatus = (EFI_STATUS)CS_To_MetricReportCollection_JSON (*((EFI_REDFISH_METRICREPORTCOLLECTION_CS **)((UINT8 *)InterpProp + sizeof (EFI_REST_JSON_STRUCTURE_HEADER))), ResoruceRaw);
+  if (EFI_ERROR(RedfishStatus)) {
+    DEBUG((DEBUG_MANAGEABILITY, "%a Call to CS_To_MetricReportCollection_JSON fail (%d)\n", __func__, RedfishStatus));
+  }
+  return RedfishStatus;
 }
 
 /**

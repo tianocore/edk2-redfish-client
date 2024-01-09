@@ -2,10 +2,12 @@
 // Auto-generated file by Redfish Schema C Structure Generator.
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
-//  (C) Copyright 2019-2021 Hewlett Packard Enterprise Development LP<BR>
+//  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
+//  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+//  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 //
 // Copyright Notice:
-// Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
+// Copyright 2019-2024 Distributed Management Task Force, Inc. All rights reserved.
 // License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 //
 
@@ -168,8 +170,9 @@ typedef struct _RedfishStorageReplicaInfo_V1_3_0_ReplicaInfo_CS {
                                                               // asynchronously.
     RedfishCS_char             *RequestedReplicaState;        // The last requested or desired
                                                               // state for the relationship.
-    Redfishodatav4_idRef_CS    *SourceReplica;                // The resource that is the
-                                                              // source of this replica.
+    Redfishodatav4_idRef_CS    *SourceReplica;                // The URI to the source replica
+                                                              // when located on a different
+                                                              // Swordfish service instance.
     RedfishCS_bool             *SyncMaintained;               // Synchronization is maintained.
     RedfishCS_char             *UndiscoveredElement;          // This property specifies
                                                               // whether the source, the

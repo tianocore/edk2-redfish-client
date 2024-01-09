@@ -3,9 +3,11 @@
 // https://github.com/DMTF/Redfish-Schema-C-Struct-Generator.
 //
 //  (C) Copyright 2019-2022 Hewlett Packard Enterprise Development LP<BR>
+//  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+//  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 //
 // Copyright Notice:
-// Copyright 2019-2022 Distributed Management Task Force, Inc. All rights reserved.
+// Copyright 2019-2024 Distributed Management Task Force, Inc. All rights reserved.
 // License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 //
 
@@ -1142,13 +1144,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ActionsOem(json_t *CsJson, char *Key, RedfishComputerSystem_V1_9_3_OemActions_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1251,13 +1250,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_HostWatchdogTimerOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1349,13 +1345,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_HostWatchdogTimerStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1440,13 +1433,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_HostedServicesOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1520,13 +1510,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_LinksOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1724,13 +1711,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_MemorySummaryStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1815,13 +1799,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_Oem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -1913,13 +1894,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_ProcessorSummaryStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -2083,13 +2061,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_StatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -2138,13 +2113,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_TrustedModulesOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;
@@ -2236,13 +2208,10 @@ Error:;
 }
 static RedfishCS_status CS_To_JSON_TrustedModulesStatusOem(json_t *CsJson, char *Key, RedfishResource_Oem_CS *CSPtr)
 {
-  json_t *CsParentJson;
-
   if (CSPtr == NULL) {
     return RedfishCS_status_success;
   }
 
-  CsParentJson = CsJson;
   CsJson = json_object();
   if (CsJson == NULL) {
     return RedfishCS_status_unsupported;

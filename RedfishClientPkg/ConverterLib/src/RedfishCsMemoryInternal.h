@@ -1,11 +1,7 @@
 /** @file
 
-  (C) Copyright 2018-2021 Hewlett Packard Enterprise Development LP<BR>
-
-  SPDX-License-Identifier: BSD-2-Clause-Patent
-
   Copyright Notice:
-  Copyright 2019-2021 Distributed Management Task Force, Inc. All rights reserved.
+  Copyright 2019-2024 Distributed Management Task Force, Inc. All rights reserved.
   License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 **/
 
