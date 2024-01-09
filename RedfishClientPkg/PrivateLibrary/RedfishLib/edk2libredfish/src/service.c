@@ -11,6 +11,7 @@
   Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -1260,7 +1261,8 @@ deleteUriFromServiceEx (
   CHAR8                  ContentLengthStr[80];
   size_t                 contentLength;
 
-  ret = NULL;
+  ret           = NULL;
+  contentLength = 0;
 
   if ((service == NULL) || (uri == NULL) || (StatusCode == NULL)) {
     return NULL;
