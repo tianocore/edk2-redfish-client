@@ -104,6 +104,26 @@ DestoryCsMemory (
   RedfishCS_void  *rootCs
   );
 
+/**
+  This function removes the unchangeable Redfish properties from JSON raw text
+  The content in JsonString is left unmodified, the caller has to give enoungh
+  memory pointed by NewJsonBuffer in the size of BufferSize.
+
+  JsonString     Input JSON raw string
+  NewJsonBuffer  Pointer to memory for the updated JSON raw string in
+                 size of BufferSize.
+  BufferSize    The buffer size of NewJsonBuffer
+
+  Return RedfishCS_status.
+
+**/
+RedfishCS_status
+RemoveUnchangeableProperties (
+  RedfishCS_char    *JsonString,
+  RedfishCS_char    *NewJsonBuffer,
+  RedfishCS_uint32  BufferSize
+  );
+
 typedef struct _RedfishCS_char_Array          RedfishCS_char_Array;
 typedef struct _RedfishCS_int64_Array         RedfishCS_int64_Array;
 typedef struct _RedfishCS_bool_Array          RedfishCS_bool_Array;
