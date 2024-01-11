@@ -44,6 +44,7 @@ typedef EDKII_JSON_TYPE   json_type;
 #define json_array_append_new(json_t_array, json_t)  JsonArrayAppendValue(json_t_array, json_t)
 #define json_object_set_new(json_t, key, value)      JsonObjectSetValue(json_t, key, value)
 #define json_decref(json_t)                          JsonDecreaseReference(json_t)
+#define json_object_del(json_t, key)                 JsonObjectDelete(json_t, key)
 #define json_integer_value(json_t)                   JsonValueGetInteger(json_t)
 #define json_is_object(json_t)                       JsonValueIsObject(json_t)
 #define json_is_array(json_t)                        JsonValueIsArray(json_t)
