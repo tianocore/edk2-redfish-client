@@ -3414,6 +3414,42 @@ AddRedfishCharArray (
 
 /**
 
+  Destroy Redfish string array
+
+  @param[in]    Head          The head of string array.
+  @param[in]    ArraySize     The size of StringArray.
+
+  @retval     EFI_SUCCESS       String array is destroyed successfully.
+  @retval     Others            Error happens
+
+**/
+EFI_STATUS
+DestoryRedfishCharArray (
+  IN      RedfishCS_char_Array  *Head,
+  IN      UINTN                 ArraySize
+  )
+{
+  UINTN                 Index;
+  RedfishCS_char_Array  *NextPointer;
+
+  if ((Head == NULL) || (ArraySize == 0)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  for (Index = 0; Index < ArraySize; Index++) {
+    NextPointer = Head->Next;
+    if (Head != NULL) {
+      FreePool (Head);
+    }
+
+    Head = NextPointer;
+  }
+
+  return EFI_SUCCESS;
+}
+
+/**
+
   Create numeric array and append to array node in Redfish JSON convert format.
 
   @param[in,out]  Head           The head of string array.
@@ -3932,6 +3968,51 @@ ValidateRedfishStringArrayValues (
     return EFI_BAD_BUFFER_SIZE;
   }
 
+  return EFI_SUCCESS;
+}
+
+/**
+  This function removes the unchangeable Redfish properties from input JsonString.
+  New JSON string is returned in JsonString and the memory of original pointer to input
+  JsonString was freed. Caller is responsible to free the memory pointed by output
+  JsonString.
+
+  @param[in,out]  JsonString  On input, this is the pointer to original JSON string.
+                              On output, this is the new pointer to the updated JSON string.
+
+  @retval  EFI_SUCCESS  The unchangeable Redfish properties were removed from original JSON string.
+  @retval  Others       There are problems to remove unchangeable Redfish properties.
+
+**/
+EFI_STATUS
+RedfishRemoveUnchangeableProperties (
+  IN OUT  CHAR8  **JsonString
+  )
+{
+  RedfishCS_status  Status;
+  CHAR8             *UpdatedJsonString;
+
+  if ((JsonString == NULL) || (*JsonString == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  UpdatedJsonString = AllocateZeroPool (AsciiStrSize (*JsonString));
+  if (UpdatedJsonString == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: Insufficient memory for UpdatedJsonString.\n", __func__));
+    return EFI_OUT_OF_RESOURCES;
+  }
+
+  Status = RemoveUnchangeableProperties (
+             (RedfishCS_char *)*JsonString,
+             (RedfishCS_char *)UpdatedJsonString,
+             (RedfishCS_uint32)AsciiStrSize (*JsonString)
+             );
+  if (Status != RedfishCS_status_success) {
+    return EFI_DEVICE_ERROR;
+  }
+
+  FreePool (*JsonString);
+  *JsonString = UpdatedJsonString;
   return EFI_SUCCESS;
 }
 

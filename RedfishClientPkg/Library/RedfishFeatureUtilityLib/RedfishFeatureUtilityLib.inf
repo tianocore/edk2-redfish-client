@@ -37,6 +37,7 @@
 [LibraryClasses]
   BaseLib
   BaseMemoryLib
+  ConverterCommonLib
   DebugLib
   MemoryAllocationLib
   RedfishLib

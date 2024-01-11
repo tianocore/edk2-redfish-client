@@ -823,6 +823,23 @@ AddRedfishCharArray (
 
 /**
 
+  Destroy Redfish string array
+
+  @param[in]    Head          The head of string array.
+  @param[in]    ArraySize     The size of StringArray.
+
+  @retval     EFI_SUCCESS       String array is destroyed successfully.
+  @retval     Others            Error happens
+
+**/
+EFI_STATUS
+DestoryRedfishCharArray (
+  IN      RedfishCS_char_Array  *Head,
+  IN      UINTN                 ArraySize
+  );
+
+/**
+
   Create numeric array and append to array node in Redfish JSON convert format.
 
   @param[in,out]  Head           The head of string array.
@@ -1022,6 +1039,24 @@ ValidateRedfishStringArrayValues (
   IN CHAR8                 **StringArray,
   IN UINTN                 ArraySize,
   OUT BOOLEAN              *ValueChanged
+  );
+
+/**
+  This function removes the unchangeable Redfish properties from input JsonString.
+  New JSON string is returned in JsonString and the memory of original pointer to input
+  JsonString was freed. Caller is responsible to free the memory pointed by output
+  JsonString.
+
+  @param[in,out]  JsonString  On input, this is the pointer to original JSON string.
+                              On output, this is the new pointer to the updated JSON string.
+
+  @retval  EFI_SUCCESS  The unchangeable Redfish properties were removed from original JSON string.
+  @retval  Others       There are problems to remove unchangeable Redfish properties.
+
+**/
+EFI_STATUS
+RedfishRemoveUnchangeableProperties (
+  IN OUT  CHAR8  **JsonString
   );
 
 #endif
