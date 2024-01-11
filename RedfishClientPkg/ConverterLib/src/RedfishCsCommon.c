@@ -1461,3 +1461,58 @@ CsEmptyPropLinkToJson (
 
   return RedfishCS_status_success;
 }
+
+/**
+  This function removes the unchangeable Redfish properties from JSON raw text
+  The content in JsonString is left unmodified, the caller has to give enoungh
+  memory pointed by NewJsonBuffer in the size of BufferSize.
+
+  JsonString     Input JSON raw string
+  NewJsonBuffer  Pointer to memory for the updated JSON raw string in
+                 size of BufferSize.
+  BufferSize    The buffer size of NewJsonBuffer
+
+  Return RedfishCS_status.
+
+**/
+RedfishCS_status
+RemoveUnchangeableProperties (
+  RedfishCS_char    *JsonString,
+  RedfishCS_char    *NewJsonBuffer,
+  RedfishCS_uint32  BufferSize
+  )
+{
+  json_t            *JsonObj;
+  RedfishCS_char    *TempChar;
+  RedfishCS_status  Status;
+
+  if ((JsonString == NULL) || (NewJsonBuffer == NULL)) {
+    return RedfishCS_status_invalid_parameter;
+  }
+
+  JsonObj = json_loads (JsonString, 0, NULL);
+  if (JsonObj == NULL) {
+    return RedfishCS_status_unknown_error;
+  }
+
+  json_object_del (JsonObj, "@odata.type");
+  json_object_del (JsonObj, "@odata.id");
+  json_object_del (JsonObj, "Id");
+  json_object_del (JsonObj, "Name");
+
+  TempChar = json_dumps ((json_t *)JsonObj, JSON_INDENT (2));
+  if (TempChar != NULL) {
+    if ((strlen (TempChar) + 1) > BufferSize) {
+      Status = RedfishCS_status_insufficient_memory;
+    } else {
+      memcpy (NewJsonBuffer, TempChar, strlen (TempChar) + 1);
+      free (TempChar);
+      Status = RedfishCS_status_success;
+    }
+  } else {
+    Status = RedfishCS_status_unknown_error;
+  }
+
+  json_decref (JsonObj);
+  return Status;
+}
