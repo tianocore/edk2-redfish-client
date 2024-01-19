@@ -355,7 +355,7 @@ StrUnicodeToAscii (
 
   Status = UnicodeStrToAsciiStrS (UnicodeStr, AsciiStr, AsciiStrSize);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "UnicodeStrToAsciiStrS failed: %r\n", Status));
+    DEBUG ((DEBUG_ERROR, "%a: UnicodeStrToAsciiStrS failed: %r\n", __func__, Status));
     FreePool (AsciiStr);
     return NULL;
   }
@@ -380,21 +380,23 @@ StrAsciiToUnicode (
 {
   EFI_STRING  UnicodeStr;
   UINTN       UnicodeStrSize;
+  UINTN       InputStrSize;
   EFI_STATUS  Status;
 
   if (IS_EMPTY_STRING (AsciiStr)) {
     return NULL;
   }
 
-  UnicodeStrSize = (AsciiStrLen (AsciiStr) + 1) * sizeof (CHAR16);
+  InputStrSize   = AsciiStrSize (AsciiStr);
+  UnicodeStrSize = InputStrSize * sizeof (CHAR16);
   UnicodeStr     = AllocatePool (UnicodeStrSize);
   if (UnicodeStr == NULL) {
     return NULL;
   }
 
-  Status = AsciiStrToUnicodeStrS (AsciiStr, UnicodeStr, UnicodeStrSize);
+  Status = AsciiStrToUnicodeStrS (AsciiStr, UnicodeStr, InputStrSize);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "t failed: %r\n", Status));
+    DEBUG ((DEBUG_ERROR, "%a: AsciiStrToUnicodeStrS failed: %r\n", __func__, Status));
     FreePool (UnicodeStr);
     return NULL;
   }
