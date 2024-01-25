@@ -37,6 +37,7 @@
   RedfishResourceIdentifyLib
   UefiLib
   UefiDriverEntryPoint
+  RedfishAddendumLib
   RedfishHttpCacheLib
 
 [Protocols]
