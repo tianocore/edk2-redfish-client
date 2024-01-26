@@ -379,15 +379,19 @@ CreateCsJsonByNode (
   if (TempChar != NULL) {
     Status = allocateRecordCsMemory (Cs, sizeof (RedfishCS_Type_JSON_Data), (void **)&CsTypeJson);
     if (Status != RedfishCS_status_success) {
+      free (TempChar);
       return Status;
     }
 
     Status = allocateRecordCsMemory (Cs, (RedfishCS_int)strlen (TempChar) + 1, (void **)&DumpStr);
     if (Status != RedfishCS_status_success) {
+      free (TempChar);
       return Status;
     }
 
     strncpy (DumpStr, TempChar, strlen (TempChar) + 1);
+    free (TempChar);
+
     InitializeLinkHead (&CsTypeJson->Header.LinkEntry);
     CsTypeJson->Header.ResourceType = RedfishCS_Type_JSON;
     CsTypeJson->Header.ThisUri      = ParentUri;
@@ -1506,9 +1510,10 @@ RemoveUnchangeableProperties (
       Status = RedfishCS_status_insufficient_memory;
     } else {
       memcpy (NewJsonBuffer, TempChar, strlen (TempChar) + 1);
-      free (TempChar);
       Status = RedfishCS_status_success;
     }
+
+    free (TempChar);
   } else {
     Status = RedfishCS_status_unknown_error;
   }
