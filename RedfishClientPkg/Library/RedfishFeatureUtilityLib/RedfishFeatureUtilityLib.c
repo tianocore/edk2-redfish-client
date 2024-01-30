@@ -4010,6 +4010,7 @@ RedfishRemoveUnchangeableProperties (
              (RedfishCS_uint32)AsciiStrSize (*JsonString)
              );
   if (Status != RedfishCS_status_success) {
+    FreePool (UpdatedJsonString);
     return EFI_DEVICE_ERROR;
   }
 
