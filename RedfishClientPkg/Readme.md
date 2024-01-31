@@ -294,7 +294,7 @@ PCD is set to `TRUE`.
 The purpose of Redfish feature driver is to do the synchronization job between Redfish service and BIOS. The operation of synchronization can be simply divided into two types:
 
 #### Provisioning resource
-Below is the flow diagram of provisioning platform configuration to Redfish service at Bios resource. With the x-uefi-redfish
+Below is the flow diagram of provisioning platform configuration to Redfish service at BIOS resource. With the x-uefi-redfish
 configure language described in above section, Redfish feature driver collect all BIOS attributes from HII database and populated
 them to Redfish service.
 ![provisioning](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-call-flow-provisioning.svg?raw=true)
@@ -311,7 +311,7 @@ job.
 Several interfaces defined in EDKII Redfish Resource Config Protocol work together to support Redfish synchronization:
 - Identify()
   - This function is used to check if the given Redfish resource is the one the feature driver wants to manage. A platform
-    library `RedfishReesourceIdentifyLib` is introduced for platform to implement its own policy to identify Redfish resource.
+    library `RedfishResourceIdentifyLib` is introduced for platform to implement its own policy to identify Redfish resource.
 - Check()
   - This function is used to check the attribute status on Redfish service. If all attributes the feature driver manages
     are presented in Redfish service, feature driver must provision them already. Otherwise, Provisioning() will be called
@@ -338,19 +338,164 @@ struct _EDKII_REDFISH_RESOURCE_ADDENDUM_PROTOCOL {
 };
 ```
 
-#### Redfish service implementation
-The idea of Redfish synchronization design is to manage Redfish resource directly by platform firmware. To do this, Redfish
-synchronization functions have to work with Redfish service implementation in BMC firmware. This is because the interface
-between platform firmware and BMC firmware is not defined in any specification.
-Several prerequisites must be satisfied:
-- Platform firmware has permission to manage Redfish resource. BMC has ability to tell the difference between platform request
-  and out-of-band user. This can normally be done by identifying the bootstrap account in HTTP request. The bootstrap account is
-  described in Host Interface specification 1.3.0 section 9.
-- The ability to tell if there is an user who changes to Redfish resource or not. Redfish feature drivers can only be executed at
-  POST time. So the modification to BIOS managed resource is an asynchronous operation. Thus, we need below supports in Redfish service:
-  - ETAG support in HTTP header.
-  - Setting resource support (defined in Redfish specification 1.18 section 9.10).
-  - Redfish Task support to POST and DELETE operation made by user in Redfish collection resource and Redfish actions.
+### Redfish Service Implementation that Incorporates with EDK2 Redfish
+The idea of Redfish synchronization design is to manage Redfish resource directly by platform host
+firmware. To do this, Redfish synchronization functions have to work with Redfish service implementation
+in BMC firmware. This is because the mechanism between platform host firmware and BMC firmware is not
+defined in any specification. Several prerequisites must be satisfied and listed below:
+
+**BIOS Redfish Credential**
+
+- Platform host firmware has the permission to manage Redfish resource. BMC has ability to distinguish
+the in-band platform host firmware and out-of-band user, this can normally be done by identifying the bootstrap account in HTTP request. The bootstrap account is described in Host Interface specification 1.3.0 section 9. If the Redfish client uses bootstrap account for HTTP actions, BMC must consider the Redfish
+client is BIOS and give the write permission to BIOS for updating BIOS managed Redfish properties even the
+properties are declared as "ReadOnly" in the Redfish schema.
+
+**BIOS Managed Redfish Resource Provisioning**
+- The Default Empty BIOS Managed Redfish Resource <br>
+  The BIOS managed Redfish properties may not covering the entire resource but just manages some properties
+  in the resource or a subset of resource. For example, the "Boot" property in ComputerSystem. BIOS is not able to use HTTP PUT to replace a resource that is not entirely managed by BIOS. The HTTP PATCH is the only method to provision the BIOS managed properties. This is a requirement the BIOS managed properties
+  in the resource must have either a default value or an empty property, with this BIOS can have a HTTP
+  PATCH to update the value.<br><br>
+  For the example in ComputerSystem resource below,<br>
+  The "BootOrder" property is exist in ComputerSystem, however the values is left as empty. With the
+  existence of "BootOrder", BIOS can provision the valid values using HTTP PATCH with out error.
+
+```C
+In Redfish Computer System resource:
+{
+  "Boot": {
+    "AutomaticRetryAttempts": 3,
+    "BootOrder": []
+  }
+}
+```
+
+- Computer System Bios resource<br>
+The "Bios" property in Computer System resource usually has a "@odata.id" property that is an
+URI points to the BIOS Redfish resource. The "Bios" property must exist in the computer system
+resource and the URI of "Bios" property is required to be provided by BMC as the default value.
+With this, BIOS knows where to provision the BIOS resource.
+
+```C
+In Redfish Computer System resource:
+{
+  "Bios": {
+    "@odata.id": "/redfish/v1/Systems/system/Bios"
+  }
+}
+```
+
+- BIOS AttributeRegistry<br>
+The "AttributeRegistry" is a property in "Bios" resource, which is the resource ID of
+message registry file that has the system-specific information about a BIOS resource.
+"AttributeRegistry" must exist in "Bios" resource and the value can't be empty if the the
+platform support system-specific information BIOS resource. In order to provision the BIOS
+attribute registry resource, BIOS attribute registry must be defined as a collection member
+in the service root "Registries" collection property. The value of "Id" property in
+MessageFileRegistry must be as the same as "AttributeRegistry" value in BIOS resource.
+Also, the "Languages" and "Location" array property must be predefined in the Redfish message
+file. The location URI of message registry file can be determined by BMC. With this, BIOS can get the resource ID from "AttributeRegistry" property and look for the same ID defined in the
+Message File Registry collection for provisioning the entire BIOS AttributeRegistry resource.
+
+```C
+In Redfish Computer System Bios resource:
+{
+  "AttributeRegistry": "BiosAttributeRegistry"
+}
+
+In Service Root Registries resource:
+{
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/Registries/BiosAttributeRegistry"
+    }
+  ]
+}
+
+In /redfish/v1/Registries/BiosAttributeRegistry:
+{
+  "Id": "BiosAttributeRegistry",
+  "Languages": [
+    "en"
+  ],
+  "Languages@odata.count": 1,
+  "Location": [
+    {
+      "Language": "en",
+      "Uri": "/redfish/v1/Registries/Bios"
+    }
+  ]
+}
+
+The URI "/redfish/v1/Registries/Bios" is where BIOS to put the BIOS attribute registry resource.
+```
+
+**BIOS Managed Redfish Resource Consumption**
+
+The ability to tell if there are the changes on BIOS managed Redfish resource. The modifications to BIOS managed resource is considered as an asynchronous operation because the Redfish feature drivers can only be
+executed at the platform host firmware POST time. With the above constraint, we need the below requirements
+on BMC Redfish service.
+  - ETAG Support in HTTP Header<br>
+  To reduce the unnecessary HTTP GET for the unchanged Redfish resource that leads to increase the platform
+  boot time, ETAG is leveraged to tell BIOS if BIOS has to get the entire resource as there were some
+  changes made on the resource. Although ETAG support in HTTP response header is not mandatory by edk2
+  Redfish design, it is still a strong recommendation if the platform boot time is a concern. <br>
+  Below PCD is used to configure the BMC Redfish service supports ETAG.
+
+```C
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishServiceEtagSupported
+```
+
+  - HTTP Query Head Support<br>
+  In order to retrieve the HTTP response headers only to reduce the unnecessary HTTP GET for the entire
+  Redfish resource. HTTP Query Head support on Redfish service is mandatory if the system boot time is a
+  concern.
+
+  - Redfish Setting Annotation Support (defined in Redfish specification 1.18 section 9.10).<br>
+  @Redfish.Settings annotation represents the future state of resource. The future state of BIOS managed
+  properties will be consume in the next time platform boot, no matter it is a reset cycle or power cycle.<br>
+  This is a requirement for BMC Redfish service having @Redfish.Settings for the changed properties made by
+  remote user. With the @Redfish.Settings annotation in the resource, BIOS can identify which Redfish
+  properties were changed.  BIOS can then only consume these changes and apply those to BIOS platform
+  configurations. Without providing @Redfish.Settings for the changes, BIOS can just consume all of the
+  BIOS managed properties on Redfish service even the properties weren't changed.
+
+  - ETAG Support in Redfish Setting Annotation<br>
+  ETAG in @Redfish.Settings resource is also required. As @Redfish.Settings annotation may not be deleted by
+  BMC after it has been consumed, the out of date @Redfish.Settings may still leave in the Redfish
+  resource. With ETAG is provided in @Redfish.Settings, BIOS is able to tell if @Redfish.Settings is fresh
+  or stale.<br><br>
+  Below is the example of @Redfish.Settings for BIOS attribute change,
+
+```C
+  "@Redfish.Settings": {
+    "@odata.type": "#Settings.v1_3_3.Settings",
+    "SettingsObject": {
+      "@odata.id": "/redfish/v1/Systems/1/Bios",
+      "@odata.etag": "W/\"ABCDEFG\"",
+      "Attributes": {
+        "BootMode": "Uefi"
+      }
+    }
+  }
+```
+
+**Redfish HTTP Content Encoding**<br>
+For the performance consideration when BIOS HTTP POST, PUT and PATCH the resource, HTTP Content-Encoding
+header is leverage to compress the resource to reduce the payload size with BMC Redfish support. Below PCD string is introduced for platform developer to set the encoding method supported by BMC Redfish, currently
+only "None" and "gzip" are supported.
+
+```C
+  gEfiRedfishPkgTokenSpaceGuid.PcdRedfishServiceContentEncoding|["None"]["gzip"]
+```
+
+**BIOS Redfish Action**
+- Redfish supports the HTTP POST and DELETE operation<br>
+HTTP POST operation is triggered by BIOS to create a Redfish collection member in the Redfish
+collection resource, and also for triggering the Redfish action. For the Redfish action, such
+as loading the BIOS default and Secure boot certification enrollment.<br>
+HTTP DELETE operation is triggered by BIOS to delete a member in the Redfish collection.
 
 ### Redfish Task design
 TBD.
