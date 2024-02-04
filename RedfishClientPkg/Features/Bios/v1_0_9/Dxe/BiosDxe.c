@@ -132,12 +132,13 @@ RedfishResourceConsumeResource (
   // Check and see if "@Redfish.Settings" exist or not.
   //
   ZeroMem (&PendingSettingResponse, sizeof (REDFISH_RESPONSE));
-  Status = GetPendingSettings (
-             Private->RedfishService,
-             Response.Payload,
-             &PendingSettingResponse,
-             &PendingSettingUri
-             );
+  PendingSettingUri = NULL;
+  Status            = GetPendingSettings (
+                        Private->RedfishService,
+                        Response.Payload,
+                        &PendingSettingResponse,
+                        &PendingSettingUri
+                        );
   if (!EFI_ERROR (Status)) {
     DEBUG ((REDFISH_DEBUG_TRACE, "%a: @Redfish.Settings found: %s\n", __func__, PendingSettingUri));
     Private->Uri     = PendingSettingUri;
@@ -204,6 +205,10 @@ RedfishResourceConsumeResource (
 
   if (Etag != NULL) {
     FreePool (Etag);
+  }
+
+  if (PendingSettingUri != NULL) {
+    FreePool (PendingSettingUri);
   }
 
   return Status;
