@@ -791,7 +791,7 @@ RedfishIdentifyResourceCommon (
 {
   BOOLEAN  Supported;
 
-  Supported = RedfishIdentifyResource (Private->Uri, Private->Json);
+  Supported = RedfishIdentifyResource (Private->Uri, Json);
   if (Supported) {
     return EFI_SUCCESS;
   }

@@ -2516,7 +2516,7 @@ RedfishIdentifyResourceCommon (
   EFI_STRING                                   EndOfChar;
   REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  ConfigLangList;
 
-  Supported = RedfishIdentifyResource (Private->Uri, Private->Json);
+  Supported = RedfishIdentifyResource (Private->Uri, Json);
   if (Supported) {
     Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigLangList);
     if (EFI_ERROR (Status)) {
