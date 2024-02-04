@@ -670,6 +670,7 @@ RedfishExternalResourceResourceFeatureCallback (
   REDFISH_SERVICE                  RedfishService;
   REDFISH_RESOURCE_COMMON_PRIVATE  *Private;
   EFI_STRING                       ResourceUri;
+  EFI_STRING                       BiosUri;
 
   if (FeatureAction != CallbackActionStartOperation) {
     return EFI_UNSUPPORTED;
@@ -707,19 +708,19 @@ RedfishExternalResourceResourceFeatureCallback (
   //
   // Initialize collection path
   //
-  Private->Uri = RedfishGetUri (ResourceUri);
-  if (Private->Uri == NULL) {
+  BiosUri = RedfishGetUri (ResourceUri);
+  if (BiosUri == NULL) {
     ASSERT (FALSE);
     FreePool (ResourceUri);
     return EFI_OUT_OF_RESOURCES;
   }
 
-  Status = HandleResource (Private, Private->Uri);
+  Status = HandleResource (Private, BiosUri);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, process external resource: %a failed: %r\n", __func__, Private->Uri, Status));
+    DEBUG ((DEBUG_ERROR, "%a, process external resource: %s failed: %r\n", __func__, BiosUri, Status));
   }
 
-  FreePool (Private->Uri);
+  FreePool (BiosUri);
   FreePool (ResourceUri);
   return Status;
 }
