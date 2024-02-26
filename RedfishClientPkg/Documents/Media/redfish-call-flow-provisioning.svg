@@ -25,7 +25,7 @@
     <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2417.95 1202)">2. Follow Bios schema and </text>
     <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2479.82 1262)">create attribute list</text>
     <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2412.63 1795)">4. BIOS current settings is ready</text>
-    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2474.5 1855)">Issue HTTP “PUT” to /redfish/v1/systems/SYS/Bios</text>
+    <text font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="50" transform="matrix(1 0 0 1 2474.5 1855)">Issue HTTP “PATCH” to /redfish/v1/systems/SYS/Bios</text>
     <path d="M2385 1906.14 3728.02 1906.14 3728.02 1911.86 2385 1911.86ZM3723.43 1895.25 3750.93 1909 3723.43 1922.75Z" fill="#8C8C8C"/>
     <rect x="342.5" y="1008.5" width="377" height="199" stroke="#CDCDCD" stroke-width="4.58333" stroke-linejoin="round" stroke-miterlimit="10" fill="#404040"/>
     <text fill="#FFFFFF" font-family="Trebuchet MS,Trebuchet MS_MSFontService,sans-serif" font-weight="400" font-size="55" transform="matrix(1 0 0 1 391.759 1095)">Chipset/HII </text>

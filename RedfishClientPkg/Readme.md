@@ -310,21 +310,32 @@ job.
 
 Several interfaces defined in EDKII Redfish Resource Config Protocol work together to support Redfish synchronization:
 - Identify()
-  - This function is used to check if the given Redfish resource is the one the feature driver wants to manage. A platform
-    library `RedfishResourceIdentifyLib` is introduced for platform to implement its own policy to identify Redfish resource.
+  - This function is used to check if the given Redfish resource is the one the feature driver
+    wants to manage. A platform library `RedfishResourceIdentifyLib` is introduced for
+    platform to implement its own policy to identify Redfish resource.
 - Check()
-  - This function is used to check the attribute status on Redfish service. If all attributes the feature driver manages
-    are presented in Redfish service, feature driver must provision them already. Otherwise, Provisioning() will be called
-    to perform resource provisioning job.
+  - This function is used to check the attribute status on Redfish service. If all attributes
+    the feature driver manages are presented in Redfish service, feature driver must provision
+    them already. Otherwise, Provisioning() will be called to perform resource provisioning
+    job.
 - Provisioning()
-  - When this function is called, feature driver will provision all attributes that it managed to Redfish service. This
-    operation usually create new resource at Redfish service and require different operation that specified by Redfish service.
+  - When this function is called, feature driver will provision all attributes that it managed
+    to Redfish service. This operation usually creates the new Redfish properties at the
+    existing URI in Redfish service. Use HTTP PATCH to provision Redfish properties as BIOS
+    may only manage some but not all of the properties of the resource. See [Redfish-edk2 implementation](#Redfish-Service-Implementation-that-Incorporates-with-EDK2-Redfish) for
+    the details. HTTP POST is still used for creating a collection member, such as the
+    collection member of processor or memory for the Redfish inventory management.
+    However, HTTP PUT to overwrite an entire Redfish resource is not used in edk2 Redfish
+    implementation as edk2 Redfish implementation has no idea of whether the Redfish resource
+    is entirely managed by BIOS or not.
 - Consume()
-  - When there is pending settings in Redfish service, this function is called for feature driver to consume pending settings
-    requested by user.
+  - When there is pending settings in Redfish service, this function is called for feature
+    driver to consume pending settings requested by user. HTTP GET is the method used
+    to retrieve Redfish properties.
 - Update()
-  - When platform configuration is updated, this function is called to update configuration changes to Redfish service and
-    Redfish service can show the latest settings on platform.
+  - When platform configuration is updated, this function is called to update configuration
+    changes to Redfish service and Redfish service can show the latest settings on platform.
+    HTTP PATCH is the method used to update the properties of Redfish resource.
 
 The EDKII Redfish Resource Addendum Protocol is introduced to provide platform addendum data that Redfish service requires.
 This protocol will be called at Provisioning() and Update() functions so platform can add OEM attribute or any other attribute
@@ -338,7 +349,7 @@ struct _EDKII_REDFISH_RESOURCE_ADDENDUM_PROTOCOL {
 };
 ```
 
-### Redfish Service Implementation that Incorporates with EDK2 Redfish
+### <a name="Redfish-Service-Implementation-that-Incorporates-with-EDK2-Redfish"></a>Redfish Service Implementation that Incorporates with EDK2 Redfish
 The idea of Redfish synchronization design is to manage Redfish resource directly by platform host
 firmware. To do this, Redfish synchronization functions have to work with Redfish service implementation
 in BMC firmware. This is because the mechanism between platform host firmware and BMC firmware is not
