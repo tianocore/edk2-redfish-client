@@ -12,7 +12,7 @@
 #ifndef REDFISH_FEATURE_UTILITY_LIB_H_
 #define REDFISH_FEATURE_UTILITY_LIB_H_
 
-#include <Library/RedfishLib.h>
+#include <RedfishServiceData.h>
 #include <Protocol/EdkIIRedfishPlatformConfig.h>
 #include <Protocol/EdkIIRedfishInterchangeData.h>
 #include <RedfishJsonStructure/RedfishCsCommon.h>
@@ -350,50 +350,6 @@ ApplyFeatureSettingsBooleanArrayType (
   IN  CHAR8                 *Version,
   IN  EFI_STRING            ConfigureLang,
   IN  RedfishCS_bool_Array  *ArrayHead
-  );
-
-/**
-
-  Create HTTP payload and send them to redfish service with POST method.
-
-  @param[in]  Service         Redfish service.
-  @param[in]  TargetPayload   Target payload
-  @param[in]  Json            Data in JSON format.
-  @param[out] Location        Returned location string from Redfish service.
-  @param[out] Etag            Returned ETAG string from Redfish service.
-
-  @retval     EFI_SUCCESS     Data is sent to redfish service successfully.
-  @retval     Others          Errors occur.
-
-**/
-EFI_STATUS
-CreatePayloadToPostResource (
-  IN  REDFISH_SERVICE  *Service,
-  IN  REDFISH_PAYLOAD  *TargetPayload,
-  IN  CHAR8            *Json,
-  OUT EFI_STRING       *Location,
-  OUT CHAR8            **Etag
-  );
-
-/**
-
-  Create HTTP payload and send them to redfish service with PATCH method.
-
-  @param[in]  Service         Redfish service.
-  @param[in]  TargetPayload   Target payload
-  @param[in]  Json            Data in JSON format.
-  @param[out] Etag            Returned ETAG string from Redfish service.
-
-  @retval     EFI_SUCCESS     Data is sent to redfish service successfully.
-  @retval     Others          Errors occur.
-
-**/
-EFI_STATUS
-CreatePayloadToPatchResource (
-  IN  REDFISH_SERVICE  *Service,
-  IN  REDFISH_PAYLOAD  *TargetPayload,
-  IN  CHAR8            *Json,
-  OUT CHAR8            **Etag
   );
 
 /**

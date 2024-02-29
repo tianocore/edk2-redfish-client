@@ -40,7 +40,7 @@
   ConverterCommonLib
   DebugLib
   MemoryAllocationLib
-  RedfishLib
+  RedfishHttpLib
   RedfishPlatformConfigLib
   UefiLib
   UefiBootServicesTableLib
@@ -48,7 +48,6 @@
   PrintLib
   HttpLib
   RedfishDebugLib
-  RedfishHttpCacheLib
 
 [Protocols]
   gEdkIIRedfishETagProtocolGuid           ## CONSUMED ##

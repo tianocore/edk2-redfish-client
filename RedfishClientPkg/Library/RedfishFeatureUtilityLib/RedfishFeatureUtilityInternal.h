@@ -21,7 +21,7 @@
 #include <Library/DebugLib.h>
 #include <Library/JsonLib.h>
 #include <Library/MemoryAllocationLib.h>
-#include <Library/RedfishLib.h>
+#include <Library/RedfishHttpLib.h>
 #include <Library/RedfishFeatureUtilityLib.h>
 #include <Library/RedfishPlatformConfigLib.h>
 #include <Library/UefiBootServicesTableLib.h>
@@ -30,7 +30,6 @@
 #include <Library/PrintLib.h>
 #include <Library/HttpLib.h>
 #include <Library/RedfishDebugLib.h>
-#include <Library/RedfishHttpCacheLib.h>
 
 #include <Guid/VariableFormat.h>
 

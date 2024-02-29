@@ -154,7 +154,7 @@ SetEtagFromUri (
   }
 
   ZeroMem (&Response, sizeof (Response));
-  Status = RedfishHttpGetResource (RedfishService, Uri, &Response, TRUE);
+  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -215,14 +215,7 @@ ON_RELEASE:
     FreePool (PendingSettingUri);
   }
 
-  if (Response.Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
-  }
+  RedfishHttpFreeResponse (&Response);
 
   return Status;
 }
@@ -1892,175 +1885,6 @@ CheckIsServerEtagSupported (
   )
 {
   return FixedPcdGetBool (PcdRedfishServiceEtagSupported);
-}
-
-/**
-
-  Create HTTP payload and send them to redfish service with PATCH method.
-
-  @param[in]  Service         Redfish service.
-  @param[in]  TargetPayload   Target payload
-  @param[in]  Json            Data in JSON format.
-  @param[out] Etag            Returned ETAG string from Redfish service.
-
-  @retval     EFI_SUCCESS     Data is sent to redfish service successfully.
-  @retval     Others          Errors occur.
-
-**/
-EFI_STATUS
-CreatePayloadToPatchResource (
-  IN  REDFISH_SERVICE  *Service,
-  IN  REDFISH_PAYLOAD  *TargetPayload,
-  IN  CHAR8            *Json,
-  OUT CHAR8            **Etag OPTIONAL
-  )
-{
-  REDFISH_PAYLOAD   Payload;
-  EDKII_JSON_VALUE  ResourceJsonValue;
-  REDFISH_RESPONSE  PatchResponse;
-  EFI_STATUS        Status;
-
-  if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json)) {
-    return EFI_INVALID_PARAMETER;
-  }
-
-  ResourceJsonValue = JsonLoadString (Json, 0, NULL);
-  Payload           = RedfishCreatePayload (ResourceJsonValue, Service);
-  if (Payload == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a:%d Failed to create JSON payload from JSON value!\n", __func__, __LINE__));
-    Status =  EFI_DEVICE_ERROR;
-    goto EXIT_FREE_JSON_VALUE;
-  }
-
-  ZeroMem (&PatchResponse, sizeof (REDFISH_RESPONSE));
-  Status = RedfishPatchToPayload (TargetPayload, Payload, &PatchResponse);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a:%d Failed to PATCH payload to Redfish service.\n", __func__, __LINE__));
-
-    DEBUG_CODE_BEGIN ();
-    DEBUG ((DEBUG_ERROR, "%a: Request:\n", __func__));
-    DumpRedfishPayload (DEBUG_ERROR, Payload);
-    DEBUG ((DEBUG_ERROR, "%a: Response:\n", __func__));
-    DumpRedfishResponse (__func__, DEBUG_ERROR, &PatchResponse);
-    DEBUG_CODE_END ();
-    goto EXIT_FREE_JSON_VALUE;
-  }
-
-  //
-  // Find ETag
-  //
-  Status = GetHttpResponseEtag (&PatchResponse, Etag);
-  if (Status == EFI_UNSUPPORTED) {
-    Status = EFI_SUCCESS;
-    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported on Redfish service.\n", __func__));
-  } else {
-    Status = EFI_DEVICE_ERROR;
-    DEBUG ((DEBUG_ERROR, "%a: Fail to get Location header nor Location property from HTTP response payload.\n", __func__));
-  }
-
-  RedfishFreeResponse (
-    PatchResponse.StatusCode,
-    PatchResponse.HeaderCount,
-    PatchResponse.Headers,
-    PatchResponse.Payload
-    );
-
-EXIT_FREE_JSON_VALUE:
-  if (Payload != NULL) {
-    RedfishCleanupPayload (Payload);
-  }
-
-  JsonValueFree (ResourceJsonValue);
-
-  return Status;
-}
-
-/**
-
-  Create HTTP payload and send them to redfish service with POST method.
-
-  @param[in]  Service         Redfish service.
-  @param[in]  TargetPayload   Target payload
-  @param[in]  Json            Data in JSON format.
-  @param[out] Location        Returned location string from Redfish service.
-  @param[out] Etag            Returned ETAG string from Redfish service.
-
-  @retval     EFI_SUCCESS     Data is sent to redfish service successfully.
-  @retval     Others          Errors occur.
-
-**/
-EFI_STATUS
-CreatePayloadToPostResource (
-  IN  REDFISH_SERVICE  *Service,
-  IN  REDFISH_PAYLOAD  *TargetPayload,
-  IN  CHAR8            *Json,
-  OUT EFI_STRING       *Location,
-  OUT CHAR8            **Etag OPTIONAL
-  )
-{
-  REDFISH_PAYLOAD   Payload;
-  EDKII_JSON_VALUE  ResourceJsonValue;
-  REDFISH_RESPONSE  PostResponse;
-  EFI_STATUS        Status;
-
-  if ((Service == NULL) || (TargetPayload == NULL) || IS_EMPTY_STRING (Json) || (Location == NULL)) {
-    return EFI_INVALID_PARAMETER;
-  }
-
-  ResourceJsonValue = JsonLoadString (Json, 0, NULL);
-  Payload           = RedfishCreatePayload (ResourceJsonValue, Service);
-  if (Payload == NULL) {
-    DEBUG ((DEBUG_ERROR, "%a:%d Failed to create JSON payload from JSON value!\n", __func__, __LINE__));
-    Status =  EFI_DEVICE_ERROR;
-    goto EXIT_FREE_JSON_VALUE;
-  }
-
-  ZeroMem (&PostResponse, sizeof (REDFISH_RESPONSE));
-  Status = RedfishPostToPayload (TargetPayload, Payload, &PostResponse);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a:%d Failed to POST payload to Redfish service.\n", __func__, __LINE__));
-
-    DEBUG_CODE_BEGIN ();
-    DEBUG ((DEBUG_ERROR, "%a: Request:\n", __func__));
-    DumpRedfishPayload (DEBUG_ERROR, Payload);
-    DEBUG ((DEBUG_ERROR, "%a: Response:\n", __func__));
-    DumpRedfishResponse (__func__, DEBUG_ERROR, &PostResponse);
-    DEBUG_CODE_END ();
-
-    goto EXIT_FREE_JSON_VALUE;
-  }
-
-  Status = GetHttpResponseEtag (&PostResponse, Etag);
-  if (Status == EFI_UNSUPPORTED) {
-    Status = EFI_SUCCESS;
-    DEBUG ((DEBUG_INFO, "%a: WARNING - ETAG is not supported on Redfish service.\n", __func__));
-  } else if (EFI_ERROR (Status)) {
-    Status = EFI_DEVICE_ERROR;
-    DEBUG ((DEBUG_ERROR, "%a: Fail to get ETAG header nor ETAG property from HTTP response payload.\n", __func__));
-  }
-
-  //
-  // per Redfish spec. the URL of new resource will be returned in "Location" header.
-  //
-  Status = GetHttpResponseLocation (&PostResponse, Location);
-  if (EFI_ERROR (Status)) {
-    Status = EFI_DEVICE_ERROR;
-    DEBUG ((DEBUG_ERROR, "%a: Fail to get Location header nor Location proerty from HTTP response payload.\n", __func__));
-  }
-
-  RedfishFreeResponse (
-    PostResponse.StatusCode,
-    PostResponse.HeaderCount,
-    PostResponse.Headers,
-    PostResponse.Payload
-    );
-
-  RedfishCleanupPayload (Payload);
-
-EXIT_FREE_JSON_VALUE:
-  JsonValueFree (ResourceJsonValue);
-
-  return Status;
 }
 
 /**
@@ -3756,7 +3580,7 @@ GetPendingSettings (
       return EFI_NOT_FOUND;
     }
 
-    Status = RedfishHttpGetResource (RedfishService, *SettingUri, SettingResponse, TRUE);
+    Status = RedfishHttpGetResource (RedfishService, *SettingUri, NULL, SettingResponse, TRUE);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: @Redfish.Settings exists, get resource from: %s failed: %r\n", __func__, *SettingUri, Status));
       return Status;
