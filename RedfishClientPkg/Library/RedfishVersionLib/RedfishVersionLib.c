@@ -14,11 +14,10 @@
 #include <Library/BaseMemoryLib.h>
 #include <Library/DebugLib.h>
 #include <Library/PcdLib.h>
-#include <Library/RedfishLib.h>
+#include <Library/RedfishHttpLib.h>
 #include <Library/JsonLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/RedfishVersionLib.h>
-#include <Library/RedfishHttpCacheLib.h>
 
 #define REDFISH_VERSION_DEFAULT_STRING  L"v1"
 #define REDFISH_ROOT_URI                L"/redfish"
@@ -112,22 +111,12 @@ RedfishGetVersion (
   Status = RedfishHttpGetResource (
              Service,
              REDFISH_ROOT_URI,
+             NULL,
              &Response,
              TRUE
              );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, RedfishGetByService to %s failed: %r\n", __func__, REDFISH_ROOT_URI, Status));
-    if (Response.Payload != NULL) {
-      RedfishDumpPayload (Response.Payload);
-      RedfishFreeResponse (
-        NULL,
-        0,
-        NULL,
-        Response.Payload
-        );
-      Response.Payload = NULL;
-    }
-
     goto ON_ERROR;
   }
 
@@ -156,14 +145,7 @@ ON_ERROR:
     VersionString = REDFISH_VERSION_DEFAULT_STRING;
   }
 
-  if (Response.Payload != NULL) {
-    RedfishFreeResponse (
-      Response.StatusCode,
-      Response.HeaderCount,
-      Response.Headers,
-      Response.Payload
-      );
-  }
+  RedfishHttpFreeResponse (&Response);
 
   DEBUG ((DEBUG_MANAGEABILITY, "%a: Redfish version - %s\n", __func__, VersionString));
   return AllocateCopyPool (StrSize (VersionString), VersionString);

@@ -36,9 +36,8 @@
   DebugLib
   MemoryAllocationLib
   PcdLib
-  RedfishLib
+  RedfishHttpLib
   JsonLib
-  RedfishHttpCacheLib
 
 [Protocols]
 
