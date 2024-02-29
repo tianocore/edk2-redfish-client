@@ -247,18 +247,7 @@ ReleaseCollectionResource (
   //
   // Release resource
   //
-  if (Private->Response.Payload != NULL) {
-    RedfishFreeResponse (
-      Private->Response.StatusCode,
-      Private->Response.HeaderCount,
-      Private->Response.Headers,
-      Private->Response.Payload
-      );
-    Private->Response.StatusCode  = NULL;
-    Private->Response.HeaderCount = 0;
-    Private->Response.Headers     = NULL;
-    Private->Response.Payload     = NULL;
-  }
+  RedfishHttpFreeResponse (&Private->Response);
 
   if (Private->CollectionJson != NULL) {
     FreePool (Private->CollectionJson);
@@ -289,7 +278,7 @@ CollectionHandler (
   //
   // Query collection from Redfish service.
   //
-  Status = RedfishHttpGetResource (Private->RedfishService, Private->CollectionUri, &Private->Response, TRUE);
+  Status = RedfishHttpGetResource (Private->RedfishService, Private->CollectionUri, NULL, &Private->Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, unable to get resource from: %s :%r\n", __func__, Private->CollectionUri, Status));
     goto ON_RELEASE;
