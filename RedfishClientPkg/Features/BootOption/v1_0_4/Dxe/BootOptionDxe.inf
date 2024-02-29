@@ -1,7 +1,7 @@
 ## @file
 #
 #  (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-#  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+#  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -32,13 +32,12 @@
   BaseMemoryLib
   DebugLib
   EdkIIRedfishResourceConfigLib
-  RedfishLib
+  RedfishHttpLib
   RedfishFeatureUtilityLib
   RedfishResourceIdentifyLib
   UefiLib
   UefiDriverEntryPoint
   RedfishAddendumLib
-  RedfishHttpCacheLib
   UefiBootManagerLib
   DevicePathLib
   BaseLib
