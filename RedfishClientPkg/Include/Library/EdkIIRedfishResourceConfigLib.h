@@ -2,7 +2,7 @@
   This file defines the EDKII resource config Library interface.
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -13,7 +13,7 @@
 
 #include <Uefi.h>
 #include <Library/PcdLib.h>
-#include <Library/RedfishLib.h>
+#include <RedfishServiceData.h>
 #include <Protocol/RestJsonStructure.h>
 #include <Protocol/EdkIIRedfishResourceConfigProtocol.h>
 #include <Protocol/EdkIIRedfishInterchangeData.h>
