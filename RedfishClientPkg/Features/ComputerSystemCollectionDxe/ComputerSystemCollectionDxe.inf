@@ -35,13 +35,12 @@
   ConverterCommonLib
   MemoryAllocationLib
   RedfishFeatureUtilityLib
-  RedfishLib
+  RedfishHttpLib
   UefiLib
   UefiDriverEntryPoint
   UefiBootServicesTableLib
   EdkIIRedfishResourceConfigLib
   RedfishVersionLib
-  RedfishHttpCacheLib
 
 [Protocols]
   gEdkIIRedfishConfigHandlerProtocolGuid    ## CONSUMED
