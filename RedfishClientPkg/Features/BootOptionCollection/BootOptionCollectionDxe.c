@@ -3,7 +3,7 @@
   Redfish feature driver implementation - BootOptionCollection
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -169,7 +169,7 @@ MarkBootOptionProcessed (
   // Get boot option reference attribute
   //
   ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
-  Status = RedfishHttpGetResource (RedfishService, Uri, &Response, TRUE);
+  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, TRUE);
   if (EFI_ERROR (Status) || (Response.Payload == NULL)) {
     DEBUG ((DEBUG_ERROR, "%a: failed to get resource from %s: %r", __func__, Uri, Status));
     return Status;
@@ -212,12 +212,7 @@ MarkBootOptionProcessed (
 
 ON_RELEASE:
 
-  RedfishFreeResponse (
-    Response.StatusCode,
-    Response.HeaderCount,
-    Response.Headers,
-    Response.Payload
-    );
+  RedfishHttpFreeResponse (&Response);
 
   return Status;
 }
@@ -436,18 +431,7 @@ ReleaseCollectionResource (
   //
   // Release resource
   //
-  if (Private->Response.Payload != NULL) {
-    RedfishFreeResponse (
-      Private->Response.StatusCode,
-      Private->Response.HeaderCount,
-      Private->Response.Headers,
-      Private->Response.Payload
-      );
-    Private->Response.StatusCode  = NULL;
-    Private->Response.HeaderCount = 0;
-    Private->Response.Headers     = NULL;
-    Private->Response.Payload     = NULL;
-  }
+  RedfishHttpFreeResponse (&Private->Response);
 
   if (Private->CollectionJson != NULL) {
     FreePool (Private->CollectionJson);
@@ -478,7 +462,7 @@ CollectionHandler (
   //
   // Query collection from Redfish service.
   //
-  Status = RedfishHttpGetResource (Private->RedfishService, Private->CollectionUri, &Private->Response, TRUE);
+  Status = RedfishHttpGetResource (Private->RedfishService, Private->CollectionUri, NULL, &Private->Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: unable to get resource from: %s :%r\n", __func__, Private->CollectionUri, Status));
     goto ON_RELEASE;
