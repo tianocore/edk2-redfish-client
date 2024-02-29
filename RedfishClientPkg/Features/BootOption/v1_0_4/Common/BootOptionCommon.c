@@ -2,7 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -449,7 +449,7 @@ RedfishProvisioningResourceCommon (
     JsonWithAddendum = NULL;
   }
 
-  Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, NULL, NULL);
+  Status = RedfishHttpPostResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: post BootOption resource for %s failed: %r\n", __func__, BootOptionName, Status));
     goto RELEASE_RESOURCE;
@@ -482,12 +482,7 @@ RELEASE_RESOURCE:
     FreePool (Json);
   }
 
-  RedfishFreeResponse (
-    Response.StatusCode,
-    Response.HeaderCount,
-    Response.Headers,
-    Response.Payload
-    );
+  RedfishHttpFreeResponse (&Response);
 
   return Status;
 }
@@ -519,7 +514,6 @@ RedfishCheckResourceCommon (
   BOOLEAN                           DeleteResourceRequired;
   EFI_STRING                        DevicePathString;
   CHAR8                             *DevicePathAsciiString;
-  CHAR8                             *AsciiUri;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
@@ -531,8 +525,6 @@ RedfishCheckResourceCommon (
   DeleteResourceRequired = FALSE;
   BootOptionName         = NULL;
   BootOption             = NULL;
-  AsciiUri               = NULL;
-  Response.Payload       = NULL;
   Status                 = Private->JsonStructProtocol->ToStructure (
                                                           Private->JsonStructProtocol,
                                                           NULL,
@@ -594,13 +586,7 @@ RedfishCheckResourceCommon (
   //
   if (DeleteResourceRequired) {
     DEBUG ((REDFISH_BOOT_OPTION_DEBUG_TRACE, "%a: boot option %s is deleted in system. Delete %s\n", __func__, BootOptionName, Private->Uri));
-    AsciiUri = StrUnicodeToAscii (Private->Uri);
-    if (AsciiUri == NULL) {
-      Status = EFI_OUT_OF_RESOURCES;
-      goto ON_RELEASE;
-    }
-
-    Status = RedfishDeleteByUri (Private->RedfishService, AsciiUri, &Response);
+    Status = RedfishHttpDeleteResource (Private->RedfishService, Private->Uri, &Response);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: can not delete %s: %r\n", __func__, Private->Uri, Status));
     }
@@ -631,16 +617,8 @@ ON_RELEASE:
   //
   // Release resource
   //
-  RedfishFreeResponse (
-    Response.StatusCode,
-    Response.HeaderCount,
-    Response.Headers,
-    Response.Payload
-    );
+  RedfishHttpFreeResponse (&Response);
 
-  //
-  // Release resource.
-  //
   Private->JsonStructProtocol->DestoryStructure (
                                  Private->JsonStructProtocol,
                                  (EFI_REST_JSON_STRUCTURE_HEADER *)BootOption
@@ -648,10 +626,6 @@ ON_RELEASE:
 
   if (BootOptionName != NULL) {
     FreePool (BootOptionName);
-  }
-
-  if (AsciiUri != NULL) {
-    FreePool (AsciiUri);
   }
 
   return Status;
@@ -748,7 +722,7 @@ RedfishUpdateResourceCommon (
   //
   // PATCH back to instance
   //
-  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, NULL);
+  Status = RedfishHttpPatchResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
@@ -763,12 +737,7 @@ ON_RELEASE:
     FreePool (ConfigureLang);
   }
 
-  RedfishFreeResponse (
-    Response.StatusCode,
-    Response.HeaderCount,
-    Response.Headers,
-    Response.Payload
-    );
+  RedfishHttpFreeResponse (&Response);
 
   return Status;
 }
