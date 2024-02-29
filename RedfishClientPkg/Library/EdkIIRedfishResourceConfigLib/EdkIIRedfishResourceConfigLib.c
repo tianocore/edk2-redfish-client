@@ -15,8 +15,8 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/EdkIIRedfishResourceConfigLib.h>
 #include <Library/RedfishFeatureUtilityLib.h>
+#include <Library/RedfishHttpLib.h>
 #include <Library/RedfishPlatformConfigLib.h>
-#include <Library/RedfishHttpCacheLib.h>
 
 EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL           *mRedfishResourceConfigProtocol = NULL;
 EFI_HANDLE                                       mCachedHandle;
@@ -58,7 +58,7 @@ GetRedfishSchemaInfo (
   }
 
   ZeroMem (&Response, sizeof (Response));
-  Status = RedfishHttpGetResource (RedfishService, Uri, &Response, TRUE);
+  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, TRUE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, failed to get resource from %s: %r", __func__, Uri, Status));
     return Status;
@@ -99,7 +99,7 @@ GetRedfishSchemaInfo (
   //
   JsonStructProtocol->DestoryStructure (JsonStructProtocol, Header);
   FreePool (JsonText);
-  RedfishFreeResponse (Response.StatusCode, Response.HeaderCount, Response.Headers, Response.Payload);
+  RedfishHttpFreeResponse (&Response);
 
   return EFI_SUCCESS;
 }
