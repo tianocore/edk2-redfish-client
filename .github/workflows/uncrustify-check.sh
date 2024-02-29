@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -40,12 +40,17 @@ fi
 
 for file in $CHANGED_FILES
 do
-  echo "Uncrustify check file: $file"
-  uncrustify -c $CONFIG_FILE -f $file --check
-  if [ $? -ne 0 ]
+  if [ -e "$file" ]
   then
-    echo "Uncrustify check failure on file: $file"
-    FAILURE=1
+    echo "Uncrustify check file: $file"
+    uncrustify -c $CONFIG_FILE -f $file --check
+    if [ $? -ne 0 ]
+    then
+      echo "Uncrustify check failure on file: $file"
+      FAILURE=1
+    fi
+  else
+    echo "File does not exist (deleted file?): $file"
   fi
 done
 
