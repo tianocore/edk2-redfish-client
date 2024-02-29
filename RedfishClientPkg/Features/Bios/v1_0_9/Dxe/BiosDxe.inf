@@ -32,14 +32,13 @@
   BaseMemoryLib
   DebugLib
   EdkIIRedfishResourceConfigLib
-  RedfishLib
+  RedfishHttpLib
   RedfishFeatureUtilityLib
   RedfishVersionLib
   RedfishResourceIdentifyLib
   UefiLib
   UefiDriverEntryPoint
   RedfishAddendumLib
-  RedfishHttpCacheLib
 
 [Protocols]
   gEdkIIRedfishConfigHandlerProtocolGuid          ## PRODUCED
