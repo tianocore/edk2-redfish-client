@@ -2,7 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -67,7 +67,7 @@ RedfishConsumeResourceCommon (
     // No change
     //
     DEBUG ((DEBUG_MANAGEABILITY, "%a, ETAG: %s has no change, ignore consume action\n", __func__, Private->Uri));
-    Status = EFI_ALREADY_STARTED;
+    Status = EFI_SUCCESS;
     goto ON_RELEASE;
   }
 
@@ -2154,17 +2154,17 @@ ProvisioningMemoryResource (
   IN  EFI_STRING                       ConfigureLang
   )
 {
-  CHAR8       *Json;
-  EFI_STATUS  Status;
-  EFI_STRING  NewResourceLocation;
-  CHAR8       *EtagStr;
-  CHAR8       ResourceId[16];
+  CHAR8             *Json;
+  EFI_STATUS        Status;
+  EFI_STRING        NewResourceLocation;
+  CHAR8             ResourceId[16];
+  REDFISH_RESPONSE  Response;
 
   if (IS_EMPTY_STRING (ConfigureLang) || (Private == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
-  EtagStr = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
   AsciiSPrint (ResourceId, sizeof (ResourceId), "%d", Index);
 
   Status = ProvisioningMemoryProperties (
@@ -2180,27 +2180,27 @@ ProvisioningMemoryResource (
     return Status;
   }
 
-  Status = CreatePayloadToPostResource (Private->RedfishService, Private->Payload, Json, &NewResourceLocation, &EtagStr);
+  Status = RedfishHttpPostResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a, post Memory resource for %s failed: %r\n", __func__, ConfigureLang, Status));
+    DEBUG ((DEBUG_ERROR, "%a, post Bios resource for %s failed: %r\n", __func__, ConfigureLang, Status));
     goto RELEASE_RESOURCE;
   }
 
-  ASSERT (NewResourceLocation != NULL);
+  //
+  // Per Redfish spec. the URL of new resource will be returned in "Location" header.
+  //
+  Status = GetHttpResponseLocation (&Response, &NewResourceLocation);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: cannot find new location: %r\n", __func__, Status));
+    goto RELEASE_RESOURCE;
+  }
 
   //
   // Keep location of new resource.
   //
   if (NewResourceLocation != NULL) {
+    DEBUG ((DEBUG_MANAGEABILITY, "%a: Location: %s\n", __func__, NewResourceLocation));
     RedfishSetRedfishUri (ConfigureLang, NewResourceLocation);
-  }
-
-  //
-  // Handle Etag
-  //
-  if (EtagStr != NULL) {
-    SetEtagWithUri (EtagStr, NewResourceLocation);
-    FreePool (EtagStr);
   }
 
 RELEASE_RESOURCE:
@@ -2255,18 +2255,18 @@ ProvisioningMemoryExistResource (
   IN  REDFISH_RESOURCE_COMMON_PRIVATE  *Private
   )
 {
-  EFI_STATUS  Status;
-  EFI_STRING  ConfigureLang;
-  CHAR8       *EtagStr;
-  CHAR8       *Json;
+  EFI_STATUS        Status;
+  EFI_STRING        ConfigureLang;
+  CHAR8             *Json;
+  REDFISH_RESPONSE  Response;
 
   if (Private == NULL) {
     return EFI_INVALID_PARAMETER;
   }
 
-  EtagStr       = NULL;
   Json          = NULL;
   ConfigureLang = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
 
   ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
   if (ConfigureLang == NULL) {
@@ -2293,22 +2293,16 @@ ProvisioningMemoryExistResource (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, provisioning existing resource for %s\n", __func__, ConfigureLang));
   //
-  // PUT back to instance
+  // PATCH back to instance
   //
-  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
+  Status = RedfishHttpPatchResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
 
-  //
-  // Handle Etag
-  //
-  if (EtagStr != NULL) {
-    SetEtagWithUri (EtagStr, Private->Uri);
-    FreePool (EtagStr);
-  }
-
 ON_RELEASE:
+
+  RedfishHttpFreeResponse (&Response);
 
   if (Json != NULL) {
     FreePool (Json);
@@ -2429,18 +2423,18 @@ RedfishUpdateResourceCommon (
   IN     CHAR8                            *InputJson
   )
 {
-  EFI_STATUS  Status;
-  CHAR8       *Json;
-  EFI_STRING  ConfigureLang;
-  CHAR8       *EtagStr;
+  EFI_STATUS        Status;
+  CHAR8             *Json;
+  EFI_STRING        ConfigureLang;
+  REDFISH_RESPONSE  Response;
 
   if ((Private == NULL) || IS_EMPTY_STRING (InputJson)) {
     return EFI_INVALID_PARAMETER;
   }
 
-  EtagStr       = NULL;
   Json          = NULL;
   ConfigureLang = NULL;
+  ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
 
   ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
   if (ConfigureLang == NULL) {
@@ -2467,22 +2461,16 @@ RedfishUpdateResourceCommon (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, update resource for %s\n", __func__, ConfigureLang));
   //
-  // PUT back to instance
+  // PATCH back to instance
   //
-  Status = CreatePayloadToPatchResource (Private->RedfishService, Private->Payload, Json, &EtagStr);
+  Status = RedfishHttpPatchResource (Private->RedfishService, Private->Uri, Json, &Response);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, patch resource for %s failed: %r\n", __func__, ConfigureLang, Status));
   }
 
-  //
-  // Handle Etag
-  //
-  if (EtagStr != NULL) {
-    SetEtagWithUri (EtagStr, Private->Uri);
-    FreePool (EtagStr);
-  }
-
 ON_RELEASE:
+
+  RedfishHttpFreeResponse (&Response);
 
   if (Json != NULL) {
     FreePool (Json);
