@@ -23,7 +23,7 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/PrintLib.h>
 #include <Library/PcdLib.h>
-#include <Library/RedfishLib.h>
+#include <Library/RedfishHttpLib.h>
 #include <Library/RedfishVersionLib.h>
 #include <Library/RedfishFeatureUtilityLib.h>
 #include <Library/RedfishPlatformConfigLib.h>
@@ -32,7 +32,6 @@
 #include <Library/RedfishResourceIdentifyLib.h>
 #include <Library/EdkIIRedfishResourceConfigLib.h>
 #include <Library/RedfishAddendumLib.h>
-#include <Library/RedfishHttpCacheLib.h>
 
 //
 // Protocols
