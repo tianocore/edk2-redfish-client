@@ -165,11 +165,13 @@ HandleCollectionResource (
   CollectionCs = Collection->MemoryCollection;
 
   if (*CollectionCs->Membersodata_count == 0) {
-    return EFI_NOT_FOUND;
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
   }
 
   if (IsLinkEmpty (&CollectionCs->Members)) {
-    return EFI_NOT_FOUND;
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
   }
 
   List = GetFirstLink (&CollectionCs->Members);
@@ -197,12 +199,15 @@ HandleCollectionResource (
     List = GetNextLink (&CollectionCs->Members, List);
   }
 
+  Status = EFI_SUCCESS;
+
+ON_RELEASE:
   //
   // Release resource.
   //
   Private->JsonStructProtocol->DestoryStructure (Private->JsonStructProtocol, (EFI_REST_JSON_STRUCTURE_HEADER *)Collection);
 
-  return EFI_SUCCESS;
+  return Status;
 }
 
 EFI_STATUS
