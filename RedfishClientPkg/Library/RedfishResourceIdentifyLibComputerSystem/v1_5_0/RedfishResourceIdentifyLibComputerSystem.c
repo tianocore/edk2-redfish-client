@@ -70,19 +70,20 @@ RedfishIdentifyResource (
   ComputerSystemCs = ComputerSystem->ComputerSystem;
 
   if (IS_EMPTY_STRING (ComputerSystemCs->UUID)) {
-    return FALSE;
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
   }
 
   Status = AsciiStrToGuid (ComputerSystemCs->UUID, &ResourceUuid);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, fail to get resource UUID: %r\n", __func__, Status));
-    return FALSE;
+    goto ON_RELEASE;
   }
 
   Status = NetLibGetSystemGuid (&SystemUuid);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, fail to get system UUID from SMBIOS: %r\n", __func__, Status));
-    return FALSE;
+    goto ON_RELEASE;
   }
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a, Identify: System: %g Resource: %g\n", __func__, &SystemUuid, &ResourceUuid));
@@ -91,6 +92,8 @@ RedfishIdentifyResource (
   } else {
     Status = EFI_UNSUPPORTED;
   }
+
+ON_RELEASE:
 
   mJsonStructProtocol->DestoryStructure (
                          mJsonStructProtocol,
