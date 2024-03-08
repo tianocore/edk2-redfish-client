@@ -793,7 +793,7 @@ ProvisioningComputerSystemProperties (
                                               );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure failure: %r\n", __func__, Status));
-    return Status;
+    goto ON_RELEASE;
   }
 
   ComputerSystemCs = ComputerSystem->ComputerSystem;
@@ -1235,7 +1235,7 @@ ProvisioningComputerSystemProperties (
                                  );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToJson() failed: %r\n", __func__, Status));
-    return Status;
+    goto ON_RELEASE;
   }
 
   if (PropertyChanged) {
@@ -1244,9 +1244,13 @@ ProvisioningComputerSystemProperties (
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: Fail to remove Redfish unchangeable properties from ResultJson.\n", __func__));
       *ResultJson = NULL;
-      return Status;
+      goto ON_RELEASE;
     }
   }
+
+  Status = EFI_SUCCESS;
+
+ON_RELEASE:
 
   //
   // Release resource.
@@ -1263,10 +1267,17 @@ ProvisioningComputerSystemProperties (
     DestoryRedfishCharArray (ComputerSystemCsEmpty->Boot->BootOrder, ArraySize);
   }
 
-  JsonStructProtocol->DestoryStructure (
-                        JsonStructProtocol,
-                        (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystemEmpty
-                        );
+  if (ComputerSystemEmpty != NULL) {
+    JsonStructProtocol->DestoryStructure (
+                          JsonStructProtocol,
+                          (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystemEmpty
+                          );
+  }
+
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
   return (PropertyChanged ? EFI_SUCCESS : EFI_NOT_FOUND);
 }
 
