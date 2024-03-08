@@ -334,7 +334,6 @@ ON_RELEASE:
                                  );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToJson() failed: %r\n", __func__, Status));
-    return Status;
   }
 
   //
@@ -344,6 +343,10 @@ ON_RELEASE:
                         JsonStructProtocol,
                         (EFI_REST_JSON_STRUCTURE_HEADER *)BootOption
                         );
+
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
 
   return (PropertyChanged ? EFI_SUCCESS : EFI_NOT_FOUND);
 }

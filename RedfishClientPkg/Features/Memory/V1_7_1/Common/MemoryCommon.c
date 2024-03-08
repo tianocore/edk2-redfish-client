@@ -2133,7 +2133,6 @@ ProvisioningMemoryProperties (
                                  );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, ToJson() failed: %r\n", __func__, Status));
-    return Status;
   }
 
   //
@@ -2143,6 +2142,10 @@ ProvisioningMemoryProperties (
                         JsonStructProtocol,
                         (EFI_REST_JSON_STRUCTURE_HEADER *)Memory
                         );
+
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
 
   return (PropertyChanged ? EFI_SUCCESS : EFI_NOT_FOUND);
 }
