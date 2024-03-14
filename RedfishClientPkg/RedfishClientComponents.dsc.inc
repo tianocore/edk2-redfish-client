@@ -34,6 +34,7 @@
   RedfishClientPkg/Features/Bios/v1_0_9/Dxe/BiosDxe.inf
   RedfishClientPkg/Features/BootOptionCollection/BootOptionCollectionDxe.inf
   RedfishClientPkg/Features/BootOption/v1_0_4/Dxe/BootOptionDxe.inf
+  RedfishClientPkg/Features/SecureBoot/v1_1_0/Dxe/SecureBootDxe.inf
 
   !include RedfishClientPkg/RedfishJsonStructureDxe.dsc.inc
 
@@ -47,3 +48,4 @@
   RedfishClientPkg/Converter/Bios/v1_0_9/RedfishBios_V1_0_9_Dxe.inf
   RedfishClientPkg/Converter/BootOptionCollection/RedfishBootOptionCollection_Dxe.inf
   RedfishClientPkg/Converter/BootOption/v1_0_4/RedfishBootOption_V1_0_4_Dxe.inf
+  RedfishClientPkg/Converter/SecureBoot/v1_1_0/RedfishSecureBoot_V1_1_0_Dxe.inf
