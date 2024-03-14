@@ -85,7 +85,7 @@ HandleResource (
 
   //
   // Check and see if target property exist or not even when collection member exists.
-  // If not, we sill do provision.
+  // If not, we still do provision.
   //
   DEBUG ((REDFISH_BOOT_OPTION_COLLECTION_DEBUG_TRACE, "%a Check for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigCheck (&SchemaInfo, Uri, NULL);
