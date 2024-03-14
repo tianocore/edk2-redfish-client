@@ -126,12 +126,13 @@ RedfishResourceConsumeResource (
   // Check and see if "@Redfish.Settings" exist or not.
   //
   ZeroMem (&PendingSettingResponse, sizeof (REDFISH_RESPONSE));
-  Status = GetPendingSettings (
-             Private->RedfishService,
-             Response.Payload,
-             &PendingSettingResponse,
-             &PendingSettingUri
-             );
+  PendingSettingUri = NULL;
+  Status            = GetPendingSettings (
+                        Private->RedfishService,
+                        Response.Payload,
+                        &PendingSettingResponse,
+                        &PendingSettingUri
+                        );
   if (!EFI_ERROR (Status)) {
     DEBUG ((REDFISH_DEBUG_TRACE, "%a: @Redfish.Settings found: %s\n", __func__, PendingSettingUri));
     SetRedfishSettingsObjectsUri (Uri, PendingSettingUri);
@@ -151,8 +152,12 @@ RedfishResourceConsumeResource (
   //
   // Find etag in HTTP response header
   //
-  Etag = NULL;
-  GetHttpResponseEtag (ExpectedResponse, &Etag);
+  Etag   = NULL;
+  Status = GetHttpResponseEtag (ExpectedResponse, &Etag);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to get ETag from HTTP header\n", __func__));
+  }
+
   Status = RedfishConsumeResourceCommon (Private, Private->Json, Etag);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: failed to consume resource from: %s: %r\n", __func__, Private->Uri, Status));
@@ -172,6 +177,10 @@ RedfishResourceConsumeResource (
 
   if (Etag != NULL) {
     FreePool (Etag);
+  }
+
+  if (PendingSettingUri != NULL) {
+    FreePool (PendingSettingUri);
   }
 
   return Status;
@@ -327,8 +336,12 @@ RedfishResourceCheck (
   //
   // Find etag in HTTP response header
   //
-  Etag = NULL;
-  GetHttpResponseEtag (&Response, &Etag);
+  Etag   = NULL;
+  Status = GetHttpResponseEtag (&Response, &Etag);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: failed to get ETag from HTTP header\n", __func__));
+  }
+
   Status = RedfishCheckResourceCommon (Private, Private->Json, Etag);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a, failed to check resource from: %s: %r\n", __func__, Uri, Status));
@@ -337,6 +350,10 @@ RedfishResourceCheck (
   //
   // Release resource
   //
+  if (Etag != NULL) {
+    FreePool (Etag);
+  }
+
   RedfishHttpFreeResponse (&Response);
   Private->Payload = NULL;
 
