@@ -25,6 +25,7 @@
   INF RedfishClientPkg/HiiToRedfishBiosDxe/HiiToRedfishBiosDxe.inf
   INF RedfishClientPkg/Features/BootOptionCollection/BootOptionCollectionDxe.inf
   INF RedfishClientPkg/Features/BootOption/v1_0_4/Dxe/BootOptionDxe.inf
+  INF RedfishClientPkg/Features/SecureBoot/v1_1_0/Dxe/SecureBootDxe.inf
 
   !include RedfishClientPkg/RedfishJsonStructureDxe.fdf.inc
   #
