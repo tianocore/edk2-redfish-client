@@ -1738,6 +1738,7 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
 
 /**
   Find "ETag" from either HTTP header or Redfish response.
+  It's caller's responsibility to release Etag by calling FreePool().
 
   @param[in]  Response        HTTP response
   @param[out] Etag            String buffer to return ETag
@@ -1808,6 +1809,7 @@ GetHttpResponseEtag (
 
 /**
   Find "Location" from either HTTP header or Redfish response.
+  It's caller's responsibility to release Location by calling FreePool().
 
   @param[in]  Response        HTTP response
   @param[out] Location        String buffer to return Location
