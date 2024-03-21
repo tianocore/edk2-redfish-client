@@ -371,6 +371,23 @@ RedfishSetRedfishUri (
 
 /**
 
+  Save Redfish SettingsObject URI in database for further use.
+
+  @param[in]    ParentUri         Parent URI of @Redfish.Settings property.
+  @param[in]    SettingObjectUri  Redfish SettingsObject Uri to save.
+
+  @retval  EFI_INVALID_PARAMETER  SystemId is NULL or EMPTY
+  @retval  EFI_SUCCESS            Redfish uri is saved
+
+**/
+EFI_STATUS
+SetRedfishSettingsObjectsUri (
+  IN EFI_STRING  ParentUri,
+  IN EFI_STRING  SettingObjectUri
+  );
+
+/**
+
   Get the property name by given Configure Language.
 
   @param[in]  ResourceUri              URI of root of resource.
