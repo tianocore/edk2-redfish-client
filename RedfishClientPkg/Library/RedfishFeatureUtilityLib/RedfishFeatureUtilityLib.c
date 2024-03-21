@@ -1327,6 +1327,11 @@ GetRedpathNodeByIndex (
     StringIndex++;
   }
 
+  if (NumberNodes == Index) {
+    *EndOfNodePtr = NodeString + StringIndex - 1;
+    return NodeStart;
+  }
+
   return (NULL);
 }
 
