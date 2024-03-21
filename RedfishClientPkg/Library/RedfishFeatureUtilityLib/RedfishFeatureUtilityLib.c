@@ -1320,6 +1320,7 @@ GetRedpathNodeByIndex (
         return NodeStart;
       } else {
         NodeStart = NodeString + StringIndex + 1;
+        NumberNodes++;
       }
     }
 
