@@ -1304,7 +1304,7 @@ GetRedpathNodeByIndex (
   NumberNodes = 0;
   StringLen   = StrLen (NodeString);
   StringIndex = 1; // ConfigLang always starts with '/'.
-  NodeStart   = NodeString;
+  NodeStart   = NodeString + StringIndex;
   if (EndOfNodePtr != NULL) {
     *EndOfNodePtr = NULL;
   }
