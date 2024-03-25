@@ -2,6 +2,7 @@
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -606,10 +607,16 @@ RedfishConfigLangMapSet (
   Status = EFI_NOT_FOUND;
   Target = FindConfigLangMapRecord (&Private->ConfigLangList.ListHeader, ConfigLang, FALSE);
   if (Target != NULL) {
-    //
-    // Remove old one and create new one.
-    //
-    Status = DeleteConfigLangMapRecord (&Private->ConfigLangList, Target);
+    if (Uri != NULL) {
+      if (StrCmp (Uri, Target->Uri) == 0) {
+        return EFI_SUCCESS;
+      }
+    } else {
+      //
+      // Remove old one and create new one.
+      //
+      Status = DeleteConfigLangMapRecord (&Private->ConfigLangList, Target);
+    }
   }
 
   //
