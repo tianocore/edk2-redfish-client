@@ -134,7 +134,7 @@ RedfishResourceConsumeResource (
              );
   if (!EFI_ERROR (Status)) {
     DEBUG ((REDFISH_DEBUG_TRACE, "%a: @Redfish.Settings found: %s\n", __func__, PendingSettingUri));
-    SetRedfishSettingsObjectsUri (Private->Uri, PendingSettingUri);
+    SetRedfishSettingsObjectsUri (Uri, PendingSettingUri);
     Private->Uri     = PendingSettingUri;
     ExpectedResponse = &PendingSettingResponse;
   } else {
