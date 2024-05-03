@@ -24,6 +24,6 @@
 #define RESOURCE_SCHEMA_VERSION  "v1_13_0"
 #define REDPATH_ARRAY_PATTERN    L"/Systems/\\{.*\\}/"
 #define REDPATH_ARRAY_PREFIX     L"/Systems/"
-#define RESOURCE_SCHEMA_FULL     "x-uefi-redfish-ComputerSystem.v1_13_0"
+#define RESOURCE_SCHEMA_FULL     "x-UEFI-redfish-ComputerSystem.v1_13_0"
 
 #endif

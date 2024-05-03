@@ -106,7 +106,7 @@ On EDK2 open source, EDKII Redfish Platform Config Protocol accesses the
 platform configuration in EDK2 HII defined format. Below is driver stack diagram
 which implements EDKII Redfish Platform Config Protocol. The protocol driver
 leverages the HII interface to get or set the HII configuration on platform. By
-following the x-uefi-redfish Configure Language defined in UNI file, protocol
+following the x-UEFI-redfish Configure Language defined in UNI file, protocol
 driver can find corresponding HII question for given Redfish attribute. In this
 way, protocol driver creates the mapping between HII questions and Redfish
 attributes.
@@ -177,24 +177,25 @@ scope, **EFI_IFR_FLAG_REST_STYLE** can be assigned to the HII options that
 indicate those options intend to interact with the REST service.
 
 ### EDK2 HII UNI file ***[[9]](#[0])***
-x-uefi-redfish Configure Language is used in UNI file to associate HII option
+By following the concept of [UEFI Configuration Namespace](https://uefi.org/namespace_instructions), x-UEFI-redfish Configure
+Language is created and used in UNI file to associate HII option
 with the particular Redfish property. The Hii options interact with EDK2 Redfish
-Feature driver if the string of HII option is assigned with x-uefi-redfish
+Feature driver if the string of HII option is assigned with x-UEFI-redfish
 Language as in below,
 
 ```C
-x-uefi-redfish-$(NAMESPACE)
+x-UEFI-redfish-$(NAMESPACE)
 where $(NAMESPACE) is the combination of Redfish ResourceTypeName and schema version.
 ```
 For example, if the HII option is mapped to the property in Processor.v1_0_0.
-The x-uefi-redfish configure language is declared as below,
+The x-UEFI-redfish configure language is declared as below,
 ```C
-x-uefi-redfish-Processor.v1_0_0
+x-UEFI-redfish-Processor.v1_0_0
 ```
-#### x-uefi-redfish Configure Language format:
-- The string declared with x-uefi-redfish configure language is a path to the property
+#### x-UEFI-redfish Configure Language format:
+- The string declared with x-UEFI-redfish configure language is a path to the property
 in Redfish schema.
-- The root of path is the Redfish resource type indicated in x-uefi-redfish configure
+- The root of path is the Redfish resource type indicated in x-UEFI-redfish configure
 language
 - The path is relative to root of [Redfish schema](https://redfish.dmtf.org/redfish/schema_index) defined by DMTF, not related to Redfish service root.
 
@@ -202,29 +203,29 @@ language
 ```C
 Properties:
 
-#string STR_BOOT_SOURCE_OVERRIDE_ENABLED_PROMPT #language x_uefi_redfish_ComputerSystem.v1_0_0  "/Boot/BootSourceOverrideEnabled"
-#string STR_BOOT_SOURCE_OVERRIDE_MODE_PROMPT    #language x_uefi_redfish_ComputerSystem.v1_0_0  "/Boot/BootSourceOverrideMode"
-#string STR_BOOT_SOURCE_OVERRIDE_TARGET_PROMPT  #language x_uefi_redfish_ComputerSystem.v1_0_0  "/Boot/BootSourceOverrideTarget"
+#string STR_BOOT_SOURCE_OVERRIDE_ENABLED_PROMPT #language x-UEFI-redfish-ComputerSystem.v1_0_0  "/Boot/BootSourceOverrideEnabled"
+#string STR_BOOT_SOURCE_OVERRIDE_MODE_PROMPT    #language x-UEFI-redfish-ComputerSystem.v1_0_0  "/Boot/BootSourceOverrideMode"
+#string STR_BOOT_SOURCE_OVERRIDE_TARGET_PROMPT  #language x-UEFI-redfish-ComputerSystem.v1_0_0  "/Boot/BootSourceOverrideTarget"
 ```
 ```C
 Properties in array object [NUM]:
 
-#string STR_BOOT_ORDER_1_PROMPT  #language x_uefi_redfish_ComputerSystem.v1_11_0  "/Boot/BootOrder/[1]/Boot0001"
-#string STR_BOOT_ORDER_2_PROMPT  #language x_uefi_redfish_ComputerSystem.v1_11_0  "/Boot/BootOrder/[2]/Boot0002"
-#string STR_BOOT_ORDER_3_PROMPT  #language x_uefi_redfish_ComputerSystem.v1_11_0  "/Boot/BootOrder/[3]/Boot0003"
+#string STR_BOOT_ORDER_1_PROMPT  #language x-UEFI-redfish-ComputerSystem.v1_11_0  "/Boot/BootOrder/[1]/Boot0001"
+#string STR_BOOT_ORDER_2_PROMPT  #language x-UEFI-redfish-ComputerSystem.v1_11_0  "/Boot/BootOrder/[2]/Boot0002"
+#string STR_BOOT_ORDER_3_PROMPT  #language x-UEFI-redfish-ComputerSystem.v1_11_0  "/Boot/BootOrder/[3]/Boot0003"
 ```
 ```C
 Properties in collection object {NUM}:
 
-#string STR_MEMORY_1_BASE_MODULE_TYPE_PROMPT  #language x_uefi_redfish_Memory.v1_7_1  "/Memory/{1}/BaseModuleType"
-#string STR_MEMORY_2_BASE_MODULE_TYPE_PROMPT  #language x_uefi_redfish_Memory.v1_7_1  "/Memory/{2}/BaseModuleType"
-#string STR_MEMORY_3_BASE_MODULE_TYPE_PROMPT  #language x_uefi_redfish_Memory.v1_7_1  "/Memory/{3}/BaseModuleType"
+#string STR_MEMORY_1_BASE_MODULE_TYPE_PROMPT  #language x-UEFI-redfish-Memory.v1_7_1  "/Memory/{1}/BaseModuleType"
+#string STR_MEMORY_2_BASE_MODULE_TYPE_PROMPT  #language x-UEFI-redfish-Memory.v1_7_1  "/Memory/{2}/BaseModuleType"
+#string STR_MEMORY_3_BASE_MODULE_TYPE_PROMPT  #language x-UEFI-redfish-Memory.v1_7_1  "/Memory/{3}/BaseModuleType"
 ```
 
 ### EDK2 Build Tool ***[[10]](#[0])***
 EDK2 Build is responsible to pull the necessary EDK2 Redfish JSON Schema to C
 Structure Convertors and EDK2 Redfish Feature drivers into edk2 build process
-according to the x-uefi-Redfish config language used in the HII VFR forms.
+according to the x-UEFI-redfish config language used in the HII VFR forms.
 
 ## EDK2 Redfish client feature driver
 ![foundation driver stack](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-foundation-driver-stack.svg?raw=true)
@@ -294,7 +295,7 @@ PCD is set to `TRUE`.
 The purpose of Redfish feature driver is to do the synchronization job between Redfish service and BIOS. The operation of synchronization can be simply divided into two types:
 
 #### Provisioning resource
-Below is the flow diagram of provisioning platform configuration to Redfish service at BIOS resource. With the x-uefi-redfish
+Below is the flow diagram of provisioning platform configuration to Redfish service at BIOS resource. With the x-UEFI-redfish
 configure language described in above section, Redfish feature driver collect all BIOS attributes from HII database and populated
 them to Redfish service.
 ![provisioning](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/redfish-call-flow-provisioning.svg?raw=true)

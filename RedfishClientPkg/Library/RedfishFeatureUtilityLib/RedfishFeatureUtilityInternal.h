@@ -39,7 +39,7 @@
 #define INDEX_VARIABLE_SIZE        64
 #define INDEX_STRING_SIZE          16
 #define INDEX_STRING               L"{%d}"
-#define SCHEMA_NAME_PREFIX         "x-uefi-redfish-"
+#define SCHEMA_NAME_PREFIX         "x-UEFI-redfish-"
 #define SCHEMA_NAME_PREFIX_OFFSET  (AsciiStrLen (SCHEMA_NAME_PREFIX))
 #define REDFISH_ROOT_PATH          "/v1"
 #define REDFISH_ROOT_PATH_UNICODE  L"/v1"

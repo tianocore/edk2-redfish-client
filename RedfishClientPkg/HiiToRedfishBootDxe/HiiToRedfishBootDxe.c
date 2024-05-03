@@ -43,7 +43,7 @@ HII_VENDOR_DEVICE_PATH  mHiiVendorDevicePath = {
 };
 
 /**
-  This function add 'x-uefi-' configuration language to given string ID.
+  This function add 'x-UEFI-' configuration language to given string ID.
 
   @param[in] HiiHandle                HII handle
   @param[in] StringId                 String token ID
@@ -80,7 +80,7 @@ UpdateConfigLanguageToQuestion (
 }
 
 /**
-  This function add 'x-uefi-' configuration language to given string ID.
+  This function add 'x-UEFI-' configuration language to given string ID.
 
   @param[in] HiiHandle                HII handle
   @param[in] StringId                 String token ID

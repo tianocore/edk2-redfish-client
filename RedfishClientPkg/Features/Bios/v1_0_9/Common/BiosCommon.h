@@ -24,7 +24,7 @@
 #define RESOURCE_SCHEMA_VERSION  "v1_0_9"
 #define REDPATH_ARRAY_PATTERN    L"/Bios/.*"
 #define REDPATH_ARRAY_PREFIX     L"/Bios/"
-#define RESOURCE_SCHEMA_FULL     "x-uefi-redfish-Bios.v1_0_9"
+#define RESOURCE_SCHEMA_FULL     "x-UEFI-redfish-Bios.v1_0_9"
 #define REDFISH_SCHEMA_NAME      "ComputerSystem"
 
 #endif
