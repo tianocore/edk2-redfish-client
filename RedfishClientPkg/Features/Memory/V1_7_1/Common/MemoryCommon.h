@@ -22,6 +22,6 @@
 #define RESOURCE_SCHEMA_VERSION  "v1_7_1"
 #define REDPATH_ARRAY_PATTERN    L"/Memory/\\{.*\\}/"
 #define REDPATH_ARRAY_PREFIX     L"/Memory/"
-#define RESOURCE_SCHEMA_FULL     "x-uefi-redfish-Memory.v1_7_1"
+#define RESOURCE_SCHEMA_FULL     "x-UEFI-redfish-Memory.v1_7_1"
 
 #endif

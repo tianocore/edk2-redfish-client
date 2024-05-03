@@ -706,7 +706,7 @@
 						x="11.39" dy="1em" class="st5">Redfish Collection Driver</tspan></text>		</g>
 		<g id="shape98-229" v:mID="98" v:groupContext="shape" transform="translate(67.3474,-432)">
 			<title>Rounded Rectangle.98</title>
-			<desc>EDK2 HII UNI file #string STR_OPTION_A #language x-uefi-redfi...</desc>
+			<desc>EDK2 HII UNI file #string STR_OPTION_A #language x-UEFI-redfi...</desc>
 			<v:userDefs>
 				<v:ud v:nameU="CTypeTopLeftSnip" v:prompt="" v:val="VT0(0):5"/>
 				<v:ud v:nameU="CTypeTopRightSnip" v:prompt="" v:val="VT0(0):5"/>

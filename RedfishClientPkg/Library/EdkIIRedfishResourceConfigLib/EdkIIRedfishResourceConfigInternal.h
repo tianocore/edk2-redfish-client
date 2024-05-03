@@ -38,7 +38,7 @@ typedef struct {
   REDFISH_SCHEMA_INFO                        SchemaInfoCache;
 } REDFISH_CONFIG_PROTOCOL_CACHE;
 
-#define SCHEMA_NAME_PREFIX         "x-uefi-redfish-"
+#define SCHEMA_NAME_PREFIX         "x-UEFI-redfish-"
 #define SCHEMA_NAME_PREFIX_OFFSET  (AsciiStrLen (SCHEMA_NAME_PREFIX))
 
 #endif

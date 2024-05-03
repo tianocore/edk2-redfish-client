@@ -27,7 +27,7 @@
 #define RESOURCE_SCHEMA_VERSION          "v1_0_4"
 #define REDPATH_ARRAY_PATTERN            L"/BootOptions/\\{.*\\}/"
 #define REDPATH_ARRAY_PREFIX             L"/BootOptions/"
-#define RESOURCE_SCHEMA_FULL             "x-uefi-redfish-BootOption.v1_0_4"
+#define RESOURCE_SCHEMA_FULL             "x-UEFI-redfish-BootOption.v1_0_4"
 #define REDFISH_BOOT_OPTION_PARAMETER    L"?name="
 #define REDFISH_BOOT_OPTION_DEBUG_TRACE  DEBUG_INFO
 #endif
