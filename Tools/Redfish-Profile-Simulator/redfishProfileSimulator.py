@@ -1,6 +1,7 @@
 # Copyright Notice:
 #
 # Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 #
 # Copyright Notice:
@@ -89,8 +90,8 @@ class PreconditionRequired(werkzeug.exceptions.HTTPException):
 
 def main(argv):
     #Monkey patch the set_etag() method for conditional request.
-    _old_set_etag = werkzeug.ETagResponseMixin.set_etag
-    @functools.wraps(werkzeug.ETagResponseMixin.set_etag)
+    _old_set_etag = werkzeug.wrappers.Response.set_etag
+    @functools.wraps(werkzeug.wrappers.Response.set_etag)
     def _new_set_etag(self, etag, weak=False):
         # only check the first time through; when called twice
         # we're modifying
@@ -107,7 +108,7 @@ def main(argv):
                 raise NotModified
             flask.g.condtnl_etags_start = False
         _old_set_etag(self, etag, weak)
-    werkzeug.ETagResponseMixin.set_etag = _new_set_etag
+    werkzeug.wrappers.Response.set_etag = _new_set_etag
 
     # set default option args
     rf_profile_path = os.path.abspath("./MockupData/SimpleOcpServerV1")
