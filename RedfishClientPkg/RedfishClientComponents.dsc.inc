@@ -20,6 +20,7 @@
   RedfishClientPkg/HiiToRedfishMemoryDxe/HiiToRedfishMemoryDxe.inf
   RedfishClientPkg/HiiToRedfishBootDxe/HiiToRedfishBootDxe.inf
   RedfishClientPkg/HiiToRedfishBiosDxe/HiiToRedfishBiosDxe.inf
+  RedfishClientPkg/RedfishBootstrapAccountDxe/RedfishBootstrapAccountDxe.inf
 !endif
   #
   # Below two modules should be pulled in by build tool.
