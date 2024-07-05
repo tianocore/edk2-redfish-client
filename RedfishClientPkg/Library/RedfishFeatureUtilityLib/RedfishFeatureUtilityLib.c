@@ -1777,7 +1777,9 @@ GetHttpResponseEtag (
     DEBUG ((DEBUG_INFO, "%a: WARNING - No ETag support on Redfish service.\n", __func__));
     return EFI_UNSUPPORTED;
   } else {
-    if (*(Response->StatusCode) == HTTP_STATUS_200_OK) {
+    if ((*(Response->StatusCode) == HTTP_STATUS_200_OK) ||
+        (*(Response->StatusCode) == HTTP_STATUS_201_CREATED))
+    {
       Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_ETAG);
       if (Header != NULL) {
         *Etag = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
@@ -1806,7 +1808,7 @@ GetHttpResponseEtag (
 
     if (*Etag == NULL) {
       Status = EFI_NOT_FOUND;
-      DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve ETag from HTTP response paylaod.\n", __func__));
+      DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve ETag from HTTP response payload.\n", __func__));
     }
   }
 
@@ -1841,7 +1843,9 @@ GetHttpResponseLocation (
   Status        = EFI_SUCCESS;
   *Location     = NULL;
   AsciiLocation = NULL;
-  if (*(Response->StatusCode) == HTTP_STATUS_200_OK) {
+  if ((*(Response->StatusCode) == HTTP_STATUS_200_OK) ||
+      (*(Response->StatusCode) == HTTP_STATUS_201_CREATED))
+  {
     Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_LOCATION);
     if (Header != NULL) {
       AsciiLocation = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
@@ -1873,7 +1877,7 @@ GetHttpResponseLocation (
     FreePool (AsciiLocation);
   } else {
     Status = EFI_NOT_FOUND;
-    DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve Location from HTTP response paylaod.\n", __func__));
+    DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve Location from HTTP response payload.\n", __func__));
   }
 
   return Status;
