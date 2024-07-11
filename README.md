@@ -21,9 +21,8 @@ See [Maintainers.txt](Maintainers.txt).
 
 # Contributing
 
-The patch review process would be the same as edk2, and adding prefix **[edk2-redfish-client]**
-specifically for the patches against edk2-redfish-client repository. For more details, please
-see [CONTRIBUTING.md](CONTRIBUTING.md).
+The review process would be the same as [edk2](https://github.com/tianocore/edk2/tree/master?tab=readme-ov-file#code-contributions).
+For more details, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # How to build (Ubuntu Environment)
 ## Prerequisite
