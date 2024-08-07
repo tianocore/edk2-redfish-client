@@ -1776,40 +1776,36 @@ GetHttpResponseEtag (
     // Don't look for ETAG header or property in this case.
     DEBUG ((DEBUG_INFO, "%a: WARNING - No ETag support on Redfish service.\n", __func__));
     return EFI_UNSUPPORTED;
-  } else {
-    if ((*(Response->StatusCode) == HTTP_STATUS_200_OK) ||
-        (*(Response->StatusCode) == HTTP_STATUS_201_CREATED))
-    {
-      Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_ETAG);
-      if (Header != NULL) {
-        *Etag = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
-        ASSERT (*Etag != NULL);
-      }
-    }
+  }
 
-    //
-    // No header is returned. Search payload for location.
-    //
-    if ((*Etag == NULL) && (Response->Payload != NULL)) {
-      JsonValue = RedfishJsonInPayload (Response->Payload);
-      if (JsonValue != NULL) {
-        OdataValue = JsonObjectGetValue (JsonValueGetObject (JsonValue), "@odata.etag");
-        if (OdataValue != NULL) {
-          OdataString = (CHAR8 *)JsonValueGetAsciiString (OdataValue);
-          if (OdataString != NULL) {
-            *Etag = AllocateCopyPool (AsciiStrSize (OdataString), OdataString);
-            ASSERT (*Etag != NULL);
-          }
+  if ((Response->StatusCode != NULL) && ((*(Response->StatusCode) == HTTP_STATUS_200_OK) || (*(Response->StatusCode) == HTTP_STATUS_201_CREATED))) {
+    Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_ETAG);
+    if (Header != NULL) {
+      *Etag = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
+      ASSERT (*Etag != NULL);
+    }
+  }
+
+  //
+  // No header is returned or etag is not found in header. Search payload for etag.
+  //
+  if ((*Etag == NULL) && (Response->Payload != NULL)) {
+    JsonValue = RedfishJsonInPayload (Response->Payload);
+    if (JsonValue != NULL) {
+      OdataValue = JsonObjectGetValue (JsonValueGetObject (JsonValue), "@odata.etag");
+      if (OdataValue != NULL) {
+        OdataString = (CHAR8 *)JsonValueGetAsciiString (OdataValue);
+        if (OdataString != NULL) {
+          *Etag = AllocateCopyPool (AsciiStrSize (OdataString), OdataString);
+          ASSERT (*Etag != NULL);
         }
-
-        JsonValueFree (JsonValue);
       }
     }
+  }
 
-    if (*Etag == NULL) {
-      Status = EFI_NOT_FOUND;
-      DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve ETag from HTTP response payload.\n", __func__));
-    }
+  if (*Etag == NULL) {
+    Status = EFI_NOT_FOUND;
+    DEBUG ((DEBUG_ERROR, "%a: Failed to retrieve ETag from HTTP response payload.\n", __func__));
   }
 
   return Status;
@@ -1843,9 +1839,7 @@ GetHttpResponseLocation (
   Status        = EFI_SUCCESS;
   *Location     = NULL;
   AsciiLocation = NULL;
-  if ((*(Response->StatusCode) == HTTP_STATUS_200_OK) ||
-      (*(Response->StatusCode) == HTTP_STATUS_201_CREATED))
-  {
+  if ((Response->StatusCode != NULL) && ((*(Response->StatusCode) == HTTP_STATUS_200_OK) || (*(Response->StatusCode) == HTTP_STATUS_201_CREATED))) {
     Header = HttpFindHeader (Response->HeaderCount, Response->Headers, HTTP_HEADER_LOCATION);
     if (Header != NULL) {
       AsciiLocation = AllocateCopyPool (AsciiStrSize (Header->FieldValue), Header->FieldValue);
@@ -1854,9 +1848,9 @@ GetHttpResponseLocation (
   }
 
   //
-  // No header is returned. Search payload for location.
+  // No header is returned or location is not found in header. Search payload for location.
   //
-  if ((*Location == NULL) && (Response->Payload != NULL)) {
+  if ((AsciiLocation == NULL) && (Response->Payload != NULL)) {
     JsonValue = RedfishJsonInPayload (Response->Payload);
     if (JsonValue != NULL) {
       OdataValue = JsonObjectGetValue (JsonValueGetObject (JsonValue), "@odata.id");
@@ -1867,8 +1861,6 @@ GetHttpResponseLocation (
           ASSERT (AsciiLocation != NULL);
         }
       }
-
-      JsonValueFree (JsonValue);
     }
   }
 
