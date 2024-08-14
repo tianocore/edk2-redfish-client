@@ -528,9 +528,9 @@ ProvisioningComputerSystemResources (
     return EFI_INVALID_PARAMETER;
   }
 
-  Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &UnifiedConfigureLangList);
+  Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, CONFIG_LANG_ARRAY_PATTERN, &UnifiedConfigureLangList);
   if (EFI_ERROR (Status) || (UnifiedConfigureLangList.Count == 0)) {
-    DEBUG ((DEBUG_ERROR, "%a: No HII question found with configure language: %s: %r\n", __func__, REDPATH_ARRAY_PATTERN, Status));
+    DEBUG ((DEBUG_ERROR, "%a: No HII question found with configure language: %s: %r\n", __func__, CONFIG_LANG_ARRAY_PATTERN, Status));
     return EFI_NOT_FOUND;
   }
 
@@ -712,7 +712,7 @@ RedfishCheckResourceCommon (
     return EFI_SUCCESS;
   }
 
-  Status = RedfishPlatformConfigGetConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigureLangList, &Count);
+  Status = RedfishPlatformConfigGetConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, CONFIG_LANG_ARRAY_PATTERN, &ConfigureLangList, &Count);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: failed: %r\n", __func__, Status));
     return Status;
@@ -875,7 +875,7 @@ RedfishIdentifyResourceCommon (
 
   Supported = RedfishIdentifyResource (Private->Uri, Json);
   if (Supported) {
-    Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, REDPATH_ARRAY_PATTERN, &ConfigLangList);
+    Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, CONFIG_LANG_ARRAY_PATTERN, &ConfigLangList);
     if (EFI_ERROR (Status)) {
       DEBUG ((DEBUG_ERROR, "%a: RedfishFeatureGetUnifiedArrayTypeConfigureLang failed: %r\n", __func__, Status));
       return Status;
@@ -893,7 +893,7 @@ RedfishIdentifyResourceCommon (
     }
 
     // EndOfChar = StrStr (ConfigLangList.List[0].ConfigureLang, L"}");
-    Status = IsRedpathArray (ConfigLangList.List[0].ConfigureLang, NULL, &EndOfChar);
+    Status = IsConfigLangArray (ConfigLangList.List[0].ConfigureLang, NULL, &EndOfChar);
     if (EFI_ERROR (Status) && (Status != EFI_NOT_FOUND)) {
       ASSERT (FALSE);
       return EFI_DEVICE_ERROR;
@@ -901,9 +901,9 @@ RedfishIdentifyResourceCommon (
 
     if (Status != EFI_SUCCESS) {
       //
-      // This is not the collection redpath.
+      // This is not the collection config language.
       //
-      GetRedpathNodeByIndex (ConfigLangList.List[0].ConfigureLang, 0, &EndOfChar);
+      GetConfigLangNodeByIndex (ConfigLangList.List[0].ConfigureLang, 0, &EndOfChar);
     }
 
     *(++EndOfChar) = '\0';
