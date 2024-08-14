@@ -21,10 +21,10 @@
 
 /**
 
-  Check if this is the Redpath array. Usually the Redpath array represents
+  Check if this is the config language array. Usually the config language array represents
   the collection member. Return
 
-  @param[in]  ConfigureLang             The Redpath to check
+  @param[in]  ConfigureLang             The config language to check
   @param[out] ArraySignatureOpen        String to the open of array signature.
   @param[out] ArraySignatureClose       String to the close of array signature.
 
@@ -35,7 +35,7 @@
 
 **/
 EFI_STATUS
-IsRedpathArray (
+IsConfigLangArray (
   IN EFI_STRING   ConfigureLang,
   OUT EFI_STRING  *ArraySignatureOpen,
   OUT EFI_STRING  *ArraySignatureClose
@@ -90,7 +90,7 @@ CopyConfiglanguageList (
 
 **/
 UINTN
-GetNumberOfRedpathNodes (
+GetNumberOfConfigLangNodes (
   IN EFI_STRING  NodeString
   );
 
@@ -107,7 +107,7 @@ GetNumberOfRedpathNodes (
 
 **/
 EFI_STRING
-GetRedpathNodeByIndex (
+GetConfigLangNodeByIndex (
   IN  EFI_STRING  NodeString,
   IN  UINTN       Index,
   OUT EFI_STRING  *EndOfNodePtr OPTIONAL
