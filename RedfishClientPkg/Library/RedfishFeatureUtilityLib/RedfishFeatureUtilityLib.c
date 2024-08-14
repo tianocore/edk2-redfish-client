@@ -1177,10 +1177,10 @@ ApplyFeatureSettingsBooleanArrayType (
 
 /**
 
-  Check if this is the Redpath array. Usually the Redpath array represents
+  Check if this is the config language array. Usually the config language array represents
   the collection member. Return
 
-  @param[in]  ConfigureLang             The Redpath to check
+  @param[in]  ConfigureLang             The config language to check
   @param[out] ArraySignatureOpen        String to the open of array signature.
   @param[out] ArraySignatureClose       String to the close of array signature.
 
@@ -1191,7 +1191,7 @@ ApplyFeatureSettingsBooleanArrayType (
 
 **/
 EFI_STATUS
-IsRedpathArray (
+IsConfigLangArray (
   IN EFI_STRING   ConfigureLang,
   OUT EFI_STRING  *ArraySignatureOpen OPTIONAL,
   OUT EFI_STRING  *ArraySignatureClose OPTIONAL
@@ -1214,7 +1214,7 @@ IsRedpathArray (
   //
   // looking for index signature "{""
   //
-  IndexString = StrStr (ConfigureLang, BIOS_CONFIG_TO_REDFISH_REDPATH_ARRAY_START_SIGNATURE);
+  IndexString = StrStr (ConfigureLang, BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_ARRAY_START_SIGNATURE);
   if (IndexString != NULL) {
     if (ArraySignatureOpen != NULL) {
       *ArraySignatureOpen = IndexString;
@@ -1223,11 +1223,11 @@ IsRedpathArray (
     //
     // Skip "{"
     //
-    IndexString = IndexString + StrLen (BIOS_CONFIG_TO_REDFISH_REDPATH_ARRAY_START_SIGNATURE);
+    IndexString = IndexString + StrLen (BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_ARRAY_START_SIGNATURE);
     //
     // Looking for "}"
     //
-    IndexString = StrStr (IndexString, BIOS_CONFIG_TO_REDFISH_REDPATH_ARRAY_END_SIGNATURE);
+    IndexString = StrStr (IndexString, BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_ARRAY_END_SIGNATURE);
     if (IndexString == NULL) {
       return EFI_INVALID_PARAMETER;
     }
@@ -1252,7 +1252,7 @@ IsRedpathArray (
 
 **/
 UINTN
-GetNumberOfRedpathNodes (
+GetNumberOfConfigLangNodes (
   IN EFI_STRING  NodeString
   )
 {
@@ -1289,7 +1289,7 @@ GetNumberOfRedpathNodes (
 
 **/
 EFI_STRING
-GetRedpathNodeByIndex (
+GetConfigLangNodeByIndex (
   IN  EFI_STRING  NodeString,
   IN  UINTN       Index,
   OUT EFI_STRING  *EndOfNodePtr OPTIONAL
@@ -1371,7 +1371,7 @@ GetArrayIndexFromArrayTypeConfigureLang (
     return EFI_OUT_OF_RESOURCES;
   }
 
-  Status = IsRedpathArray (TmpConfigureLang, &ArrayOpenStr, &ArrayCloseStr);
+  Status = IsConfigLangArray (TmpConfigureLang, &ArrayOpenStr, &ArrayCloseStr);
   if (!EFI_ERROR (Status)) {
     //
     // Append '\0' for converting decimal string to integer.
@@ -1381,7 +1381,7 @@ GetArrayIndexFromArrayTypeConfigureLang (
     //
     // Convert decimal string to integer
     //
-    *Index = StrDecimalToUintn (ArrayOpenStr + StrLen (BIOS_CONFIG_TO_REDFISH_REDPATH_ARRAY_START_SIGNATURE));
+    *Index = StrDecimalToUintn (ArrayOpenStr + StrLen (BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_ARRAY_START_SIGNATURE));
 
     //
     // Restore the '}' character and remove rest of string.
@@ -1392,7 +1392,7 @@ GetArrayIndexFromArrayTypeConfigureLang (
   } else {
     if (Status == EFI_NOT_FOUND) {
       //
-      // This is not the redpath array. Search "/" for the parent root.
+      // This is not the config language array. Search "/" for the parent root.
       //
       *Index      = 0;
       StringIndex = StrLen (TmpConfigureLang) - 1;
@@ -1670,7 +1670,7 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
   UINTN                                   ArrayIndex;
   EFI_STRING                              UnifiedConfigureLang;
   BOOLEAN                                 Duplicated;
-  REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG  UnifiedConfigureLangPool[BIOS_CONFIG_TO_REDFISH_REDPATH_POOL_SIZE];
+  REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG  UnifiedConfigureLangPool[BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_POOL_SIZE];
 
   if (IS_EMPTY_STRING (Schema) || IS_EMPTY_STRING (Version) || (UnifiedConfigureLangList == NULL)) {
     return EFI_INVALID_PARAMETER;
@@ -1701,7 +1701,7 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
     // Check if this configure language is duplicated.
     //
     Duplicated = FALSE;
-    for (Index2 = 0; Index2 < BIOS_CONFIG_TO_REDFISH_REDPATH_POOL_SIZE; Index2++) {
+    for (Index2 = 0; Index2 < BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_POOL_SIZE; Index2++) {
       if (UnifiedConfigureLangPool[Index2].ConfigureLang == NULL) {
         break;
       }
@@ -1717,7 +1717,7 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
       continue;
     }
 
-    if (UnifiedConfigureLangList->Count >= BIOS_CONFIG_TO_REDFISH_REDPATH_POOL_SIZE) {
+    if (UnifiedConfigureLangList->Count >= BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_POOL_SIZE) {
       FreePool (UnifiedConfigureLang);
       Status = EFI_BUFFER_TOO_SMALL;
       break;
@@ -2287,7 +2287,7 @@ GetPropertyFromConfigureLang (
     return NULL;
   }
 
-  Status = IsRedpathArray (ConfigureLang, NULL, &TempString);
+  Status = IsConfigLangArray (ConfigureLang, NULL, &TempString);
   if (!EFI_ERROR (Status)) {
     TempString += 2; // Advance two characters for '}' and '/'
     return TempString;
@@ -2300,11 +2300,11 @@ GetPropertyFromConfigureLang (
   //
   // The ConfigLang has no '{}'
   //
-  if (GetNumberOfRedpathNodes (ConfigureLang) == 1) {
+  if (GetNumberOfConfigLangNodes (ConfigureLang) == 1) {
     return NULL;
   }
 
-  if (GetRedpathNodeByIndex (ConfigureLang, 0, &TempString) == NULL) {
+  if (GetConfigLangNodeByIndex (ConfigureLang, 0, &TempString) == NULL) {
     return NULL;
   }
 
