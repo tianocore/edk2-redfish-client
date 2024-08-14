@@ -2,7 +2,7 @@
 
   Redfish feature driver implementation - internal header file
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -25,8 +25,8 @@
 #define RESOURCE_SCHEMA_MINOR            "0"
 #define RESOURCE_SCHEMA_ERRATA           "4"
 #define RESOURCE_SCHEMA_VERSION          "v1_0_4"
-#define REDPATH_ARRAY_PATTERN            L"/BootOptions/\\{.*\\}/"
-#define REDPATH_ARRAY_PREFIX             L"/BootOptions/"
+#define CONFIG_LANG_ARRAY_PATTERN        L"/BootOptions/\\{.*\\}/"
+#define CONFIG_LANG_ARRAY_PREFIX         L"/BootOptions/"
 #define RESOURCE_SCHEMA_FULL             "x-UEFI-redfish-BootOption.v1_0_4"
 #define REDFISH_BOOT_OPTION_PARAMETER    L"?name="
 #define REDFISH_BOOT_OPTION_DEBUG_TRACE  DEBUG_INFO
