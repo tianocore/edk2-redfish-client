@@ -24,6 +24,7 @@ HandleResource (
   EFI_STRING           ConfigLang;
   EFI_STRING           ReturnedConfigLang;
   UINTN                Index;
+  BOOLEAN              SystemRestDetected;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Uri)) {
     return EFI_INVALID_PARAMETER;
@@ -45,8 +46,9 @@ HandleResource (
   // Check and see if this is target resource that we want to handle.
   // Some resource is handled by other provider so we have to make sure this first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a Identify for %s\n", __func__, Uri));
-  ConfigLang = RedfishGetConfigLanguage (Uri);
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a: Identify for %s\n", __func__, Uri));
+  SystemRestDetected = FALSE;
+  ConfigLang         = RedfishGetConfigLanguage (Uri);
   if (ConfigLang == NULL) {
     Status = EdkIIRedfishResourceConfigIdentify (&SchemaInfo, Uri, NULL, Private->InformationExchange);
     if (EFI_ERROR (Status)) {
@@ -62,6 +64,13 @@ HandleResource (
       DEBUG ((DEBUG_ERROR, "%a: fail to identify resource: \"%s\": %r\n", __func__, Uri, Status));
       return Status;
     }
+
+    //
+    // When there is no history record in UEFI variable, this is first boot or
+    // system is reset by defaulting command. The pending setting on BMC may be
+    // a stale value so we will ignore pending settings in BMC.
+    //
+    SystemRestDetected = TRUE;
   } else {
     DEBUG ((REDFISH_DEBUG_TRACE, "%a: history record found: %s\n", __func__, ConfigLang));
     //
@@ -97,7 +106,7 @@ HandleResource (
   Status = EdkIIRedfishResourceConfigCheck (&SchemaInfo, Uri, NULL);
   if (EFI_ERROR (Status)) {
     if (Status == EFI_UNSUPPORTED) {
-      DEBUG ((REDFISH_DEBUG_TRACE, "%a: \"%s\" is not handled by us\n", __func__, Uri));
+      DEBUG ((REDFISH_DEBUG_TRACE, "%a: \"%s\" has no attribute that is handled by us\n", __func__, Uri));
       return EFI_SUCCESS;
     }
 
@@ -116,10 +125,14 @@ HandleResource (
   //
   // Consume first.
   //
-  DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
-  Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri, NULL);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: failed to consume resource for: %s: %r\n", __func__, Uri, Status));
+  if (SystemRestDetected) {
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a system has been reset to default setting. ignore pending settings because they may be stale values\n", __func__));
+  } else {
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
+    Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri, NULL);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: failed to consume resource for: %s: %r\n", __func__, Uri, Status));
+    }
   }
 
   //
@@ -406,7 +419,7 @@ RedfishCollectionFeatureCallback (
   handler.
 
   @param[in]   This                     Pointer to EDKII_REDFISH_CONFIG_HANDLER_PROTOCOL instance.
-  @param[in]   RedfishConfigServiceInfo Redfish service informaion.
+  @param[in]   RedfishConfigServiceInfo Redfish service information.
 
   @retval EFI_SUCCESS                  The handler has been initialized successfully.
   @retval EFI_DEVICE_ERROR             Failed to create or configure the REST EX protocol instance.
