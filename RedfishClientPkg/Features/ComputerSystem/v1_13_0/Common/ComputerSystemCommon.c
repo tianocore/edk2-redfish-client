@@ -15,6 +15,12 @@ CHAR8  ComputerSystemEmptyJson[] = "{\"@odata.id\": \"\", \"@odata.type\": \"#Co
 
 REDFISH_RESOURCE_COMMON_PRIVATE  *mRedfishResourcePrivate             = NULL;
 EFI_HANDLE                       mRedfishResourceConfigProtocolHandle = NULL;
+REDFISH_SCHEMA_INFO              mSchemaInfo                          = {
+  { RESOURCE_SCHEMA        },
+  { RESOURCE_SCHEMA_MAJOR  },
+  { RESOURCE_SCHEMA_MINOR  },
+  { RESOURCE_SCHEMA_ERRATA }
+};
 
 /**
   Consume resource from given URI.
@@ -38,6 +44,7 @@ RedfishConsumeResourceCommon (
   EFI_REDFISH_COMPUTERSYSTEM_V1_13_0     *ComputerSystem;
   EFI_REDFISH_COMPUTERSYSTEM_V1_13_0_CS  *ComputerSystemCs;
   EFI_STRING                             ConfigureLang;
+  CHAR8                                  *PatchedJson;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
@@ -46,16 +53,25 @@ RedfishConsumeResourceCommon (
   ComputerSystem   = NULL;
   ComputerSystemCs = NULL;
   ConfigureLang    = NULL;
+  PatchedJson      = NULL;
+
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+    Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, Json, &PatchedJson);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, cannot set compatible schema version: %r\n", __func__, Status));
+      return Status;
+    }
+  }
 
   Status = Private->JsonStructProtocol->ToStructure (
                                           Private->JsonStructProtocol,
                                           NULL,
-                                          Json,
+                                          (PatchedJson == NULL ? Json : PatchedJson),
                                           (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystem
                                           );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure() failed: %r\n", __func__, Status));
-    return Status;
+    goto ON_RELEASE;
   }
 
   ComputerSystemCs = ComputerSystem->ComputerSystem;
@@ -205,10 +221,16 @@ ON_RELEASE:
   //
   // Release resource.
   //
-  Private->JsonStructProtocol->DestoryStructure (
-                                 Private->JsonStructProtocol,
-                                 (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystem
-                                 );
+  if (ComputerSystem != NULL) {
+    Private->JsonStructProtocol->DestoryStructure (
+                                   Private->JsonStructProtocol,
+                                   (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystem
+                                   );
+  }
+
+  if (PatchedJson != NULL) {
+    FreePool (PatchedJson);
+  }
 
   return EFI_SUCCESS;
 }
@@ -232,6 +254,7 @@ ProvisioningComputerSystemProperties (
   CHAR8                                  *AsciiStringValue;
   CHAR8                                  **AsciiStringArrayValue;
   UINTN                                  ArraySize;
+  CHAR8                                  *PatchedJson;
 
   if ((JsonStructProtocol == NULL) || (ResultJson == NULL) || IS_EMPTY_STRING (InputJson) || IS_EMPTY_STRING (ConfigureLang)) {
     return EFI_INVALID_PARAMETER;
@@ -241,17 +264,26 @@ ProvisioningComputerSystemProperties (
 
   *ResultJson     = NULL;
   PropertyChanged = FALSE;
+  ComputerSystem  = NULL;
+  PatchedJson     = NULL;
 
-  ComputerSystem = NULL;
-  Status         = JsonStructProtocol->ToStructure (
-                                         JsonStructProtocol,
-                                         NULL,
-                                         InputJson,
-                                         (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystem
-                                         );
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+    Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, InputJson, &PatchedJson);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, cannot set compatible schema version: %r\n", __func__, Status));
+      return Status;
+    }
+  }
+
+  Status = JsonStructProtocol->ToStructure (
+                                 JsonStructProtocol,
+                                 NULL,
+                                 (PatchedJson == NULL ? InputJson : PatchedJson),
+                                 (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystem
+                                 );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure failure: %r\n", __func__, Status));
-    return Status;
+    goto ON_RELEASE;
   }
 
   ComputerSystemEmpty = NULL;
@@ -385,10 +417,12 @@ ON_RELEASE:
   //
   // Release resource.
   //
-  JsonStructProtocol->DestoryStructure (
-                        JsonStructProtocol,
-                        (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystem
-                        );
+  if (ComputerSystem != NULL) {
+    JsonStructProtocol->DestoryStructure (
+                          JsonStructProtocol,
+                          (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystem
+                          );
+  }
 
   //
   // Free memory allocated for Computersystem empty CS
@@ -402,6 +436,10 @@ ON_RELEASE:
                           JsonStructProtocol,
                           (EFI_REST_JSON_STRUCTURE_HEADER *)ComputerSystemEmpty
                           );
+  }
+
+  if (PatchedJson != NULL) {
+    FreePool (PatchedJson);
   }
 
   if (EFI_ERROR (Status)) {
@@ -872,8 +910,24 @@ RedfishIdentifyResourceCommon (
   EFI_STATUS                                   Status;
   EFI_STRING                                   EndOfChar;
   REDFISH_FEATURE_ARRAY_TYPE_CONFIG_LANG_LIST  ConfigLangList;
+  CHAR8                                        *PatchedJson;
 
-  Supported = RedfishIdentifyResource (Private->Uri, Json);
+  PatchedJson = NULL;
+
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+    Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, Json, &PatchedJson);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, cannot set compatible schema version: %r\n", __func__, Status));
+      return Status;
+    }
+  }
+
+  Supported = RedfishIdentifyResource (Private->Uri, (PatchedJson == NULL ? Json : PatchedJson));
+  if (PatchedJson != NULL) {
+    FreePool (PatchedJson);
+    PatchedJson = NULL;
+  }
+
   if (Supported) {
     Status = RedfishFeatureGetUnifiedArrayTypeConfigureLang (RESOURCE_SCHEMA, RESOURCE_SCHEMA_VERSION, CONFIG_LANG_ARRAY_PATTERN, &ConfigLangList);
     if (EFI_ERROR (Status)) {
