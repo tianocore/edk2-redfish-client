@@ -19,6 +19,12 @@ CHAR16                           *mSecureBootSupportedAttributes[SECURE_BOOT_MOD
   L"SecureBootEnable",
   L"SecureBootMode"
 };
+REDFISH_SCHEMA_INFO              mSchemaInfo = {
+  { RESOURCE_SCHEMA        },
+  { RESOURCE_SCHEMA_MAJOR  },
+  { RESOURCE_SCHEMA_MINOR  },
+  { RESOURCE_SCHEMA_ERRATA }
+};
 
 /**
   Read EFI_SECURE_BOOT_ENABLE_NAME variable and return its value to caller.
@@ -106,6 +112,7 @@ RedfishConsumeResourceCommon (
   EFI_REDFISH_SECUREBOOT_V1_1_0     *SecureBoot;
   EFI_REDFISH_SECUREBOOT_V1_1_0_CS  *SecureBootCs;
   BOOLEAN                           SecureBootEnableDisable;
+  CHAR8                             *PatchedJson;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
     return EFI_INVALID_PARAMETER;
@@ -114,16 +121,25 @@ RedfishConsumeResourceCommon (
   SecureBoot              = NULL;
   SecureBootCs            = NULL;
   SecureBootEnableDisable = RedfishReadSecureBootEnable ();
+  PatchedJson             = NULL;
+
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+    Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, Json, &PatchedJson);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, cannot set compatible schema version: %r\n", __func__, Status));
+      return Status;
+    }
+  }
 
   Status = Private->JsonStructProtocol->ToStructure (
                                           Private->JsonStructProtocol,
                                           NULL,
-                                          Json,
+                                          (PatchedJson == NULL ? Json : PatchedJson),
                                           (EFI_REST_JSON_STRUCTURE_HEADER **)&SecureBoot
                                           );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure() failed: %r\n", __func__, Status));
-    return Status;
+    goto ON_RELEASE;
   }
 
   SecureBootCs = SecureBoot->SecureBoot;
@@ -165,10 +181,16 @@ ON_RELEASE:
   //
   // Release resource.
   //
-  Private->JsonStructProtocol->DestoryStructure (
-                                 Private->JsonStructProtocol,
-                                 (EFI_REST_JSON_STRUCTURE_HEADER *)SecureBoot
-                                 );
+  if (SecureBoot != NULL) {
+    Private->JsonStructProtocol->DestoryStructure (
+                                   Private->JsonStructProtocol,
+                                   (EFI_REST_JSON_STRUCTURE_HEADER *)SecureBoot
+                                   );
+  }
+
+  if (PatchedJson != NULL) {
+    FreePool (PatchedJson);
+  }
 
   return EFI_SUCCESS;
 }
@@ -209,6 +231,7 @@ ProvisioningSecureBootProperties (
   UINT8                             SetupMode;
   BOOLEAN                           SecureBootEnabled;
   BOOLEAN                           SecureBootEnableDisable;
+  CHAR8                             *PatchedJson;
 
   if ((JsonStructProtocol == NULL) || (ResultJson == NULL) || IS_EMPTY_STRING (InputJson) || IS_EMPTY_STRING (ConfigureLang)) {
     return EFI_INVALID_PARAMETER;
@@ -222,17 +245,26 @@ ProvisioningSecureBootProperties (
   IntegerValue            = NULL;
   SecureBootEnableDisable = RedfishReadSecureBootEnable ();
   SecureBootEnabled       = IsSecureBootEnabled ();
+  SecureBoot              = NULL;
+  PatchedJson             = NULL;
 
-  SecureBoot = NULL;
-  Status     = JsonStructProtocol->ToStructure (
-                                     JsonStructProtocol,
-                                     NULL,
-                                     InputJson,
-                                     (EFI_REST_JSON_STRUCTURE_HEADER **)&SecureBoot
-                                     );
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+    Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, InputJson, &PatchedJson);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, cannot set compatible schema version: %r\n", __func__, Status));
+      return Status;
+    }
+  }
+
+  Status = JsonStructProtocol->ToStructure (
+                                 JsonStructProtocol,
+                                 NULL,
+                                 (PatchedJson == NULL ? InputJson : PatchedJson),
+                                 (EFI_REST_JSON_STRUCTURE_HEADER **)&SecureBoot
+                                 );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure failure: %r\n", __func__, Status));
-    return Status;
+    goto ON_RELEASE;
   }
 
   SecureBootCs = SecureBoot->SecureBoot;
@@ -326,13 +358,21 @@ ProvisioningSecureBootProperties (
     DEBUG ((DEBUG_ERROR, "%a: ToJson() failed: %r\n", __func__, Status));
   }
 
+ON_RELEASE:
+
   //
   // Release resource.
   //
-  JsonStructProtocol->DestoryStructure (
-                        JsonStructProtocol,
-                        (EFI_REST_JSON_STRUCTURE_HEADER *)SecureBoot
-                        );
+  if (SecureBoot != NULL) {
+    JsonStructProtocol->DestoryStructure (
+                          JsonStructProtocol,
+                          (EFI_REST_JSON_STRUCTURE_HEADER *)SecureBoot
+                          );
+  }
+
+  if (PatchedJson != NULL) {
+    FreePool (PatchedJson);
+  }
 
   if (EFI_ERROR (Status)) {
     return Status;
@@ -641,14 +681,31 @@ RedfishIdentifyResourceCommon (
   IN     CHAR8                            *Json
   )
 {
-  BOOLEAN  Supported;
+  EFI_STATUS  Status;
+  BOOLEAN     Supported;
+  CHAR8       *PatchedJson;
 
-  Supported = RedfishIdentifyResource (Private->Uri, Private->Json);
+  PatchedJson = NULL;
+
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+    Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, Json, &PatchedJson);
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a, cannot set compatible schema version: %r\n", __func__, Status));
+      return Status;
+    }
+  }
+
+  Supported = RedfishIdentifyResource (Private->Uri, (PatchedJson == NULL ? Json : PatchedJson));
   if (Supported) {
     //
     // Keep URI and ConfigLang mapping
     //
     RedfishSetRedfishUri (REDFISH_DUMMY_CONFIG_LANG, Private->Uri);
+  }
+
+  if (PatchedJson != NULL) {
+    FreePool (PatchedJson);
+    PatchedJson = NULL;
   }
 
   return (Supported ? EFI_SUCCESS : EFI_UNSUPPORTED);

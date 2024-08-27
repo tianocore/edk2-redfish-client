@@ -41,6 +41,7 @@
   UefiDriverEntryPoint
   RedfishAddendumLib
   UefiRuntimeServicesTableLib
+  PcdLib
 
 [Protocols]
   gEdkIIRedfishConfigHandlerProtocolGuid          ## PRODUCED
@@ -55,6 +56,7 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootRequired
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport
 
 [Depex]
   TRUE
