@@ -47,6 +47,7 @@
 [Pcd]
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport
 
 [Depex]
   TRUE
