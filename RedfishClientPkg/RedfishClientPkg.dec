@@ -75,6 +75,8 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootTimeout|5|UINT16|0x20000002
   ## Default capability of Redfish service side ETAG support
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishServiceEtagSupported|TRUE|BOOLEAN|0x10000005
+  # Support newer schema version by using old schema version driver.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport|TRUE|BOOLEAN|0x10000006
 
 [PcdsDynamicEx]
   ## The flag used to indicate that system reboot is required due to system configuration change

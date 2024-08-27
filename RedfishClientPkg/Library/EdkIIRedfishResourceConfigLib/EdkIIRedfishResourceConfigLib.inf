@@ -41,6 +41,7 @@
   RedfishFeatureUtilityLib
   RedfishPlatformConfigLib
   RedfishHttpLib
+  PrintLib
 
 [Protocols]
   gEdkIIRedfishResourceConfigProtocolGuid         ## CONSUMES ##
@@ -50,4 +51,4 @@
 [Pcd]
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
-
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport

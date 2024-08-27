@@ -192,4 +192,25 @@ GetSupportedSchemaVersion (
   OUT  REDFISH_SCHEMA_INFO  *SchemaInfo
   );
 
+/**
+  This function checks the schema version in InputJson to see if it matches
+  SchemaInfo. If not, it will replace "@odata.type" value to the schema information
+  provided by SchemaInfo. It's caller's responsibility to release OutputJson by calling
+  FreePool().
+
+  @param[in]  SchemaInfo          Desired schema information.
+  @param[in]  InputJson           JSON data on input.
+  @param[out] OutputJson          Patched JSON data on output.
+
+  @retval     EFI_SUCCESS         OutputJson is returned successfully.
+  @retval     Others              Errors occur.
+
+**/
+EFI_STATUS
+RedfishSetCompatibleSchemaVersion (
+  IN REDFISH_SCHEMA_INFO  *SchemaInfo,
+  IN CHAR8                *InputJson,
+  OUT CHAR8               **OutputJson
+  );
+
 #endif
