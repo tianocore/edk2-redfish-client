@@ -37,6 +37,7 @@
   RedfishResourceIdentifyLib
   UefiLib
   UefiDriverEntryPoint
+  PcdLib
 
 [Protocols]
   gEdkIIRedfishConfigHandlerProtocolGuid          ## PRODUCED
@@ -46,6 +47,7 @@
 [Pcd]
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
   gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport
 
 [Depex]
   TRUE
