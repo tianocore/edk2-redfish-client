@@ -16,6 +16,367 @@ EDKII_REDFISH_FEATURE_INTERCHANGE_DATA_PROTOCOL  mRedfishFeatureInterchangeData;
 
 /**
 
+  Get schema information by parsing JsonText.
+
+  @param[in]  JsonText            Redfish data in JSON format.
+  @param[out] SchemaInfo          Returned schema information.
+
+  @retval     EFI_SUCCESS         Schema information is returned successfully.
+  @retval     Others              Errors occur.
+
+**/
+EFI_STATUS
+GetRedfishSchemaInfoFromJson (
+  IN  CHAR8                *JsonText,
+  OUT REDFISH_SCHEMA_INFO  *SchemaInfo
+  )
+{
+  EFI_STATUS        Status;
+  EDKII_JSON_VALUE  SchemaObj;
+  EDKII_JSON_VALUE  OdataTypeObj;
+  CONST CHAR8       *OdataTypeString;
+  CHAR8             *Seeker;
+  CHAR8             *TargetStr;
+
+  if (IS_EMPTY_STRING (JsonText) || (SchemaInfo == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  SchemaObj    = NULL;
+  OdataTypeObj = NULL;
+  Status       = EFI_SUCCESS;
+
+  SchemaObj = JsonLoadString (JsonText, 0, NULL);
+  if ((SchemaObj == NULL) || !JsonValueIsObject (SchemaObj)) {
+    return EFI_VOLUME_CORRUPTED;
+  }
+
+  OdataTypeObj = JsonObjectGetValue (JsonValueGetObject (SchemaObj), SCHEMA_ODATA_TYPE);
+  if (!JsonValueIsString (OdataTypeObj)) {
+    DEBUG ((DEBUG_ERROR, "%a, cannot find %a\n", __func__, SCHEMA_ODATA_TYPE));
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  OdataTypeString = JsonValueGetAsciiString (OdataTypeObj);
+  if (IS_EMPTY_STRING (OdataTypeString)) {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  DEBUG ((DEBUG_MANAGEABILITY, "%a, odata.type: %a\n", __func__, OdataTypeString));
+
+  ZeroMem (SchemaInfo, sizeof (REDFISH_SCHEMA_INFO));
+  //
+  // Parse string to get schema name and version
+  //
+  Seeker = AsciiStrStr (OdataTypeString, "#");
+  if (Seeker == NULL) {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  TargetStr = Seeker + 1;
+
+  Seeker = AsciiStrStr (TargetStr, ".");
+  if (Seeker == NULL) {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  AsciiStrnCpyS (SchemaInfo->Schema, REDFISH_SCHEMA_STRING_SIZE, TargetStr, (Seeker - TargetStr));
+
+  //
+  // Schema version major number
+  //
+  TargetStr = Seeker + 1;
+  if (TargetStr[0] != 'v') {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  TargetStr += 1;
+
+  Seeker = AsciiStrStr (TargetStr, "_");
+  if (Seeker == NULL) {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  AsciiStrnCpyS (SchemaInfo->Major, REDFISH_SCHEMA_VERSION_SIZE, TargetStr, (Seeker - TargetStr));
+
+  //
+  // Schema version minor number
+  //
+  TargetStr = Seeker + 1;
+  Seeker    = AsciiStrStr (TargetStr, "_");
+  if (Seeker == NULL) {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  AsciiStrnCpyS (SchemaInfo->Minor, REDFISH_SCHEMA_VERSION_SIZE, TargetStr, (Seeker - TargetStr));
+
+  //
+  // Schema version errata number
+  //
+  TargetStr = Seeker + 1;
+  Seeker    = AsciiStrStr (TargetStr, ".");
+  if (Seeker == NULL) {
+    Status = EFI_NOT_FOUND;
+    goto ON_RELEASE;
+  }
+
+  AsciiStrnCpyS (SchemaInfo->Errata, REDFISH_SCHEMA_VERSION_SIZE, TargetStr, (Seeker - TargetStr));
+
+  DEBUG ((DEBUG_MANAGEABILITY, "%a, schema: %a\n", __func__, SchemaInfo->Schema));
+  DEBUG ((DEBUG_MANAGEABILITY, "%a, major:  %a\n", __func__, SchemaInfo->Major));
+  DEBUG ((DEBUG_MANAGEABILITY, "%a, minor:  %a\n", __func__, SchemaInfo->Minor));
+  DEBUG ((DEBUG_MANAGEABILITY, "%a, errata: %a\n", __func__, SchemaInfo->Errata));
+
+ON_RELEASE:
+
+  if (SchemaObj != NULL) {
+    JsonValueFree (SchemaObj);
+  }
+
+  return Status;
+}
+
+/**
+  This function checks the schema version in InputJson to see if it matches
+  SchemaInfo. If not, it will replace "@odata.type" value to the schema information
+  provided by SchemaInfo. It's caller's responsibility to release OutputJson by calling
+  FreePool().
+
+  @param[in]  SchemaInfo          Desired schema information.
+  @param[in]  InputJson           JSON data on input.
+  @param[out] OutputJson          Patched JSON data on output.
+
+  @retval     EFI_SUCCESS         OutputJson is returned successfully.
+  @retval     Others              Errors occur.
+
+**/
+EFI_STATUS
+RedfishSetCompatibleSchemaVersion (
+  IN REDFISH_SCHEMA_INFO  *SchemaInfo,
+  IN CHAR8                *InputJson,
+  OUT CHAR8               **OutputJson
+  )
+{
+  EFI_STATUS           Status;
+  REDFISH_SCHEMA_INFO  JsonSchemaInfo;
+  EDKII_JSON_VALUE     PatchedObj;
+  EDKII_JSON_VALUE     OdataTypeObj;
+  CHAR8                OdataTypeString[SCHEMA_ODATA_TYPE_MAX_LEN];
+
+  if ((SchemaInfo == NULL) || IS_EMPTY_STRING (InputJson) || (OutputJson == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  *OutputJson  = NULL;
+  PatchedObj   = NULL;
+  OdataTypeObj = NULL;
+  Status       = GetRedfishSchemaInfoFromJson (InputJson, &JsonSchemaInfo);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: Can not get schema information: %r\n", __func__, Status));
+    return Status;
+  }
+
+  if (AsciiStrCmp (JsonSchemaInfo.Schema, SchemaInfo->Schema) != 0) {
+    //
+    // Wrong schema
+    //
+    return EFI_UNSUPPORTED;
+  }
+
+  if ((AsciiStrCmp (JsonSchemaInfo.Major, SchemaInfo->Major) == 0) &&
+      (AsciiStrCmp (JsonSchemaInfo.Minor, SchemaInfo->Minor) == 0) &&
+      (AsciiStrCmp (JsonSchemaInfo.Errata, SchemaInfo->Errata) == 0)
+      )
+  {
+    //
+    // Perfect match. We don't need to do anything.
+    //
+    return EFI_SUCCESS;
+  }
+
+  DEBUG ((DEBUG_WARN, "%a, Compatible mode enabled!!\n", __func__));
+  AsciiSPrint (OdataTypeString, sizeof (OdataTypeString), "#%a.v%a_%a_%a.%a", SchemaInfo->Schema, SchemaInfo->Major, SchemaInfo->Minor, SchemaInfo->Errata, SchemaInfo->Schema);
+
+  PatchedObj = JsonLoadString (InputJson, 0, NULL);
+  if (!JsonValueIsObject (PatchedObj)) {
+    return EFI_VOLUME_CORRUPTED;
+  }
+
+  OdataTypeObj = JsonValueInitAsciiString (OdataTypeString);
+  if (!JsonValueIsString (OdataTypeObj)) {
+    Status = EFI_OUT_OF_RESOURCES;
+    goto ON_RELEASE;
+  }
+
+  Status = JsonObjectSetValue (PatchedObj, SCHEMA_ODATA_TYPE, OdataTypeObj);
+  if (!EFI_ERROR (Status)) {
+    *OutputJson = JsonDumpString (PatchedObj, EDKII_JSON_COMPACT);
+    if (*OutputJson == NULL) {
+      Status = EFI_OUT_OF_RESOURCES;
+    }
+  }
+
+ON_RELEASE:
+
+  if (PatchedObj != NULL) {
+    JsonValueFree (PatchedObj);
+  }
+
+  return Status;
+}
+
+/**
+
+  This function checks to see if the protocol of supporting target schema is cached or not.
+
+  @param[in]  ProtocolCache   Instance of protocol cache.
+  @param[in]  TargetSchema    Target schema.
+
+  @retval     TRUE   Protocol of supporting target schema is cached.
+  @retval     FALSE  Protocol of supporting target schema is not found in cache.
+
+**/
+BOOLEAN
+IsProtocolCached (
+  IN REDFISH_CONFIG_PROTOCOL_CACHE  *ProtocolCache,
+  IN REDFISH_SCHEMA_INFO            *TargetSchema
+  )
+{
+  if ((ProtocolCache == NULL) || (TargetSchema == NULL)) {
+    return FALSE;
+  }
+
+  if ((AsciiStrCmp (TargetSchema->Schema, ProtocolCache->SchemaInfoCache.Schema) != 0)) {
+    return FALSE;
+  }
+
+  if (PcdGetBool (PcdRedfishCompatibleSchemaSupport) && ProtocolCache->CompatibleMode) {
+    DEBUG ((
+      DEBUG_WARN,
+      "Compatible mode enabled!! Select cache %a %a.%a.%a to support %a %a.%a.%a\n",
+      ProtocolCache->SchemaInfoCache.Schema,
+      ProtocolCache->SchemaInfoCache.Major,
+      ProtocolCache->SchemaInfoCache.Minor,
+      ProtocolCache->SchemaInfoCache.Errata,
+      TargetSchema->Schema,
+      TargetSchema->Major,
+      TargetSchema->Minor,
+      TargetSchema->Errata
+      ));
+    return TRUE;
+  }
+
+  if ((AsciiStrCmp (TargetSchema->Major, ProtocolCache->SchemaInfoCache.Major) == 0) &&
+      (AsciiStrCmp (TargetSchema->Minor, ProtocolCache->SchemaInfoCache.Minor) == 0) &&
+      (AsciiStrCmp (TargetSchema->Errata, ProtocolCache->SchemaInfoCache.Errata) == 0))
+  {
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+/**
+
+  This function compares two schema version and return the result.
+
+  @param[in]  SchemaLeft    Schema on left.
+  @param[in]  SchemaRight   Schema on right.
+
+  @retval    SCHEMA_VERSION_COMPARE_RESULT
+
+**/
+SCHEMA_VERSION_COMPARE_RESULT
+CompareSchemaVersion (
+  IN REDFISH_SCHEMA_INFO  *SchemaLeft,
+  IN REDFISH_SCHEMA_INFO  *SchemaRight
+  )
+{
+  UINTN  LeftVersionNumber;
+  UINTN  RightVersionNumber;
+
+  if ((SchemaLeft == NULL) || (SchemaRight == NULL)) {
+    return SCHEMA_COMPARE_ERROR;
+  }
+
+  LeftVersionNumber  = AsciiStrDecimalToUintn (SchemaLeft->Major);
+  RightVersionNumber = AsciiStrDecimalToUintn (SchemaRight->Major);
+  if (LeftVersionNumber > RightVersionNumber) {
+    return SCHEMA_LEFT_GREATER_THAN_RIGHT;
+  } else if (LeftVersionNumber < RightVersionNumber) {
+    return SCHEMA_LEFT_SMALLER_THAN_RIGHT;
+  }
+
+  LeftVersionNumber  = AsciiStrDecimalToUintn (SchemaLeft->Minor);
+  RightVersionNumber = AsciiStrDecimalToUintn (SchemaRight->Minor);
+  if (LeftVersionNumber > RightVersionNumber) {
+    return SCHEMA_LEFT_GREATER_THAN_RIGHT;
+  } else if (LeftVersionNumber < RightVersionNumber) {
+    return SCHEMA_LEFT_SMALLER_THAN_RIGHT;
+  }
+
+  LeftVersionNumber  = AsciiStrDecimalToUintn (SchemaLeft->Errata);
+  RightVersionNumber = AsciiStrDecimalToUintn (SchemaRight->Errata);
+  if (LeftVersionNumber > RightVersionNumber) {
+    return SCHEMA_LEFT_GREATER_THAN_RIGHT;
+  } else if (LeftVersionNumber < RightVersionNumber) {
+    return SCHEMA_LEFT_SMALLER_THAN_RIGHT;
+  }
+
+  return SCHEMA_LEFT_EQUAL_TO_RIGHT;
+}
+
+/**
+
+  This function keep protocol data to cache instance.
+
+  @param[in,out]  ProtocolCache     Cache instance to keep protocol data.
+  @param[in]      ProtocolHandle    Protocol handle.
+  @param[in]      ProtocolPointer   Pointer to protocol instance.
+  @param[in]      ProtocolSchema    Pointer to protocol schema.
+  @param[in]      CompatibleEnabled TRUE when compatible mode is enabled. FALSE otherwise.
+  @param[in]      IsVersion2        ProtocolPointer is config2 protocol or not.
+
+  @retval     EFI_SUCCESS         Protocol data is properly cached.
+  @retval     Others              Errors occur.
+
+**/
+EFI_STATUS
+CacheConfigProtocol (
+  IN OUT REDFISH_CONFIG_PROTOCOL_CACHE  *ProtocolCache,
+  IN EFI_HANDLE                         ProtocolHandle,
+  IN VOID                               *ProtocolPointer,
+  IN REDFISH_SCHEMA_INFO                *ProtocolSchema,
+  IN BOOLEAN                            CompatibleEnabled,
+  IN BOOLEAN                            IsVersion2
+  )
+{
+  if ((ProtocolCache == NULL) || (ProtocolHandle == NULL) || (ProtocolPointer == NULL) || (ProtocolSchema == NULL)) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  ProtocolCache->CompatibleMode = CompatibleEnabled;
+  ProtocolCache->CachedHandle   = ProtocolHandle;
+  if (IsVersion2) {
+    ProtocolCache->RedfishResourceConfig.Config2Protocol = ProtocolPointer;
+  } else {
+    ProtocolCache->RedfishResourceConfig.ConfigProtocol = ProtocolPointer;
+  }
+
+  CopyMem (&ProtocolCache->SchemaInfoCache, ProtocolSchema, sizeof (REDFISH_SCHEMA_INFO));
+
+  return EFI_SUCCESS;
+}
+
+/**
+
   Get schema information by given protocol and service instance if JsonText
   is NULL or empty. When JsonText is provided by caller, this function read
   schema information from JsonText.
@@ -40,17 +401,15 @@ GetRedfishSchemaInfo (
   OUT REDFISH_SCHEMA_INFO               *SchemaInfo
   )
 {
-  EFI_STATUS                      Status;
-  REDFISH_RESPONSE                Response;
-  CHAR8                           *JsonData;
-  EFI_REST_JSON_STRUCTURE_HEADER  *Header;
+  EFI_STATUS        Status;
+  REDFISH_RESPONSE  Response;
+  CHAR8             *JsonData;
 
-  if ((RedfishService == NULL) || (JsonStructProtocol == NULL) || IS_EMPTY_STRING (Uri) || (SchemaInfo == NULL)) {
+  if (((RedfishService == NULL) && IS_EMPTY_STRING (Uri) && IS_EMPTY_STRING (JsonText)) || (SchemaInfo == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
   JsonData = NULL;
-  Header   = NULL;
   ZeroMem (&Response, sizeof (Response));
   if (IS_EMPTY_STRING (JsonText)) {
     Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, TRUE);
@@ -72,30 +431,18 @@ GetRedfishSchemaInfo (
   }
 
   //
-  // Convert JSON text to C structure.
+  // Get schema information from JSON data.
   //
-  Status = JsonStructProtocol->ToStructure (
-                                 JsonStructProtocol,
-                                 NULL,
-                                 JsonData,
-                                 &Header
-                                 );
+  Status = GetRedfishSchemaInfoFromJson (JsonData, SchemaInfo);
   if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a: ToStructure() failed: %r\n", __func__, Status));
+    DEBUG ((DEBUG_ERROR, "%a: cannot get schema information: %r\n", __func__, Status));
     goto ON_RELEASE;
   }
-
-  AsciiStrCpyS (SchemaInfo->Schema, REDFISH_SCHEMA_STRING_SIZE, Header->JsonRsrcIdentifier.NameSpace.ResourceTypeName);
-  AsciiStrCpyS (SchemaInfo->Major, REDFISH_SCHEMA_VERSION_SIZE, Header->JsonRsrcIdentifier.NameSpace.MajorVersion);
-  AsciiStrCpyS (SchemaInfo->Minor, REDFISH_SCHEMA_VERSION_SIZE, Header->JsonRsrcIdentifier.NameSpace.MinorVersion);
-  AsciiStrCpyS (SchemaInfo->Errata, REDFISH_SCHEMA_VERSION_SIZE, Header->JsonRsrcIdentifier.NameSpace.ErrataVersion);
 
 ON_RELEASE:
   //
   // Release resource.
   //
-  JsonStructProtocol->DestoryStructure (JsonStructProtocol, Header);
-
   if (JsonData != NULL) {
     FreePool (JsonData);
   }
@@ -244,11 +591,15 @@ GetRedfishResourceConfigProtocol (
 {
   EFI_STATUS                              Status;
   EFI_HANDLE                              *HandleBuffer;
+  EFI_HANDLE                              CompatibleHandle;
   UINTN                                   NumberOfHandles;
   UINTN                                   Index;
   EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *Protocol;
+  EDKII_REDFISH_RESOURCE_CONFIG_PROTOCOL  *CompatibleProtocol;
   REDFISH_SCHEMA_INFO                     SchemaInfo;
+  REDFISH_SCHEMA_INFO                     CompatibleSchemaInfo;
   BOOLEAN                                 Found;
+  SCHEMA_VERSION_COMPARE_RESULT           SchemaVersionResult;
 
   if (IS_EMPTY_STRING (Schema->Schema) ||
       IS_EMPTY_STRING (Schema->Major) ||
@@ -259,12 +610,18 @@ GetRedfishResourceConfigProtocol (
     return NULL;
   }
 
+  HandleBuffer        = NULL;
+  CompatibleHandle    = NULL;
+  NumberOfHandles     = 0;
+  Protocol            = NULL;
+  CompatibleProtocol  = NULL;
+  SchemaVersionResult = SCHEMA_COMPARE_ERROR;
+
+  //
+  // Search protocol cache to see if we can return protocol immediately or not.
+  //
   if ((mRedfishResourceConfigCache != NULL) && (mRedfishResourceConfigCache->RedfishResourceConfig.ConfigProtocol != NULL)) {
-    if ((AsciiStrCmp (Schema->Schema, mRedfishResourceConfigCache->SchemaInfoCache.Schema) == 0) &&
-        (AsciiStrCmp (Schema->Major, mRedfishResourceConfigCache->SchemaInfoCache.Major) == 0) &&
-        (AsciiStrCmp (Schema->Minor, mRedfishResourceConfigCache->SchemaInfoCache.Minor) == 0) &&
-        (AsciiStrCmp (Schema->Errata, mRedfishResourceConfigCache->SchemaInfoCache.Errata) == 0))
-    {
+    if (IsProtocolCached (mRedfishResourceConfigCache, Schema)) {
       if (Handle != NULL) {
         *Handle = mRedfishResourceConfigCache->CachedHandle;
       }
@@ -301,26 +658,84 @@ GetRedfishResourceConfigProtocol (
       continue;
     }
 
-    if ((AsciiStrCmp (Schema->Schema, SchemaInfo.Schema) == 0) &&
-        (AsciiStrCmp (Schema->Major, SchemaInfo.Major) == 0) &&
-        (AsciiStrCmp (Schema->Minor, SchemaInfo.Minor) == 0) &&
-        (AsciiStrCmp (Schema->Errata, SchemaInfo.Errata) == 0))
-    {
+    if ((AsciiStrCmp (Schema->Schema, SchemaInfo.Schema) != 0)) {
+      continue;
+    }
+
+    //
+    // Compare schema version
+    //
+    SchemaVersionResult = CompareSchemaVersion (Schema, &SchemaInfo);
+    if (SchemaVersionResult == SCHEMA_COMPARE_ERROR) {
+      DEBUG ((
+        DEBUG_ERROR,
+        "%a, compare schema error %a %a.%a.%a vs %a %a.%a.%a\n",
+        __func__,
+        Schema->Schema,
+        Schema->Major,
+        Schema->Minor,
+        Schema->Errata,
+        SchemaInfo.Schema,
+        SchemaInfo.Major,
+        SchemaInfo.Minor,
+        SchemaInfo.Errata
+        ));
+      continue;
+    }
+
+    if (SchemaVersionResult == SCHEMA_LEFT_EQUAL_TO_RIGHT) {
+      //
+      // Perfect match
+      //
       Found = TRUE;
       break;
+    } else {
+      if (!PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+        continue;
+      }
+
+      //
+      // Check to see if this schema version is Compatible or not.
+      // The rule is: we can use old schema version to support new schema version
+      // because old/deprecated attributes will still be in new schema version.
+      //
+      if (SchemaVersionResult == SCHEMA_LEFT_SMALLER_THAN_RIGHT) {
+        continue;
+      }
+
+      CompatibleHandle   = HandleBuffer[Index];
+      CompatibleProtocol = Protocol;
+      CopyMem (&CompatibleSchemaInfo, &SchemaInfo, sizeof (REDFISH_SCHEMA_INFO));
     }
   }
 
   if (Found) {
-    if (mRedfishResourceConfigCache != NULL) {
-      mRedfishResourceConfigCache->CachedHandle                         = HandleBuffer[Index];
-      mRedfishResourceConfigCache->RedfishResourceConfig.ConfigProtocol = Protocol;
-      CopyMem (&mRedfishResourceConfigCache->SchemaInfoCache, Schema, sizeof (REDFISH_SCHEMA_INFO));
-    }
-
+    CacheConfigProtocol (mRedfishResourceConfigCache, HandleBuffer[Index], Protocol, Schema, FALSE, FALSE);
     if (Handle != NULL) {
       *Handle = HandleBuffer[Index];
     }
+  } else if (CompatibleHandle != NULL) {
+    DEBUG ((
+      DEBUG_WARN,
+      "Compatible mode enabled!! Select %a %a.%a.%a to support %a %a.%a.%a\n",
+      CompatibleSchemaInfo.Schema,
+      CompatibleSchemaInfo.Major,
+      CompatibleSchemaInfo.Minor,
+      CompatibleSchemaInfo.Errata,
+      Schema->Schema,
+      Schema->Major,
+      Schema->Minor,
+      Schema->Errata
+      ));
+
+    CacheConfigProtocol (mRedfishResourceConfigCache, CompatibleHandle, CompatibleProtocol, &CompatibleSchemaInfo, TRUE, FALSE);
+
+    if (Handle != NULL) {
+      *Handle = CompatibleHandle;
+    }
+
+    Found    = TRUE;
+    Protocol = CompatibleProtocol;
   }
 
   FreePool (HandleBuffer);
@@ -348,11 +763,15 @@ GetRedfishResourceConfig2Protocol (
 {
   EFI_STATUS                               Status;
   EFI_HANDLE                               *HandleBuffer;
+  EFI_HANDLE                               CompatibleHandle;
   UINTN                                    NumberOfHandles;
   UINTN                                    Index;
   EDKII_REDFISH_RESOURCE_CONFIG2_PROTOCOL  *Protocol;
+  EDKII_REDFISH_RESOURCE_CONFIG2_PROTOCOL  *CompatibleProtocol;
   REDFISH_SCHEMA_INFO                      SchemaInfo;
+  REDFISH_SCHEMA_INFO                      CompatibleSchemaInfo;
   BOOLEAN                                  Found;
+  SCHEMA_VERSION_COMPARE_RESULT            SchemaVersionResult;
 
   if (IS_EMPTY_STRING (Schema->Schema) ||
       IS_EMPTY_STRING (Schema->Major) ||
@@ -363,12 +782,18 @@ GetRedfishResourceConfig2Protocol (
     return NULL;
   }
 
+  HandleBuffer        = NULL;
+  CompatibleHandle    = NULL;
+  NumberOfHandles     = 0;
+  Protocol            = NULL;
+  CompatibleProtocol  = NULL;
+  SchemaVersionResult = SCHEMA_COMPARE_ERROR;
+
+  //
+  // Search protocol cache to see if we can return protocol immediately or not.
+  //
   if ((mRedfishResourceConfig2Cache != NULL) && (mRedfishResourceConfig2Cache->RedfishResourceConfig.Config2Protocol != NULL)) {
-    if ((AsciiStrCmp (Schema->Schema, mRedfishResourceConfig2Cache->SchemaInfoCache.Schema) == 0) &&
-        (AsciiStrCmp (Schema->Major, mRedfishResourceConfig2Cache->SchemaInfoCache.Major) == 0) &&
-        (AsciiStrCmp (Schema->Minor, mRedfishResourceConfig2Cache->SchemaInfoCache.Minor) == 0) &&
-        (AsciiStrCmp (Schema->Errata, mRedfishResourceConfig2Cache->SchemaInfoCache.Errata) == 0))
-    {
+    if (IsProtocolCached (mRedfishResourceConfig2Cache, Schema)) {
       if (Handle != NULL) {
         *Handle = mRedfishResourceConfig2Cache->CachedHandle;
       }
@@ -405,26 +830,84 @@ GetRedfishResourceConfig2Protocol (
       continue;
     }
 
-    if ((AsciiStrCmp (Schema->Schema, SchemaInfo.Schema) == 0) &&
-        (AsciiStrCmp (Schema->Major, SchemaInfo.Major) == 0) &&
-        (AsciiStrCmp (Schema->Minor, SchemaInfo.Minor) == 0) &&
-        (AsciiStrCmp (Schema->Errata, SchemaInfo.Errata) == 0))
-    {
+    if ((AsciiStrCmp (Schema->Schema, SchemaInfo.Schema) != 0)) {
+      continue;
+    }
+
+    //
+    // Compare schema version
+    //
+    SchemaVersionResult = CompareSchemaVersion (Schema, &SchemaInfo);
+    if (SchemaVersionResult == SCHEMA_COMPARE_ERROR) {
+      DEBUG ((
+        DEBUG_ERROR,
+        "%a, compare schema error %a %a.%a.%a vs %a %a.%a.%a\n",
+        __func__,
+        Schema->Schema,
+        Schema->Major,
+        Schema->Minor,
+        Schema->Errata,
+        SchemaInfo.Schema,
+        SchemaInfo.Major,
+        SchemaInfo.Minor,
+        SchemaInfo.Errata
+        ));
+      continue;
+    }
+
+    if (SchemaVersionResult == SCHEMA_LEFT_EQUAL_TO_RIGHT) {
+      //
+      // Perfect match
+      //
       Found = TRUE;
       break;
+    } else {
+      if (!PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
+        continue;
+      }
+
+      //
+      // Check to see if this schema version is Compatible or not.
+      // The rule is: we can use old schema version to support new schema version
+      // because old/deprecated attributes will still be in new schema version.
+      //
+      if (SchemaVersionResult == SCHEMA_LEFT_SMALLER_THAN_RIGHT) {
+        continue;
+      }
+
+      CompatibleHandle   = HandleBuffer[Index];
+      CompatibleProtocol = Protocol;
+      CopyMem (&CompatibleSchemaInfo, &SchemaInfo, sizeof (REDFISH_SCHEMA_INFO));
     }
   }
 
   if (Found) {
-    if (mRedfishResourceConfig2Cache != NULL) {
-      mRedfishResourceConfig2Cache->CachedHandle                          = HandleBuffer[Index];
-      mRedfishResourceConfig2Cache->RedfishResourceConfig.Config2Protocol = Protocol;
-      CopyMem (&mRedfishResourceConfig2Cache->SchemaInfoCache, Schema, sizeof (REDFISH_SCHEMA_INFO));
-    }
-
+    CacheConfigProtocol (mRedfishResourceConfig2Cache, HandleBuffer[Index], Protocol, Schema, FALSE, TRUE);
     if (Handle != NULL) {
       *Handle = HandleBuffer[Index];
     }
+  } else if (CompatibleHandle != NULL) {
+    DEBUG ((
+      DEBUG_WARN,
+      "Compatible mode enabled!! Select %a %a.%a.%a to support %a %a.%a.%a\n",
+      CompatibleSchemaInfo.Schema,
+      CompatibleSchemaInfo.Major,
+      CompatibleSchemaInfo.Minor,
+      CompatibleSchemaInfo.Errata,
+      Schema->Schema,
+      Schema->Major,
+      Schema->Minor,
+      Schema->Errata
+      ));
+
+    CacheConfigProtocol (mRedfishResourceConfig2Cache, CompatibleHandle, CompatibleProtocol, &CompatibleSchemaInfo, TRUE, TRUE);
+
+    if (Handle != NULL) {
+      *Handle = CompatibleHandle;
+    }
+
+    Found    = TRUE;
+    Protocol = CompatibleProtocol;
   }
 
   FreePool (HandleBuffer);
