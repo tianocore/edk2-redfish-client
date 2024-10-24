@@ -49,3 +49,6 @@
   RedfishSystemTopologyLib|RedfishClientPkg/Library/RedfishSystemTopologyLibNull/RedfishSystemTopologyLibNull.inf
   SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
+  RedfishMessageLib|RedfishClientPkg/Library/RedfishMessageLib/RedfishMessageLib.inf
+  RedfishTaskLib|RedfishClientPkg/Library/RedfishTaskLibNull/RedfishTaskLibNull.inf
+  RedfishProtocolFeaturesLib|RedfishClientPkg/Library/RedfishProtocolFeaturesLib/RedfishProtocolFeaturesLib.inf
