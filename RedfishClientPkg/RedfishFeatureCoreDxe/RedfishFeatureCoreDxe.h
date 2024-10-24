@@ -38,6 +38,7 @@
 #define REDFISH_INTERNAL_ERROR        "Redfish service failure. Configuration at BMC may not be up-to-date."
 #define REDFISH_COMMUNICATION_ERROR   "Redfish communication failure. Configuration at BMC may not be up-to-date."
 #define REDFISH_CONFIG_CHANGED        "System configuration is changed from RESTful interface. System reboot."
+#define REDFISH_TASK_SERVICE_URI      L"TaskService"
 
 typedef struct _REDFISH_FEATURE_INTERNAL_DATA REDFISH_FEATURE_INTERNAL_DATA;
 struct _REDFISH_FEATURE_INTERNAL_DATA {
