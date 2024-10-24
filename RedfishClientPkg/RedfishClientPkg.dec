@@ -27,6 +27,7 @@
   EdkIIRedfishResourceConfigLib|Include/Library/EdkIIRedfishResourceConfigLib.h
   RedfishEventLib|Include/Library/RedfishEventLib.h
   RedfishVersionLib|Include/Library/RedfishVersionLib.h
+  RedfishMessageLib|Include/Library/RedfishMessageLib.h
 
 [Protocols]
   ## Include/Protocol/EdkIIRedfishFeature.h
