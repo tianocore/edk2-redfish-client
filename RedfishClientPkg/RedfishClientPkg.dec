@@ -29,6 +29,7 @@
   RedfishVersionLib|Include/Library/RedfishVersionLib.h
   RedfishMessageLib|Include/Library/RedfishMessageLib.h
   RedfishTaskLib|Include/Library/RedfishTaskLib.h
+  RedfishProtocolFeaturesLib|Include/Library/RedfishProtocolFeaturesLib.h
 
 [Protocols]
   ## Include/Protocol/EdkIIRedfishFeature.h
@@ -79,6 +80,9 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishServiceEtagSupported|TRUE|BOOLEAN|0x10000005
   # Support newer schema version by using old schema version driver.
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport|TRUE|BOOLEAN|0x10000006
+  # This is used to disable Redfish HTTP query by using "$expand" parameter even when
+  # Redfish service supports this query parameter.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdHttpExpandQueryDisabled|FALSE|BOOLEAN|0x2000000A
 
 [PcdsDynamicEx]
   ## The flag used to indicate that system reboot is required due to system configuration change
