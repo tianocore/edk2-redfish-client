@@ -2,7 +2,7 @@
   Definitions of RedfishFeatureCoreDxe
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -34,6 +34,7 @@
 #define NodeIsCollectionRightBracket  L'}'
 #define NodeIsCollectionSymbol        L"/{}"
 #define REDFISH_FEATURE_CORE_TPL      TPL_CALLBACK
+#define REDFISH_TASK_SERVICE_URI      L"TaskService"
 
 typedef struct _REDFISH_FEATURE_INTERNAL_DATA REDFISH_FEATURE_INTERNAL_DATA;
 struct _REDFISH_FEATURE_INTERNAL_DATA {
