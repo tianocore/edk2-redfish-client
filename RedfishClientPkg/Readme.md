@@ -509,8 +509,40 @@ collection resource, and also for triggering the Redfish action. For the Redfish
 as loading the BIOS default and Secure boot certification enrollment.<br>
 HTTP DELETE operation is triggered by BIOS to delete a member in the Redfish collection.
 
-### Redfish Task design
-TBD.
+### Redfish Task
+Redfish task service driver handles Redfish task resources at `/redfish/v1/TaskService/Tasks` and dispatch the task
+resource to registered Redfish feature driver. Redfish feature driver utilizes Redfish task protocol to get data
+from registered Redfish task, and perform corresponding action specified by the Redfish task. After job is finished,
+Redfish task service reports task result back to BMC. So user can check task state to see if issued task is done
+successfully or not.
+
+Redfish task is handled before any other Redfish resource because the action requested by Redfish task may change host configuration.
+
+There are several interfaces supported by Redfish task protocol:
+```C
+struct _EDKII_REDFISH_TASK_PROTOCOL {
+  UINT32                         Version;
+  REDFISH_TASK_REGISTER          Register;
+  REDFISH_TASK_UNREGISTER        Unregister;
+  REDFISH_TASK_REPORT_MESSAGE    ReportMessage;
+  REDFISH_TASK_GET_PAYLOAD       GetPayload;
+  REDFISH_TASK_FREE_PAYLOAD      FreePayload;
+};
+```
+- Register()
+  - Redfish feature driver register its callback function and provide the task URI which is wants to handle. `PartialMatch` parameter allows feature driver to handle the task URI when certain keyword is presented.
+- Unregister()
+  - Redfish feature driver unregister itself and Redfish task service won't notify it anymore.
+- ReportMessage()
+  - When Redfish feature driver perform task given job and there is message that driver wants to send to user, feature driver calls this function and Redfish task service will send these messages to BMC. Typical use case is when there is error happens and task is failing, feature driver provides the reason why task is failing by calling this function.
+- GetPayload()
+  - Feature driver calls this function to get Redfish payload attached to this task resource.
+- FreePayload()
+  - The function that helps feature driver to release Redfish payload that is returned by GetPayload().
+
+**Redfish task library**
+
+Redfish task service reads Redfish tasks on  `/redfish/v1/TaskService/Tasks`. However, the URI for host firmware to update task results and state are not defined in any specification. As the result, platform BMC may have different implementation of updating task result. This makes the interface of updating Redfish task to be platform dependent. Redfish task library is introduced for platform owner to implement this path.
 
 ## The Contributors
 Chang, Abner <abner.chang@amd.com>\

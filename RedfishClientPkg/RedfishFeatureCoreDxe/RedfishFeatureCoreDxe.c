@@ -3,7 +3,7 @@
   for EDK2 Redfish Feature driver registration.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -14,6 +14,7 @@
 EFI_EVENT                        mEdkIIRedfishFeatureDriverStartupEvent;
 REDFISH_FEATURE_STARTUP_CONTEXT  mFeatureDriverStartupContext;
 REDFISH_FEATURE_INTERNAL_DATA    *ResourceUriNodeList;
+REDFISH_FEATURE_INTERNAL_DATA    *mTaskServiceNode;
 RESOURCE_INFORMATION_EXCHANGE    *mInformationExchange;
 
 /**
@@ -301,6 +302,11 @@ RedfishFeatureDriverStartup (
   SignalReadyToProvisioningEvent ();
 
   //
+  // Invoke task service callback before invoking other callback.
+  //
+  StartUpFeatureDriver (mTaskServiceNode, NULL, StartupContext);
+
+  //
   // Invoke the callback by the hierarchy level
   //
   StartUpFeatureDriver (ResourceUriNodeList, NULL, StartupContext);
@@ -549,6 +555,25 @@ RedfishFeatureRegister (
   }
 
   //
+  // Task service is special service which will be launched before other feature
+  // drivers.
+  //
+  if (StrCmp (REDFISH_TASK_SERVICE_URI, FeatureManagedUri) == 0) {
+    if (mTaskServiceNode == NULL) {
+      Status = NewInternalInstance (&mTaskServiceNode, REDFISH_TASK_SERVICE_URI, FALSE);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a: failed to register task service: %r\n", __func__, Status));
+        return Status;
+      }
+    }
+
+    mTaskServiceNode->Context  = Context;
+    mTaskServiceNode->Callback = Callback;
+
+    return EFI_SUCCESS;
+  }
+
+  //
   // Walk through URI which managed by this EDK2 Redfish feature driver.
   //
   UriLength   = StrLen (FeatureManagedUri) + 1; // Add one NULL for the last node.
@@ -685,6 +710,7 @@ RedfishFeatureCoreEntryPoint (
 
   Handle              = NULL;
   ResourceUriNodeList = NULL;
+  mTaskServiceNode    = NULL;
   EventGuid           = (EFI_GUID *)PcdGetPtr (PcdEdkIIRedfishFeatureDriverStartupEventGuid);
 
   ZeroMem ((VOID *)&mFeatureDriverStartupContext, sizeof (REDFISH_FEATURE_STARTUP_CONTEXT));
