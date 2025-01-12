@@ -792,10 +792,11 @@ ProvisioningComputerSystemProperties (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __func__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
 
-  *ResultJson     = NULL;
-  PropertyChanged = FALSE;
-  ComputerSystem  = NULL;
-  PatchedJson     = NULL;
+  *ResultJson           = NULL;
+  PropertyChanged       = FALSE;
+  ComputerSystem        = NULL;
+  ComputerSystemCsEmpty = NULL;
+  PatchedJson           = NULL;
 
   if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
     Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, InputJson, &PatchedJson);
@@ -1297,7 +1298,7 @@ ON_RELEASE:
   //
   // Free memory allocated for Computersystem empty CS
   //
-  if (ComputerSystemCsEmpty->Boot->BootOrder != NULL) {
+  if ((ComputerSystemCsEmpty != NULL) && (ComputerSystemCsEmpty->Boot->BootOrder != NULL)) {
     DestoryRedfishCharArray (ComputerSystemCsEmpty->Boot->BootOrder, ArraySize);
   }
 
