@@ -2,7 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -845,7 +845,6 @@ HandleResource (
   EFI_STATUS           Status;
   REDFISH_SCHEMA_INFO  SchemaInfo;
   EFI_STRING           ConfigLang;
-  BOOLEAN              SystemRestDetected;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Uri)) {
     return EFI_INVALID_PARAMETER;
@@ -868,8 +867,7 @@ HandleResource (
   // Some resource is handled by other provider so we have to make sure this first.
   //
   DEBUG ((REDFISH_DEBUG_TRACE, "%a Identify for %s\n", __func__, Uri));
-  SystemRestDetected = FALSE;
-  ConfigLang         = RedfishGetConfigLanguage (Uri);
+  ConfigLang = RedfishGetConfigLanguage (Uri);
   if (ConfigLang == NULL) {
     Status = EdkIIRedfishResourceConfigIdentify (&SchemaInfo, Uri, NULL, Private->InformationExchange);
     if (EFI_ERROR (Status)) {
@@ -890,26 +888,28 @@ HandleResource (
     // system is reset by defaulting command. The pending setting on BMC may be
     // a stale value so we will ignore pending settings in BMC.
     //
-    SystemRestDetected = TRUE;
+    DEBUG ((REDFISH_DEBUG_TRACE, "%a, system has been reset to default setting. Ignore pending settings because they may be stale values\n", __func__));
   } else {
     DEBUG ((REDFISH_DEBUG_TRACE, "%a, history record found: %s\n", __func__, ConfigLang));
     FreePool (ConfigLang);
   }
 
   //
-  // Check and see if target property exist or not even when collection member exists.
-  // If not, we still do provision.
+  // Perform provisioning in two cases:
+  // 1) System is reset by defaulting command.
+  // 2) Check and see if target property exist or not even when collection member exists.
+  //    If not, we will do provision.
   //
   DEBUG ((REDFISH_DEBUG_TRACE, "%a Check for %s\n", __func__, Uri));
   Status = EdkIIRedfishResourceConfigCheck (&SchemaInfo, Uri, NULL);
-  if (EFI_ERROR (Status)) {
+  if ((ConfigLang == NULL) || EFI_ERROR (Status)) {
     if (Status == EFI_UNSUPPORTED) {
       DEBUG ((REDFISH_DEBUG_TRACE, "%a, \"%s\" has no attribute that is handled by us\n", __func__, Uri));
       return EFI_SUCCESS;
     }
 
     //
-    // The target property does not exist, do the provision to create property.
+    // The target property does not exist or stale, do the provision to create property.
     //
     DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s\n", __func__, Uri));
     Status = EdkIIRedfishResourceConfigProvisioning (&SchemaInfo, Uri, NULL, Private->InformationExchange, FALSE);
@@ -923,14 +923,10 @@ HandleResource (
   //
   // Consume first.
   //
-  if (SystemRestDetected) {
-    DEBUG ((REDFISH_DEBUG_TRACE, "%a system has been reset to default setting. ignore pending settings because they may be stale values\n", __func__));
-  } else {
-    DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
-    Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri, NULL);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a, failed to consume resource for: %s: %r\n", __func__, Uri, Status));
-    }
+  DEBUG ((REDFISH_DEBUG_TRACE, "%a consume for %s\n", __func__, Uri));
+  Status = EdkIIRedfishResourceConfigConsume (&SchemaInfo, Uri, NULL);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a, failed to consume resource for: %s: %r\n", __func__, Uri, Status));
   }
 
   //
