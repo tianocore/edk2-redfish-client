@@ -3,7 +3,7 @@
   for EDK2 Redfish Feature driver registration.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -172,6 +172,16 @@ StartUpFeatureDriver (
 
       if (EFI_ERROR (Status)) {
         DEBUG ((DEBUG_ERROR, "%a: Callback to EDK2 Redfish feature driver fail: %s.\n", __func__, ThisList->InformationExchange->SendInformation.FullUri));
+
+        //
+        // Report status code for Redfish failure
+        //
+        REPORT_STATUS_CODE_WITH_EXTENDED_DATA (
+          EFI_ERROR_CODE | EFI_ERROR_MAJOR,
+          EFI_COMPUTING_UNIT_MANAGEABILITY | EFI_MANAGEABILITY_EC_REDFISH_COMMUNICATION_ERROR,
+          REDFISH_INTERNAL_ERROR,
+          sizeof (REDFISH_INTERNAL_ERROR)
+          );
       }
     }
 
@@ -204,6 +214,17 @@ StartUpFeatureDriver (
         } else {
           DEBUG ((DEBUG_ERROR, "%a: No InformationTypeCollectionMemberConfigLanguage of %s returned.\n", __func__, ThisList->InformationExchange->SendInformation.FullUri));
           DEBUG ((DEBUG_ERROR, "%a: Redfish service maybe not connected or the network has problems.\n", __func__));
+
+          //
+          // Report status code for Redfish failure
+          //
+          REPORT_STATUS_CODE_WITH_EXTENDED_DATA (
+            EFI_ERROR_CODE | EFI_ERROR_MAJOR,
+            EFI_COMPUTING_UNIT_MANAGEABILITY | EFI_MANAGEABILITY_EC_REDFISH_COMMUNICATION_ERROR,
+            REDFISH_COMMUNICATION_ERROR,
+            sizeof (REDFISH_COMMUNICATION_ERROR)
+            );
+
           return;
         }
       } else {
@@ -333,6 +354,16 @@ RedfishFeatureDriverStartup (
   }
 
   if (PcdGetBool (PcdRedfishSystemRebootRequired)) {
+    //
+    // Report status code before reset system.
+    //
+    REPORT_STATUS_CODE_WITH_EXTENDED_DATA (
+      EFI_PROGRESS_CODE,
+      EFI_SOFTWARE_EFI_RUNTIME_SERVICE | EFI_SW_RS_PC_RESET_SYSTEM,
+      REDFISH_CONFIG_CHANGED,
+      sizeof (REDFISH_CONFIG_CHANGED)
+      );
+
     Print (L"System configuration is changed from RESTful interface. Reboot system in %d seconds...\n", RebootTimeout);
     gBS->Stall (RebootTimeout * 1000000U);
 

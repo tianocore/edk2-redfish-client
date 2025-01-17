@@ -2,7 +2,7 @@
   Definitions of RedfishFeatureCoreDxe
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -24,6 +24,7 @@
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/RedfishEventLib.h>
 #include <Library/RedfishFeatureUtilityLib.h>
+#include <Library/ReportStatusCodeLib.h>
 
 #define MaxNodeNameLength             64
 #define MaxParentUriLength            512
@@ -34,6 +35,9 @@
 #define NodeIsCollectionRightBracket  L'}'
 #define NodeIsCollectionSymbol        L"/{}"
 #define REDFISH_FEATURE_CORE_TPL      TPL_CALLBACK
+#define REDFISH_INTERNAL_ERROR        "Redfish service failure. Configuration at BMC may not be up-to-date."
+#define REDFISH_COMMUNICATION_ERROR   "Redfish communication failure. Configuration at BMC may not be up-to-date."
+#define REDFISH_CONFIG_CHANGED        "System configuration is changed from RESTful interface. System reboot."
 
 typedef struct _REDFISH_FEATURE_INTERNAL_DATA REDFISH_FEATURE_INTERNAL_DATA;
 struct _REDFISH_FEATURE_INTERNAL_DATA {
