@@ -2,7 +2,7 @@
   Redfish feature utility library implementation
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -154,7 +154,7 @@ SetEtagFromUri (
   }
 
   ZeroMem (&Response, sizeof (Response));
-  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, TRUE);
+  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, FALSE);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: get resource from: %s failed\n", __func__, Uri));
     return Status;
