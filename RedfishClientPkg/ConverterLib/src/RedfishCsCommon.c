@@ -579,6 +579,7 @@ SupportedRedfishResource (
   )
 {
   RedfishCS_char  *TargetDataType;
+  RedfishCS_bool  Result;
 
   if ((Odata_Type == NULL) || (NameSpace == NULL) || (DataType == NULL)) {
     return RedfishCS_boolean_false;
@@ -609,11 +610,13 @@ SupportedRedfishResource (
 
   strcat (TargetDataType, DataType);
   if (strcmp (Odata_Type, TargetDataType) == 0) {
-    return RedfishCS_boolean_true;
+    Result = RedfishCS_boolean_true;
+  } else {
+    Result = RedfishCS_boolean_false;
   }
 
   free (TargetDataType);
-  return RedfishCS_boolean_false;
+  return Result;
 }
 
 /**
