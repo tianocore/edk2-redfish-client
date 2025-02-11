@@ -453,7 +453,7 @@ ApplyFeatureSettingsStringType (
         //
         REDFISH_ENABLE_SYSTEM_REBOOT ();
       } else {
-        DEBUG ((DEBUG_ERROR, "%a: apply %s to %s failed: %r\n", __func__, ConfigureLang, FeatureValue, Status));
+        DEBUG ((DEBUG_ERROR, "%a: apply %s to %a failed: %r\n", __func__, ConfigureLang, FeatureValue, Status));
       }
     } else {
       DEBUG ((DEBUG_ERROR, "%a: %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureLang, RedfishValue.Value.Buffer));
