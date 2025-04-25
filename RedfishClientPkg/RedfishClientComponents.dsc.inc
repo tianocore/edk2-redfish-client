@@ -8,6 +8,7 @@
 #
 # (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 # Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -32,6 +33,7 @@
   }
   RedfishClientPkg/Features/ComputerSystemCollectionDxe/ComputerSystemCollectionDxe.inf
   RedfishClientPkg/Features/Bios/v1_0_9/Dxe/BiosDxe.inf
+  RedfishClientPkg/Features/BiosAttributeRegistry/v1_3_6/BiosAttributeRegistryDxe.inf
   RedfishClientPkg/Features/BootOptionCollection/BootOptionCollectionDxe.inf
   RedfishClientPkg/Features/BootOption/v1_0_4/Dxe/BootOptionDxe.inf
   RedfishClientPkg/Features/SecureBoot/v1_1_0/Dxe/SecureBootDxe.inf
@@ -46,6 +48,7 @@
   RedfishClientPkg/Converter/ComputerSystem/v1_5_0/RedfishComputerSystem_V1_5_0_Dxe.inf
   RedfishClientPkg/Converter/ComputerSystemCollection/RedfishComputerSystemCollection_Dxe.inf
   RedfishClientPkg/Converter/Bios/v1_0_9/RedfishBios_V1_0_9_Dxe.inf
+  RedfishClientPkg/Converter/AttributeRegistry/v1_3_6/RedfishAttributeRegistry_V1_3_6_Dxe.inf
   RedfishClientPkg/Converter/BootOptionCollection/RedfishBootOptionCollection_Dxe.inf
   RedfishClientPkg/Converter/BootOption/v1_0_4/RedfishBootOption_V1_0_4_Dxe.inf
   RedfishClientPkg/Converter/SecureBoot/v1_1_0/RedfishSecureBoot_V1_1_0_Dxe.inf
