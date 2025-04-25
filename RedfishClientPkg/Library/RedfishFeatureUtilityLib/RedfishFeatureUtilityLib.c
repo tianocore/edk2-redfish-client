@@ -3,7 +3,7 @@
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
+  Copyright (C) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -2261,6 +2261,165 @@ GetOdataId (
   }
 
   return AllocateCopyPool (StrSize (OdataIdString), OdataIdString);
+}
+
+/**
+
+  Get @odata.type from give HTTP payload. It's call responsibility to release returned buffer.
+
+  @param[in]  Payload             HTTP payload
+
+  @retval     NULL                Can not find @odata.id from given payload.
+  @retval     Others              odata.id string is returned.
+
+**/
+EFI_STRING
+GetOdataType (
+  IN  REDFISH_PAYLOAD  *Payload
+  )
+{
+  EDKII_JSON_VALUE  *JsonValue;
+  EDKII_JSON_VALUE  *OdataId;
+  EFI_STRING        OdataIdString;
+
+  if (Payload == NULL) {
+    return NULL;
+  }
+
+  JsonValue = RedfishJsonInPayload (Payload);
+  if (!JsonValueIsObject (JsonValue)) {
+    return NULL;
+  }
+
+  OdataId = JsonObjectGetValue (JsonValueGetObject (JsonValue), "@odata.type");
+  if (!JsonValueIsString (OdataId)) {
+    return NULL;
+  }
+
+  OdataIdString = JsonValueGetUnicodeString (OdataId);
+  if (OdataIdString == NULL) {
+    return NULL;
+  }
+
+  return AllocateCopyPool (StrSize (OdataIdString), OdataIdString);
+}
+
+/**
+  The callback function provided by Redfish Feature driver.
+
+  @param[in]     OdataType        ASCII string of @odata.type
+  @param[out]    SchemaType       Optional pointer to receive schema type according to OdataType.
+  @param[out]    SchemaVersion    Optional pointer to receive schema version according to OdataType.
+  @param[out]    SchemaResource   Optional pointer to receive schema resource name according to OdataType.
+
+  @retval EFI_SUCCESS             The schema information is returned to the caller.
+                                  Caller is responsible to free the resources of the strings.
+  @retval Others                  Some errors happened.
+
+**/
+EFI_STATUS
+GetOdataTypeSchemaVersion (
+  IN   CHAR8  *OdataType,
+  OUT  CHAR8  **SchemaType OPTIONAL,
+  OUT  CHAR8  **SchemaVersion OPTIONAL,
+  OUT  CHAR8  **SchemaResource OPTIONAL
+  )
+{
+  UINTN  StrIndex;
+  UINTN  Number;
+  UINTN  FirstPeriodIndex;
+  UINTN  SecondPeriodIndex;
+  CHAR8  *TempPointer;
+
+  if (OdataType == NULL) {
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if ((SchemaType == NULL) && (SchemaVersion == NULL) && (SchemaResource == NULL)) {
+    DEBUG ((DEBUG_ERROR, "%a: at least one parameter must be assiged for receiving the string.", __func__));
+    return EFI_INVALID_PARAMETER;
+  }
+
+  if (SchemaType != NULL) {
+    *SchemaType = NULL;
+  }
+
+  if (SchemaVersion != NULL) {
+    *SchemaVersion = NULL;
+  }
+
+  if (SchemaResource != NULL) {
+    *SchemaResource = NULL;
+  }
+
+  if (OdataType[0] != '#') {
+    DEBUG ((DEBUG_ERROR, "%a: malformat of @odata.type.", __func__));
+    return EFI_DEVICE_ERROR;
+  }
+
+  OdataType        += 1;  // Skip "#"
+  Number            = 0;
+  FirstPeriodIndex  = 0;
+  SecondPeriodIndex = 0;
+  //
+  // Check if this is a collection.
+  //
+  for (StrIndex = 0; StrIndex < AsciiStrLen (OdataType); StrIndex++) {
+    if (OdataType[StrIndex] == '.') {
+      Number += 1;
+      if (Number == 1) {
+        FirstPeriodIndex = StrIndex;
+        // Schema type
+        if (SchemaType != NULL) {
+          TempPointer = AllocateCopyPool (StrIndex + 1, (VOID *)OdataType);
+          if (TempPointer == NULL) {
+            DEBUG ((DEBUG_ERROR, "%a: Unable to allocate memory for schema type.", __func__));
+            return EFI_OUT_OF_RESOURCES;
+          }
+
+          TempPointer[StrIndex] = 0;
+          *SchemaType           = TempPointer;
+        }
+      } else if (Number == 2) {
+        SecondPeriodIndex = StrIndex;
+      } else {
+        DEBUG ((DEBUG_ERROR, "%a: malformat of @odata.type.", __func__));
+        return EFI_DEVICE_ERROR;
+      }
+    }
+  }
+
+  // Schema version.
+  if (Number == 2) {
+    // Two periods in the @odata.type, means this is not a collection with version control.
+    if (SchemaVersion != NULL) {
+      TempPointer = AllocateCopyPool (SecondPeriodIndex - (FirstPeriodIndex + 1) + 1, (VOID *)(OdataType + FirstPeriodIndex + 1));
+      if (TempPointer == NULL) {
+        DEBUG ((DEBUG_ERROR, "%a: Unable to allocate memmory for schema version.", __func__));
+        return EFI_OUT_OF_RESOURCES;
+      }
+
+      TempPointer[SecondPeriodIndex - (FirstPeriodIndex + 1)] = 0;
+      *SchemaVersion                                          = TempPointer;
+    }
+
+    // Overwrite FirstPeriodIndex for handling schema resource name below.
+    FirstPeriodIndex = SecondPeriodIndex;
+  }
+
+  // Schema resource name
+  if (SchemaResource != NULL) {
+    TempPointer = AllocateCopyPool (AsciiStrLen (OdataType) - (FirstPeriodIndex + 1) + 1, (VOID *)(OdataType + FirstPeriodIndex + 1));
+    if (TempPointer == NULL) {
+      DEBUG ((DEBUG_ERROR, "%a: Unable to allocate memmory for schema resource.", __func__));
+      return EFI_OUT_OF_RESOURCES;
+    }
+
+    TempPointer[AsciiStrLen (OdataType) - (FirstPeriodIndex + 1)] = 0;
+    *SchemaResource                                               = TempPointer;
+  }
+
+  return EFI_SUCCESS;
 }
 
 /**
