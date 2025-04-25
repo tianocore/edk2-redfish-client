@@ -1,0 +1,56 @@
+## @file
+#
+#  Redfish Bios Attribute Registry driver.
+#
+#  Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = BiosAttributeRegistryDxe
+  FILE_GUID                 = 936B7D36-CB17-42D4-97DE-EE71C4B274D4
+  MODULE_TYPE               = DXE_DRIVER
+  VERSION_STRING            = 1.0
+  ENTRY_POINT               = RedfishResourceEntryPoint
+  UNLOAD_IMAGE              = RedfishBiosAttributeRegistryUnload
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishPkg/RedfishPkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[Sources]
+  BiosAttributeRegistryDxe.h
+  BiosAttributeRegistryDxe.c
+  ../Common/BiosAttributeRegistryCommon.c
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  ConverterCommonLib
+  DebugLib
+  JsonLib
+  MemoryAllocationLib
+  RedfishFeatureUtilityLib
+  RedfishHttpLib
+  UefiLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  RedfishVersionLib
+
+
+[Protocols]
+  gEdkIIRedfishConfigHandlerProtocolGuid    ## CONSUMED
+  gEfiRestJsonStructureProtocolGuid         ## CONSUMED
+  gEdkIIRedfishFeatureProtocolGuid          ## CONSUMED
+
+[Pcd]
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+
+[Depex]
+  TRUE

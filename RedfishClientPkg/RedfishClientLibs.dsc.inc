@@ -7,6 +7,7 @@
 #
 # (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
 # Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
 #
 #    SPDX-License-Identifier: BSD-2-Clause-Patent
 #
@@ -23,6 +24,7 @@
   ComputerSystemV1_5_0Lib|RedfishClientPkg/ConverterLib/edk2library/ComputerSystem/v1_5_0/Lib.inf
   ComputerSystemCollectionLib|RedfishClientPkg/ConverterLib/edk2library/ComputerSystemCollection/Lib.inf
   BiosV1_0_9Lib|RedfishClientPkg/ConverterLib/edk2library/Bios/v1_0_9/Lib.inf
+  AttributeRegistryV1_3_6Lib|RedfishClientPkg/ConverterLib/edk2library/AttributeRegistry/v1_3_6/Lib.inf
   BootOptionCollectionLib|RedfishClientPkg/ConverterLib/edk2library/BootOptionCollection/Lib.inf
   BootOptionV1_0_4Lib|RedfishClientPkg/ConverterLib/edk2library/BootOption/v1_0_4/Lib.inf
   SecureBootV1_1_0Lib|RedfishClientPkg/ConverterLib/edk2library/SecureBoot/v1_1_0/Lib.inf
