@@ -3,7 +3,7 @@
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
-  Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
+  Copyright (C) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -559,6 +559,42 @@ CheckIsServerEtagSupported (
 EFI_STRING
 GetOdataId (
   IN  REDFISH_PAYLOAD  *Payload
+  );
+
+/**
+
+  Get @odata.type from give HTTP payload. It's call responsibility to release returned buffer.
+
+  @param[in]  Payload             HTTP payload
+
+  @retval     NULL                Can not find @odata.id from given payload.
+  @retval     Others              odata.id string is returned.
+
+**/
+EFI_STRING
+GetOdataType (
+  IN  REDFISH_PAYLOAD  *Payload
+  );
+
+/**
+  The callback function provided by Redfish Feature driver.
+
+  @param[in]     OdataType        ASCII string of @odata.type
+  @param[out]    SchemaType       Optional pointer to receive schema type according to OdataType.
+  @param[out]    SchemaVersion    Optional pointer to receive schema version according to OdataType.
+  @param[out]    SchemaResource   Optional pointer to receive schema resource name according to OdataType.
+
+  @retval EFI_SUCCESS             The schema information is returned to the caller.
+                                  Caller is responsible to free the resources of the strings.
+  @retval Others                  Some errors happened.
+
+**/
+EFI_STATUS
+GetOdataTypeSchemaVersion (
+  IN   CHAR8  *OdataType,
+  OUT  CHAR8  **SchemaType OPTIONAL,
+  OUT  CHAR8  **SchemaVersion OPTIONAL,
+  OUT  CHAR8  **SchemaResource OPTIONAL
   );
 
 /**
