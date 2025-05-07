@@ -31,8 +31,6 @@ extern EFI_GUID  gHiiToRedfishBiosFormsetGuid;
 #define ID_STRING_MAX                  15
 #define ID_STRING_MAX_WITH_TERMINATOR  16
 
-#pragma pack(1)
-
 //
 // Definiton of HII_TO_REDFISH_BIOS_VARSTORE_DATA
 //
@@ -44,5 +42,4 @@ typedef struct {
   UINT8     Reserved;
 } HII_TO_REDFISH_BIOS_EFI_VARSTORE_DATA;
 
-#pragma pack()
 #endif
