@@ -549,6 +549,7 @@ RedfishCheckResourceCommon (
   EFI_REDFISH_BOOTOPTION_V1_0_4     *BootOption;
   EFI_REDFISH_BOOTOPTION_V1_0_4_CS  *BootOptionCs;
   EFI_STRING                        BootOptionName;
+  EFI_STRING                        ConfigureLang;
   EFI_BOOT_MANAGER_LOAD_OPTION      LoadOption;
   REDFISH_RESPONSE                  Response;
   BOOLEAN                           DeleteResourceRequired;
@@ -658,8 +659,11 @@ RedfishCheckResourceCommon (
     // create the record because this is the boot option that we
     // handle.
     //
-    if (RedfishGetConfigLanguage (Private->Uri) == NULL) {
+    ConfigureLang = RedfishGetConfigLanguage (Private->Uri);
+    if (ConfigureLang == NULL) {
       RedfishSetRedfishUri (BootOptionName, Private->Uri);
+    } else {
+      FreePool (ConfigureLang);
     }
   }
 
