@@ -423,7 +423,7 @@ RedfishProvisioningResourceCommon (
   ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
 
   if (ResourceExist) {
-    DEBUG ((DEBUG_ERROR, "%a: dose not support the exist boot option resource\n"));
+    DEBUG ((DEBUG_ERROR, "%a: does not support the existing boot option resource\n", __func__));
     return EFI_UNSUPPORTED;
   }
 
