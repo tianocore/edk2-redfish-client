@@ -709,7 +709,7 @@ ApplyFeatureSettingsVagueType (
             //
             REDFISH_ENABLE_SYSTEM_REBOOT ();
           } else {
-            DEBUG ((DEBUG_ERROR, "%a: apply %a to %a failed: %r\n", __func__, ConfigureKeyLang, CurrentVagueValuePtr->Value->DataValue.CharPtr, Status));
+            DEBUG ((DEBUG_ERROR, "%a: apply %s to %a failed: %r\n", __func__, ConfigureKeyLang, CurrentVagueValuePtr->Value->DataValue.CharPtr, Status));
           }
         } else {
           DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a %s value is: %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer));
@@ -3649,7 +3649,7 @@ GetPendingSettings (
       if (StrFound != NULL) {
         DEBUG ((REDFISH_DEBUG_TRACE, "%a: \"SD\" found in URI: %s\n", __func__, *SettingUri));
       } else {
-        DEBUG ((DEBUG_ERROR, "%a: Not an valid @redfish.settings URI\n", __func__, *SettingUri));
+        DEBUG ((DEBUG_ERROR, "%a: Not an valid @redfish.settings URI: %s\n", __func__, *SettingUri));
         ASSERT (FALSE);
       }
     }
