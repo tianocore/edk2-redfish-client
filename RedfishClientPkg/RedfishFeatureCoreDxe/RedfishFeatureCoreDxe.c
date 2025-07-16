@@ -292,7 +292,7 @@ RedfishFeatureDriverStartup (
   // the Redfish operations.
   //
   if (ResourceUriNodeList == NULL) {
-    return;
+    goto Exit;
   }
 
   //
@@ -301,7 +301,7 @@ RedfishFeatureDriverStartup (
   mInformationExchange = (RESOURCE_INFORMATION_EXCHANGE *)AllocateZeroPool (sizeof (RESOURCE_INFORMATION_EXCHANGE));
   if (mInformationExchange == NULL) {
     DEBUG ((DEBUG_ERROR, "%a: Fail to allocate memory for exchange information.\n", __func__));
-    return;
+    goto Exit;
   }
 
   //
@@ -375,6 +375,12 @@ RedfishFeatureDriverStartup (
   // Restore to the TPL where this callback handler is called.
   //
   gBS->RaiseTPL (REDFISH_FEATURE_CORE_TPL);
+
+  Exit:
+  //
+  // Only launch Redfish feature core once.
+  //
+  gBS->CloseEvent (mEdkIIRedfishFeatureDriverStartupEvent);
 }
 
 /**
