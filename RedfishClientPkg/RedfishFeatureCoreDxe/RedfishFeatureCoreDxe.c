@@ -284,6 +284,13 @@ RedfishFeatureDriverStartup (
   UINT16                           RebootTimeout;
   EDKII_REDFISH_OVERRIDE_PROTOCOL  *RedfishOverride;
 
+  //
+  // Only launch Redfish feature core once.
+  //
+  if (FixedPcdGetBool (PcdRedfishCoreExecuteOnce)) {
+    gBS->CloseEvent (mEdkIIRedfishFeatureDriverStartupEvent);
+  }
+
   RedfishOverride = NULL;
   StartupContext  = (REDFISH_FEATURE_STARTUP_CONTEXT *)Context;
   RebootTimeout   = PcdGet16 (PcdRedfishSystemRebootTimeout);

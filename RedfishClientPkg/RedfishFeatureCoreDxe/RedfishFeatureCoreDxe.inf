@@ -54,6 +54,7 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdEdkIIRedfishFeatureDriverStartupEventGuid
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootRequired
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishSystemRebootTimeout
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCoreExecuteOnce
 
 [Depex]
   TRUE
