@@ -44,5 +44,6 @@
   RedfishAddendumLib|RedfishClientPkg/Library/RedfishAddendumLib/RedfishAddendumLib.inf
   RedfishDebugLib|RedfishPkg/Library/RedfishDebugLib/RedfishDebugLib.inf
   RedfishHttpLib|RedfishPkg/Library/RedfishHttpLib/RedfishHttpLib.inf
+  RedfishSystemTopologyLib|RedfishClientPkg/Library/RedfishSystemTopologyLibNull/RedfishSystemTopologyLibNull.inf
   SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf

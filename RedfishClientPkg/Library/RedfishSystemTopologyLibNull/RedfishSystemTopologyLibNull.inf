@@ -1,0 +1,32 @@
+## @file
+#  NULL instance of RedfishContentCodingLibNull
+#  This library is used to get the system hardware information
+#  for building up Redfish invenotry.
+#
+#  Copyright (C) 2025 Advanced Micro Devices, Inc. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x0001000b
+  BASE_NAME                      = RedfishSystemTopologyLibNull
+  FILE_GUID                      = 8EC5A919-320C-424D-8FAF-0F7F4223ACD7
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = RedfishSystemTopologyLib
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 ARM AARCH64 RISCV64
+#
+
+[Sources]
+  RedfishSystemTopologyLibNull.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+
