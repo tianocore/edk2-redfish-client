@@ -1,5 +1,7 @@
 /** @file
 
+  Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
   Copyright Notice:
   Copyright 2019-2024 Distributed Management Task Force, Inc. All rights reserved.
   License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
@@ -832,6 +834,10 @@ GetRedfishPropertyStr (
     return RedfishCS_status_not_found;
   }
 
+  if (!json_is_string (TempJsonObj)) {
+    return RedfishCS_status_not_found;
+  }
+
   Status = allocateDuplicateStr (Cs, (char *)json_string_value (TempJsonObj), (void **)DstBuffer);
   return Status;
 }
@@ -915,6 +921,10 @@ GetRedfishPropertyInt64 (
   Status = allocateRecordCsMemory (Cs, sizeof (RedfishCS_int64), (void **)Dst);
   if (Status != RedfishCS_status_success) {
     return Status;
+  }
+
+  if (!json_is_integer (TempJsonObj)) {
+    return RedfishCS_status_not_found;
   }
 
   **Dst = (RedfishCS_int64)json_integer_value (TempJsonObj);
