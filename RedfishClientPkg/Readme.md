@@ -435,13 +435,22 @@ In /redfish/v1/Registries/BiosAttributeRegistry:
   "Location": [
     {
       "Language": "en",
-      "Uri": "/redfish/v1/Registries/Bios"
+      "Uri": "/redfish/v1/Systems/{}/Bios/BiosAttributeRegistry"
     }
   ]
 }
 
-The URI "/redfish/v1/Registries/Bios" is where BIOS to put the BIOS attribute registry resource.
+The URI "/redfish/v1/Systems/{}/Bios/BiosAttributeRegistry" is where BIOS to put the BIOS attribute registry resource.
 ```
+
+To reduce the effort of BMC to dynamically create the BIOS attribute registry under Registries
+collection, also to reduce the effort of BIOS to create the JSON payload of the Registry
+resource; BMC can have the default Registry resource under Registries collection for BIOS
+AttributeRegistry. Meanwhile, BMC gives the default value to "AttributeRegistry" under BIOS
+resource and provide the base resource of BIOS AttributeRegistry. Apply the HTTP PUT privilege
+to the BIOS AttributeRegistry URI for the Redfish bootstrap credential. This way, edk2 BIOS
+AttributeRegistry feature driver can retrieve the value from "AttributeRegistry" and
+concatenate it with the BIOS Redfish URI to HTTP PUT the BIOS AttributeRegistry resource.
 
 **BIOS Managed Redfish Resource Consumption**
 
