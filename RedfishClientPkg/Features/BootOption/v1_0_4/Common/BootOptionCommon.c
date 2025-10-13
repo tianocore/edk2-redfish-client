@@ -2,7 +2,7 @@
   Redfish feature driver implementation - common functions
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -554,7 +554,7 @@ RedfishCheckResourceCommon (
   REDFISH_RESPONSE                  Response;
   BOOLEAN                           DeleteResourceRequired;
   EFI_STRING                        DevicePathString;
-  CHAR8                             *DevicePathAsciiString;
+  CHAR8                             *TmpAsciiString;
   CHAR8                             *PatchedJson;
 
   if ((Private == NULL) || IS_EMPTY_STRING (Json)) {
@@ -563,7 +563,7 @@ RedfishCheckResourceCommon (
 
   ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
   DevicePathString       = NULL;
-  DevicePathAsciiString  = NULL;
+  TmpAsciiString         = NULL;
   DeleteResourceRequired = FALSE;
   BootOptionName         = NULL;
   BootOption             = NULL;
@@ -610,21 +610,38 @@ RedfishCheckResourceCommon (
     if (BootOptionCs->UefiDevicePath != NULL) {
       DevicePathString = ConvertDevicePathToText (LoadOption.FilePath, TRUE, FALSE);
       if (DevicePathString != NULL) {
-        DevicePathAsciiString = StrUnicodeToAscii (DevicePathString);
-        if (DevicePathAsciiString != NULL) {
-          if (AsciiStrCmp (DevicePathAsciiString, BootOptionCs->UefiDevicePath) != 0) {
+        TmpAsciiString = StrUnicodeToAscii (DevicePathString);
+        if (TmpAsciiString != NULL) {
+          if (AsciiStrCmp (TmpAsciiString, BootOptionCs->UefiDevicePath) != 0) {
             //
             // The device path of this boot option is not the one in system.
             //
             DeleteResourceRequired = TRUE;
           }
 
-          FreePool (DevicePathAsciiString);
+          FreePool (TmpAsciiString);
         }
 
         FreePool (DevicePathString);
       } else {
         DeleteResourceRequired = TRUE;
+      }
+    }
+
+    //
+    // Check the Description
+    //
+    if ((BootOptionCs->Description != NULL) && (LoadOption.Description != NULL)) {
+      TmpAsciiString = StrUnicodeToAscii (LoadOption.Description);
+      if (TmpAsciiString != NULL) {
+        if (AsciiStrCmp (TmpAsciiString, BootOptionCs->Description) != 0) {
+          //
+          // The description of this boot option is not the one in system.
+          //
+          DeleteResourceRequired = TRUE;
+        }
+
+        FreePool (TmpAsciiString);
       }
     }
 
