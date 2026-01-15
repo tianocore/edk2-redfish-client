@@ -165,7 +165,7 @@ RedfishConsumeResourceCommon (
       // Write value to "SecureBootEnable" variable. AuthVariableLib will enable or disable secure boot
       // based on "SecureBootEnable" value.
       //
-      Status = RedfishWriteSecureBootEnable (*SecureBootCs->SecureBootEnable);
+      Status = RedfishWriteSecureBootEnable ((BOOLEAN)*SecureBootCs->SecureBootEnable);
       if (EFI_ERROR (Status)) {
         DEBUG ((DEBUG_ERROR, "%a: write secure boot enable disable failed: %r\n", __func__, Status));
       } else {
