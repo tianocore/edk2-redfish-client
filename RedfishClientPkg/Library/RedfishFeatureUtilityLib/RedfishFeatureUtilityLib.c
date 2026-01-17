@@ -446,7 +446,7 @@ ApplyFeatureSettingsStringType (
       FreePool (RedfishValue.Value.Buffer);
       RedfishValue.Value.Buffer = FeatureValue;
 
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, &RedfishValue);
       if (!EFI_ERROR (Status)) {
         //
         // Configuration changed. Enable system reboot flag.
@@ -511,7 +511,7 @@ ApplyFeatureSettingsNumericType (
 
       RedfishValue.Value.Integer = (INT64)FeatureValue;
 
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, &RedfishValue);
       if (!EFI_ERROR (Status)) {
         //
         // Configuration changed. Enable system reboot flag.
@@ -576,7 +576,7 @@ ApplyFeatureSettingsBooleanType (
 
       RedfishValue.Value.Boolean = FeatureValue;
 
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, &RedfishValue);
       if (!EFI_ERROR (Status)) {
         //
         // Configuration changed. Enable system reboot flag.
@@ -702,7 +702,7 @@ ApplyFeatureSettingsVagueType (
           DEBUG ((DEBUG_MANAGEABILITY, "%a: %a.%a apply %s from %a to %a\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Buffer, CurrentVagueValuePtr->Value->DataValue.CharPtr));
           FreePool (RedfishValue.Value.Buffer);
           RedfishValue.Value.Buffer = CurrentVagueValuePtr->Value->DataValue.CharPtr;
-          Status                    = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, RedfishValue);
+          Status                    = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, &RedfishValue);
           if (!EFI_ERROR (Status)) {
             //
             // Configuration changed. Enable system reboot flag.
@@ -734,7 +734,7 @@ ApplyFeatureSettingsVagueType (
             ));
 
           RedfishValue.Value.Boolean = (BOOLEAN)*CurrentVagueValuePtr->Value->DataValue.BoolPtr;
-          Status                     = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, RedfishValue);
+          Status                     = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, &RedfishValue);
           if (!EFI_ERROR (Status)) {
             //
             // Configuration changed. Enable system reboot flag.
@@ -757,7 +757,7 @@ ApplyFeatureSettingsVagueType (
           DEBUG ((DEBUG_MANAGEABILITY, "%a, %a.%a apply %s from 0x%lx to 0x%lx\n", __func__, Schema, Version, ConfigureKeyLang, RedfishValue.Value.Integer, *CurrentVagueValuePtr->Value->DataValue.Int64Ptr));
 
           RedfishValue.Value.Integer = (INT64)*CurrentVagueValuePtr->Value->DataValue.Int64Ptr;
-          Status                     = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, RedfishValue);
+          Status                     = RedfishPlatformConfigSetValue (Schema, Version, ConfigureKeyLang, &RedfishValue);
           if (!EFI_ERROR (Status)) {
             //
             // Configuration changed. Enable system reboot flag.
@@ -947,7 +947,7 @@ ApplyFeatureSettingsStringArrayType (
 
       ASSERT (Index <= RedfishValue.ArrayCount);
 
-      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+      Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, &RedfishValue);
       if (!EFI_ERROR (Status)) {
         //
         // Configuration changed. Enable system reboot flag.
@@ -1056,7 +1056,7 @@ ApplyFeatureSettingsNumericArrayType (
 
     ASSERT (Index <= RedfishValue.ArrayCount);
 
-    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, &RedfishValue);
     if (!EFI_ERROR (Status)) {
       //
       // Configuration changed. Enable system reboot flag.
@@ -1157,7 +1157,7 @@ ApplyFeatureSettingsBooleanArrayType (
 
     ASSERT (Index <= RedfishValue.ArrayCount);
 
-    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, RedfishValue);
+    Status = RedfishPlatformConfigSetValue (Schema, Version, ConfigureLang, &RedfishValue);
     if (!EFI_ERROR (Status)) {
       //
       // Configuration changed. Enable system reboot flag.
