@@ -26,13 +26,13 @@ jobs:
             include:
               - Target: "DEBUG"
                 ArchList: "X64"
-                ToolChain: "GCC5"
+                ToolChain: "GCC"
               - Target: "RELEASE"
                 ArchList: "X64"
-                ToolChain: "GCC5"
+                ToolChain: "GCC"
               - Target: "NOOPT"
                 ArchList: "X64"
-                ToolChain: "GCC5"
+                ToolChain: "GCC"
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/tianocore/containers/ubuntu-22-dev:latest

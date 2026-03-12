@@ -8,7 +8,7 @@
 
 ARCH="X64"
 TARGET="DEBUG"
-TOOLCHAIN="GCC5"
+TOOLCHAIN="GCC"
 
 if [ $# -eq 0 ]
 then
