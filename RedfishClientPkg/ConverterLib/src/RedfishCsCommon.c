@@ -2,6 +2,7 @@
 
   Copyright Notice:
   Copyright 2019-2024 Distributed Management Task Force, Inc. All rights reserved.
+  Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
   License: BSD 3-Clause License. For full text see link: https://github.com/DMTF/Redfish-JSON-C-Struct-Converter/blob/master/LICENSE.md
 **/
 
@@ -733,13 +734,14 @@ CreateCsUriOrJsonByNodeArray (
 /**
   This function creates JSON object and CS.
 
-  JsonRawText     JSON raw text.
-  ResourceType    The Redfish resource type.
-  ResourceVersion The Redfish resource version.
-  TypeName        The Redfish type name.
-  JsonObjReturned Pointer to retrieve JSON object.
-  Cs              Pointer to retrieve CS.
-  size            The size of CS.
+  JsonRawText      JSON raw text.
+  ResourceType     The Redfish resource type.
+                   Points to a NULL means no @odata.type
+  ResourceVersion  The Redfish resource version.
+  TypeName         The Redfish type name.
+  JsonObjReturned  Pointer to retrieve JSON object.
+  Cs               Pointer to retrieve CS.
+  size             The size of CS.
 
   Return RedfishCS_status.
 
@@ -761,8 +763,6 @@ CreateJsonPayloadAndCs (
   void              *TempCS;
 
   if ((JsonRawText == NULL) ||
-      (ResourceType == NULL) ||
-      (TypeName == NULL) ||
       (Cs == NULL) ||
       (size == 0)
       )
@@ -775,14 +775,20 @@ CreateJsonPayloadAndCs (
     return RedfishCS_status_unknown_error;
   }
 
-  TempJsonObj = json_object_get (*JsonObjReturned, "@odata.type");
-  if (TempJsonObj == NULL) {
-    return RedfishCS_status_invalid_parameter;
-  }
+  if (ResourceType != NULL) {
+    if (TypeName == NULL) {
+      return RedfishCS_status_invalid_parameter;
+    }
 
-  TempChar = (RedfishCS_char *)json_string_value (TempJsonObj);
-  if ((TempChar == NULL) || !SupportedRedfishResource (TempChar, ResourceType, ResourceVersion, TypeName)) {
-    return RedfishCS_status_unsupported;
+    TempJsonObj = json_object_get (*JsonObjReturned, "@odata.type");
+    if (TempJsonObj == NULL) {
+      return RedfishCS_status_invalid_parameter;
+    }
+
+    TempChar = (RedfishCS_char *)json_string_value (TempJsonObj);
+    if ((TempChar == NULL) || !SupportedRedfishResource (TempChar, ResourceType, ResourceVersion, TypeName)) {
+      return RedfishCS_status_unsupported;
+    }
   }
 
   TempCS = malloc (size);
