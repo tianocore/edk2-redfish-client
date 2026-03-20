@@ -1,7 +1,7 @@
 /** @file
 
   (C) Copyright 2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -121,7 +121,7 @@ AddConfigLangMapRecord (
   }
 
   NewRecord = NewConfigLangMapRecord (Uri, ConfigLang);
-  if (NewConfigLangMapRecord == NULL) {
+  if (NewRecord == NULL) {
     return EFI_OUT_OF_RESOURCES;
   }
 
