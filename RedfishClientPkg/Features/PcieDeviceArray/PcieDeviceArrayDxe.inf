@@ -1,0 +1,57 @@
+## @file
+#
+#  Redfish PCIe Device Array driver.
+#
+#  Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = PcieDeviceArrayDxe
+  FILE_GUID                 = 922bab5f-7c00-4134-8724-b2c3974f391a
+  MODULE_TYPE               = DXE_DRIVER
+  VERSION_STRING            = 1.0
+  ENTRY_POINT               = RedfishPcieDeviceArrayEntryPoint
+  UNLOAD_IMAGE              = RedfishPcieDeviceArrayUnload
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishPkg/RedfishPkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[Sources]
+  PcieDeviceArrayDxe.h
+  PcieDeviceArrayDxe.c
+
+[LibraryClasses]
+  DebugLib
+  BaseLib
+  BaseMemoryLib
+  ConverterCommonLib
+  MemoryAllocationLib
+  RedfishFeatureUtilityLib
+  RedfishHttpLib
+  UefiLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  EdkIIRedfishResourceConfigLib
+  RedfishVersionLib
+  RedfishAddendumLib
+
+[Protocols]
+  gEdkIIRedfishConfigHandlerProtocolGuid    ## CONSUMED
+  gEfiRestJsonStructureProtocolGuid         ## CONSUMED
+  gEdkIIRedfishFeatureProtocolGuid          ## CONSUMED
+
+[Guids]
+
+[Pcd]
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+
+[Depex]
+  TRUE

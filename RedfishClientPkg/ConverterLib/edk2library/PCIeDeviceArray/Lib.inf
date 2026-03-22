@@ -1,0 +1,45 @@
+#
+#  Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+[Defines]
+INF_VERSION                    = 0x00010006
+BASE_NAME                      = PCIeDeviceArrayLib
+FILE_GUID                      = 84599145-24b6-44c2-976f-212259e99174
+MODULE_TYPE                    = BASE
+VERSION_STRING                 = 1.0
+LIBRARY_CLASS                  = PCIeDeviceArrayLib | DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC RISCV64
+#
+
+[Sources]
+  ../../include/RedfishDataTypeDef.h
+  ../../src/RedfishCsCommon.c
+  ../../src/RedfishCsMemory.c
+  ../../src/PCIeDeviceArray/PCIeDeviceArray/PCIeDeviceArray.c
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  RedfishPkg/RedfishPkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  MemoryAllocationLib
+  JsonLib
+
+[BuildOptions]
+  #
+  # Disables the following Visual Studio compiler warnings
+  # so we do not break the build with /WX option:
+  #   C4706: assignment within conditional expression
+  #
+  MSFT:*_*_*_CC_FLAGS = /wd4706
+
+

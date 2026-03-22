@@ -1,0 +1,47 @@
+## @file
+#
+#  INF file of PCIeDeviceArray. EFI Redfish JSON Structure DXE driver
+#
+#  Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = RedfishPCIeDeviceArray_Dxe
+  FILE_GUID                 = 6568dac4-6e47-4579-b05c-4ad929569a1a
+  MODULE_TYPE               = DXE_DRIVER
+  VERSION_STRING            = 1.0
+  ENTRY_POINT               = RedfishPCIeDeviceArrayEntryPoint
+  UNLOAD_IMAGE              = RedfishPCIeDeviceArrayUnload
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishPkg/RedfishPkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[Sources]
+  PCIeDeviceArray_Dxe.c
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  MemoryAllocationLib
+  PCIeDeviceArrayLib
+
+[Protocols]
+  gEfiRestJsonStructureProtocolGuid ## Consuming
+
+[Depex]
+  gEfiRestJsonStructureProtocolGuid
+
+[BuildOptions]
+  #MSFT:*_*_*_CC_FLAGS = /Od
+
