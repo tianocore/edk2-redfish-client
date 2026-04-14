@@ -3,6 +3,7 @@
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2026 Qualcomm Technologies, Inc. All Rights Reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -797,6 +798,7 @@ ProvisioningComputerSystemProperties (
   ComputerSystem        = NULL;
   ComputerSystemCsEmpty = NULL;
   PatchedJson           = NULL;
+  ComputerSystemEmpty   = NULL;
 
   if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
     Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, InputJson, &PatchedJson);
@@ -817,13 +819,12 @@ ProvisioningComputerSystemProperties (
     goto ON_RELEASE;
   }
 
-  ComputerSystemEmpty = NULL;
-  Status              = JsonStructProtocol->ToStructure (
-                                              JsonStructProtocol,
-                                              NULL,
-                                              ComputerSystemEmptyJson,
-                                              (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystemEmpty
-                                              );
+  Status = JsonStructProtocol->ToStructure (
+                                 JsonStructProtocol,
+                                 NULL,
+                                 ComputerSystemEmptyJson,
+                                 (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystemEmpty
+                                 );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure failure: %r\n", __func__, Status));
     goto ON_RELEASE;
@@ -1338,6 +1339,7 @@ ProvisioningComputerSystemResource (
     return EFI_INVALID_PARAMETER;
   }
 
+  NewResourceLocation = NULL;
   ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
   AsciiSPrint (ResourceId, sizeof (ResourceId), "%d", Index);
 
