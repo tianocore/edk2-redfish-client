@@ -46,3 +46,4 @@ F: RedfishClientPkg/
 M: Abner Chang <abner.chang@amd.com> [changab]
 M: Nickle Wang <nicklew@nvidia.com> [nicklela]
 R: Igor Kulchytskyy <igork@ami.com> [igorkulchytskyy]
+R: Graham, Matthew <matthew.graham@amd.com> [magraham-amd]
