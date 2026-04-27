@@ -1,6 +1,7 @@
 /** @file
   Common header file for RedfishFeatureUtilityLib driver.
 
+  Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries. All rights reserved.
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
@@ -35,6 +36,8 @@
 
 #include <Protocol/EdkIIRedfishETagProtocol.h>
 #include <Protocol/EdkIIRedfishConfigLangMapProtocol.h>
+#include <Protocol/Hash2.h>
+#include <Protocol/ServiceBinding.h>
 
 #define INDEX_VARIABLE_SIZE        64
 #define INDEX_STRING_SIZE          16
@@ -46,6 +49,7 @@
 #define MAX_CONF_LANG_LEN          128
 #define MAX_REDFISH_URL_LEN        255
 #define REGULAR_EXPRESSION_ARRAY   L"\\[.*\\]/.*"
+#define HASH_SHA256_DIGEST_SIZE    32
 
 #define BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_ARRAY_START_SIGNATURE  L"{"
 #define BIOS_CONFIG_TO_REDFISH_CONFIG_LANG_ARRAY_END_SIGNATURE    L"}"
