@@ -32,6 +32,8 @@
   }
   RedfishClientPkg/Features/ComputerSystemCollectionDxe/ComputerSystemCollectionDxe.inf
   RedfishClientPkg/Features/Bios/v1_0_9/Dxe/BiosDxe.inf
+  RedfishClientPkg/Features/PcieDeviceArray/PcieDeviceArrayDxe.inf
+  RedfishClientPkg/Features/PcieDevice/v1_9_0/Dxe/PcieDeviceDxe.inf
   RedfishClientPkg/Features/BootOptionCollection/BootOptionCollectionDxe.inf
   RedfishClientPkg/Features/BootOption/v1_0_4/Dxe/BootOptionDxe.inf
   RedfishClientPkg/Features/SecureBoot/v1_1_0/Dxe/SecureBootDxe.inf
@@ -46,6 +48,8 @@
   RedfishClientPkg/Converter/ComputerSystem/v1_5_0/RedfishComputerSystem_V1_5_0_Dxe.inf
   RedfishClientPkg/Converter/ComputerSystemCollection/RedfishComputerSystemCollection_Dxe.inf
   RedfishClientPkg/Converter/Bios/v1_0_9/RedfishBios_V1_0_9_Dxe.inf
+  RedfishClientPkg/Converter/PCIeDeviceArray/RedfishPCIeDeviceArray_Dxe.inf
+  RedfishClientPkg/Converter/PCIeDevice/v1_9_0/RedfishPCIeDevice_V1_9_0_Dxe.inf
   RedfishClientPkg/Converter/BootOptionCollection/RedfishBootOptionCollection_Dxe.inf
   RedfishClientPkg/Converter/BootOption/v1_0_4/RedfishBootOption_V1_0_4_Dxe.inf
   RedfishClientPkg/Converter/SecureBoot/v1_1_0/RedfishSecureBoot_V1_1_0_Dxe.inf

@@ -23,6 +23,8 @@
   ComputerSystemV1_5_0Lib|RedfishClientPkg/ConverterLib/edk2library/ComputerSystem/v1_5_0/Lib.inf
   ComputerSystemCollectionLib|RedfishClientPkg/ConverterLib/edk2library/ComputerSystemCollection/Lib.inf
   BiosV1_0_9Lib|RedfishClientPkg/ConverterLib/edk2library/Bios/v1_0_9/Lib.inf
+  PCIeDeviceArrayLib|RedfishClientPkg/ConverterLib/edk2library/PCIeDeviceArray/Lib.inf
+  PCIeDeviceV1_9_0Lib|RedfishClientPkg/ConverterLib/edk2library/PCIeDevice/v1_9_0/Lib.inf
   BootOptionCollectionLib|RedfishClientPkg/ConverterLib/edk2library/BootOptionCollection/Lib.inf
   BootOptionV1_0_4Lib|RedfishClientPkg/ConverterLib/edk2library/BootOption/v1_0_4/Lib.inf
   SecureBootV1_1_0Lib|RedfishClientPkg/ConverterLib/edk2library/SecureBoot/v1_1_0/Lib.inf
