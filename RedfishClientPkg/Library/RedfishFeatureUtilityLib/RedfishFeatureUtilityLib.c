@@ -1,6 +1,7 @@
 /** @file
   Redfish feature utility library implementation
 
+  Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries. All rights reserved.
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
@@ -1743,7 +1744,96 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
 }
 
 /**
-  Find "ETag" from either HTTP header or Redfish response.
+
+  Calculate an ETag value from the given payload using SHA-256 hashing.
+  The returned ETag is enclosed in quotes and must be freed by the caller using FreePool().
+
+  @param[in]  Payload       Pointer to the payload data.
+  @param[in]  PayloadSize   Size of the payload in bytes.
+
+  @retval  CHAR8*           Pointer to the computed ETag string (quoted), or NULL on failure.
+
+**/
+CHAR8 *
+CalculateEtagFromPayload (
+  IN CHAR8  *Payload,
+  IN UINTN  PayloadSize
+  )
+{
+  EFI_STATUS                    Status;
+  EFI_HASH2_OUTPUT              Hash2Output;
+  EFI_SERVICE_BINDING_PROTOCOL  *pServiceBindingProtocol;
+  EFI_HASH2_PROTOCOL            *pEfiHash2Protocol;
+  EFI_HANDLE                    ChildHandle;
+  EFI_GUID                      *HashAlgorithm;
+  CHAR8                         *ETag;
+
+  if ((Payload == NULL) || (PayloadSize == 0)) {
+    return NULL;
+  }
+
+  ChildHandle   = NULL;
+  HashAlgorithm = &gEfiHashAlgorithmSha256Guid;
+  ETag          = NULL;
+
+  Status = gBS->LocateProtocol (&gEfiHash2ServiceBindingProtocolGuid, NULL, (VOID **)&pServiceBindingProtocol);
+  if ( EFI_ERROR (Status) || (pServiceBindingProtocol == NULL)) {
+    DEBUG ((DEBUG_ERROR, "%a: LocateProtocol pServiceBindingProtocol for Hash2 Failed, Status = %r\n", __func__, Status));
+    return NULL;
+  }
+
+  Status = pServiceBindingProtocol->CreateChild (pServiceBindingProtocol, &ChildHandle);
+  if ( EFI_ERROR (Status) || (ChildHandle == NULL)) {
+    DEBUG ((DEBUG_ERROR, "%a: Failed to create child from Hash 2 service binding, Status = %r\n", __func__, Status));
+    return NULL;
+  }
+
+  Status = gBS->HandleProtocol (ChildHandle, &gEfiHash2ProtocolGuid, (VOID **)&pEfiHash2Protocol);
+  if ( EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: HandleProtocol failed for gEfiHash2ProtocolGuid, Status = %r\n", __func__, Status));
+    goto ON_EXIT;
+  }
+
+  Status = pEfiHash2Protocol->Hash (pEfiHash2Protocol, HashAlgorithm, (UINT8 *)Payload, PayloadSize, &Hash2Output);
+  if ( EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a: Failed to compute Hash from payload, Status = %r\n", __func__, Status));
+    goto ON_EXIT;
+  }
+
+  // Allocate buffer for hex string: 2 chars per byte + quotes + null terminator
+  ETag = AllocateZeroPool ((HASH_SHA256_DIGEST_SIZE * 2) + 3);
+  if (ETag == NULL) {
+    DEBUG ((DEBUG_ERROR, "%a: Failed to allocate memory for ETag Buffer \n", __func__));
+    goto ON_EXIT;
+  }
+
+  ETag[0] = '"';
+  for (UINTN Index = 0; Index < HASH_SHA256_DIGEST_SIZE; Index++) {
+    AsciiSPrint (&ETag[1 + (Index * 2)], 3, "%02x", Hash2Output.Sha256Hash[Index]);
+  }
+
+  ETag[(HASH_SHA256_DIGEST_SIZE * 2) + 1] = '"';
+  ETag[(HASH_SHA256_DIGEST_SIZE * 2) + 2] = '\0';
+
+ON_EXIT:
+  if ((pServiceBindingProtocol != NULL) && (pServiceBindingProtocol->DestroyChild (pServiceBindingProtocol, ChildHandle) != EFI_SUCCESS)) {
+    Status = EFI_DEVICE_ERROR;
+    DEBUG ((DEBUG_ERROR, "%a: Failed to destroy child from Hash 2 service binding \n", __func__));
+  }
+
+  if (EFI_ERROR (Status)) {
+    if (ETag != NULL) {
+      FreePool (ETag);
+      ETag = NULL;
+    }
+  }
+
+  return ETag;
+}
+
+/**
+
+  Find "ETag" from either HTTP header, Redfish response, or compute it from payload if not provided.
   It's caller's responsibility to release Etag by calling FreePool().
 
   @param[in]  Response        HTTP response
@@ -1752,6 +1842,7 @@ RedfishFeatureGetUnifiedArrayTypeConfigureLang (
   @retval  EFI_SUCCESS            ETag is returned in Etag
   @retval  EFI_UNSUPPORTED        ETag is unsupported
   @retval  EFI_INVALID_PARAMETER  Response, Etag or both are NULL.
+  @retval  EFI_NOT_FOUND          ETag could not be retrieved or computed from payload
 
 **/
 EFI_STATUS
@@ -1765,6 +1856,8 @@ GetHttpResponseEtag (
   EDKII_JSON_VALUE  OdataValue;
   CHAR8             *OdataString;
   EFI_HTTP_HEADER   *Header;
+  CHAR8             *JsonStringInPayload;
+  UINTN             JsonStringInPayloadSize;
 
   if ((Response == NULL) || (Etag == NULL)) {
     return EFI_INVALID_PARAMETER;
@@ -1798,6 +1891,19 @@ GetHttpResponseEtag (
         if (OdataString != NULL) {
           *Etag = AllocateCopyPool (AsciiStrSize (OdataString), OdataString);
           ASSERT (*Etag != NULL);
+        }
+      }
+
+      // Fallback : Compute ETag from payload if not found in HTTP header or Redfish response
+      if (*Etag == NULL) {
+        JsonStringInPayload = JsonDumpString (JsonValue, EDKII_JSON_COMPACT);
+        if (JsonStringInPayload != NULL) {
+          JsonStringInPayloadSize = AsciiStrSize (JsonStringInPayload);
+          *Etag                   = CalculateEtagFromPayload (JsonStringInPayload, JsonStringInPayloadSize);
+          FreePool (JsonStringInPayload);
+          JsonStringInPayload = NULL;
+        } else {
+          DEBUG ((DEBUG_WARN, "%a: Failed to dump JSON string from Payload for ETag calculation\n", __func__));
         }
       }
     }
