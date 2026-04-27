@@ -1,0 +1,55 @@
+## @file
+#
+#  Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = PcieDeviceDxe
+  FILE_GUID                 = 1bd84df4-697c-4984-9232-1d03e109b079
+  MODULE_TYPE               = DXE_DRIVER
+  VERSION_STRING            = 1.0
+  ENTRY_POINT               = RedfishResourceEntryPoint
+  UNLOAD_IMAGE              = RedfishResourceUnload
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  RedfishPkg/RedfishPkg.dec
+  RedfishClientPkg/RedfishClientPkg.dec
+
+[Sources]
+  ../Common/PcieDeviceCommon.h
+  ../Common/PcieDeviceCommon.c
+  PcieDeviceDxe.c
+
+[LibraryClasses]
+  BaseMemoryLib
+  DebugLib
+  EdkIIRedfishResourceConfigLib
+  MemoryAllocationLib
+  PcdLib
+  PrintLib
+  RedfishHttpLib
+  RedfishFeatureUtilityLib
+  RedfishResourceIdentifyLib
+  RedfishSystemTopologyLib
+  UefiLib
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEdkIIRedfishConfigHandlerProtocolGuid              ## PRODUCED
+  gEdkIIRedfishFeatureInterchangeDataProtocolGuid     ## CONSUMED
+  gEdkIIRedfishResourceConfigProtocolGuid             ## PRODUCED
+  gEfiRestJsonStructureProtocolGuid                   ## CONSUMED
+
+[Pcd]
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaStringSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdMaxRedfishSchemaVersionSize
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport
+
+[Depex]
+  TRUE
