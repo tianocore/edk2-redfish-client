@@ -3,6 +3,7 @@
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -2207,6 +2208,7 @@ ProvisioningMemoryResource (
     return EFI_INVALID_PARAMETER;
   }
 
+  NewResourceLocation = NULL;
   ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
   AsciiSPrint (ResourceId, sizeof (ResourceId), "%d", Index);
 

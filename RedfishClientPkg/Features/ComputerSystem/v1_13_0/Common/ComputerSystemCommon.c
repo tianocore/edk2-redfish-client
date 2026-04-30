@@ -4,6 +4,7 @@
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
   Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
+  Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -262,10 +263,12 @@ ProvisioningComputerSystemProperties (
 
   DEBUG ((REDFISH_DEBUG_TRACE, "%a provision for %s with: %s\n", __func__, ConfigureLang, (ProvisionMode ? L"Provision resource" : L"Update resource")));
 
-  *ResultJson     = NULL;
-  PropertyChanged = FALSE;
-  ComputerSystem  = NULL;
-  PatchedJson     = NULL;
+  *ResultJson           = NULL;
+  PropertyChanged       = FALSE;
+  ComputerSystem        = NULL;
+  PatchedJson           = NULL;
+  ComputerSystemEmpty   = NULL;
+  ComputerSystemCsEmpty = NULL;
 
   if (PcdGetBool (PcdRedfishCompatibleSchemaSupport)) {
     Status = RedfishSetCompatibleSchemaVersion (&mSchemaInfo, InputJson, &PatchedJson);
@@ -286,13 +289,12 @@ ProvisioningComputerSystemProperties (
     goto ON_RELEASE;
   }
 
-  ComputerSystemEmpty = NULL;
-  Status              = JsonStructProtocol->ToStructure (
-                                              JsonStructProtocol,
-                                              NULL,
-                                              ComputerSystemEmptyJson,
-                                              (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystemEmpty
-                                              );
+  Status = JsonStructProtocol->ToStructure (
+                                 JsonStructProtocol,
+                                 NULL,
+                                 ComputerSystemEmptyJson,
+                                 (EFI_REST_JSON_STRUCTURE_HEADER **)&ComputerSystemEmpty
+                                 );
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: ToStructure failure: %r\n", __func__, Status));
     goto ON_RELEASE;
@@ -427,7 +429,8 @@ ON_RELEASE:
   //
   // Free memory allocated for Computersystem empty CS
   //
-  if (ComputerSystemCsEmpty->Boot->BootOrder != NULL) {
+
+  if ((ComputerSystemCsEmpty != NULL) && (ComputerSystemCsEmpty->Boot != NULL) && (ComputerSystemCsEmpty->Boot->BootOrder != NULL)) {
     DestoryRedfishCharArray (ComputerSystemCsEmpty->Boot->BootOrder, ArraySize);
   }
 
@@ -467,6 +470,7 @@ ProvisioningComputerSystemResource (
     return EFI_INVALID_PARAMETER;
   }
 
+  NewResourceLocation = NULL;
   ZeroMem (&Response, sizeof (REDFISH_RESPONSE));
   AsciiSPrint (ResourceId, sizeof (ResourceId), "%d", Index);
 
