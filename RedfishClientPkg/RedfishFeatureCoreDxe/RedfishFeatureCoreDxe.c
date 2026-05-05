@@ -379,6 +379,11 @@ RedfishFeatureDriverStartup (
   }
 
   //
+  // Signal event while we do not need the Redfish connection.
+  //
+  SignalDisconnectRedfishInterfaceEvent ();
+
+  //
   // Restore to the TPL where this callback handler is called.
   //
   gBS->RaiseTPL (REDFISH_FEATURE_CORE_TPL);
