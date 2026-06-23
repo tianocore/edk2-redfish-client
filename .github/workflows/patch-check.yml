@@ -1,7 +1,7 @@
 # @file
 # GitHub Workflow for patch check
 #
-# Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir format-patch
           cd edk2-redfish-client
-          git format-patch --subject-prefix="edk2-redfish-client][PATCH" -${{ github.event.pull_request.commits }} HEAD -O ../edk2/BaseTools/Conf/diff.order -o ../format-patch/
+          git format-patch --subject-prefix="edk2-redfish-client][PATCH" -${{ github.event.pull_request.commits }} HEAD -O ../edk2/BaseTools/Conf/diff.order -o ../format-patch/ -- . ':(exclude)*.svg'
           ls ../format-patch/
       - name: run PatchCheck.py
         run: |
