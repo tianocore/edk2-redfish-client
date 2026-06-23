@@ -37,7 +37,7 @@ firmware managed platform Redfish resource would be the second stage.
 Below are the block diagrams of UEFI Redfish Client EDK2 Implementation.
 
 ## <a name="[0]">EDK2 Redfish Client Implementation Diagrams</a>
-![UEFI Redfish Client Implementation](https://github.com/tianocore/edk2-redfish-client/blob/main/RedfishClientPkg/Documents/Media/RedfishClientDriverStack.svg?raw=true)
+![UEFI Redfish Client Implementation](Documents/Media/Redfish_Client_Driver_Stack_Task_Service_Flow_Chart.svg?raw=true)
 
 ## EFI EDK2 Redfish Client Framework
 The functionality of each block in the diagrams are described in below sections,
@@ -527,8 +527,16 @@ successfully or not.
 
 Redfish task is handled before any other Redfish resource because the action requested by Redfish task may change host configuration.
 
-There are several interfaces supported by Redfish task protocol:
+## EDKII Redfish Task Service DXE Driver **[[13]](#[0])**
+![Redfish task service diagram](Documents/Media/RedfishTaskService_Interaction_Diagram.svg?raw=true)
+
+EDKII Redfish Task Service DXE driver provides the protocol interface to all Redfish client feature driver to register itself for using the task
+services that enables management of long-duration operations. There are several interfaces supported by Redfish task protocol:
+
 ```C
+///
+/// Definition of _EDKII_REDFISH_TASK_PROTOCOL.
+///
 struct _EDKII_REDFISH_TASK_PROTOCOL {
   UINT32                         Version;
   REDFISH_TASK_REGISTER          Register;
@@ -548,6 +556,18 @@ struct _EDKII_REDFISH_TASK_PROTOCOL {
   - Feature driver calls this function to get Redfish payload attached to this task resource.
 - FreePayload()
   - The function that helps feature driver to release Redfish payload that is returned by GetPayload().
+
+![Task service call flow](Documents/Media/Redfish_Client_Driver_Stack_Task_Service_Flow_Chart_with_markings.svg?raw=true)
+![Task service call flow](Documents/Media/redfish-feature-driver-call-flow_with_markings.svg?raw=true)
+
+The RedfishTaskServiceDxe registers with RedfishFeatureCoreDxe for the management of TaskService URI. RedfishFeatureCoreDxe
+invokes registered callback for the task service management during Edk2RedfishFeatureDriverStartupEvent[11].
+RedfishTaskService's callback invokes RedfishTaskServiceDispatcher to fetch the TaskCollection from the BMC.
+
+The dispatcher will iterate through all the tasks available in the collection and will try to identify the associated
+callback registered by the Redfish client feature driver. Later, once the associated callback is invoked the feature driver
+requests the task payload through the RedfishTaskProtocol and performs the action required. Once completed or failed,
+TaskStatus and TaskState is communicated back to the RedfishTaskServiceDxe which will eventually notify the BMC.
 
 **Redfish task library**
 
