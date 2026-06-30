@@ -3,7 +3,7 @@
   for EDK2 Redfish Feature driver registration.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -725,6 +725,11 @@ RedfishFeatureCoreEntryPoint (
   EFI_STATUS  Status;
   EFI_HANDLE  Handle;
   EFI_GUID    *EventGuid;
+
+  if (PcdGetBool (PcdRedfishFeatureCoreDisabled)) {
+    DEBUG ((DEBUG_INFO, "%a: Redfish feature core disabled by platform policy\n", __func__));
+    return EFI_SUCCESS;
+  }
 
   Handle              = NULL;
   ResourceUriNodeList = NULL;
