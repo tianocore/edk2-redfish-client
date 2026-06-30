@@ -2,7 +2,7 @@
 # Redfish Client Package
 #
 # (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-# Copyright (c) 2022-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2022-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # Copyright (C) 2024 Advanced Micro Devices, Inc. All rights reserved.<BR>
 #
 # SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -79,6 +79,12 @@
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCompatibleSchemaSupport|TRUE|BOOLEAN|0x10000006
   # Limit Redfish feature code driver to one launch.
   gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishCoreExecuteOnce|TRUE|BOOLEAN|0x10000007
+
+[PcdsDynamic]
+  ## When TRUE, RedfishFeatureCoreDxe entry point returns EFI_SUCCESS immediately
+  ## and the Redfish feature stack does not run. Set by platform policy before the
+  ## feature core is dispatched.
+  gEfiRedfishClientPkgTokenSpaceGuid.PcdRedfishFeatureCoreDisabled|FALSE|BOOLEAN|0x20000003
 
 [PcdsDynamicEx]
   ## The flag used to indicate that system reboot is required due to system configuration change

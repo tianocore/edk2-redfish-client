@@ -2,7 +2,7 @@
   Definitions of RedfishFeatureCoreDxe
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -24,6 +24,7 @@
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/RedfishEventLib.h>
 #include <Library/RedfishFeatureUtilityLib.h>
+#include <Library/PcdLib.h>
 #include <Library/ReportStatusCodeLib.h>
 
 #define MaxNodeNameLength             64
