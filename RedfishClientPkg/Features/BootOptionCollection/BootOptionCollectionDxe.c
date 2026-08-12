@@ -3,7 +3,7 @@
   Redfish feature driver implementation - BootOptionCollection
 
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2022-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2022-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
@@ -95,13 +95,12 @@ HandleResource (
       return EFI_ABORTED;
     }
 
-    //
-    // The target property does not exist or stale, do the provision to create property.
-    //
-    DEBUG ((REDFISH_BOOT_OPTION_COLLECTION_DEBUG_TRACE, "%a provision for %s\n", __func__, Uri));
-    Status = EdkIIRedfishResourceConfigProvisioning (&SchemaInfo, Uri, NULL, Private->InformationExchange, FALSE);
-    if (EFI_ERROR (Status)) {
-      DEBUG ((DEBUG_ERROR, "%a: failed to provision with GET mode: %r\n", __func__, Status));
+    if (ConfigLang == NULL) {
+      DEBUG ((REDFISH_BOOT_OPTION_COLLECTION_DEBUG_TRACE, "%a update for stale resource: %s\n", __func__, Uri));
+      Status = EdkIIRedfishResourceConfigUpdate (&SchemaInfo, Uri, NULL);
+      if (EFI_ERROR (Status)) {
+        DEBUG ((DEBUG_ERROR, "%a: failed to update resource for: %s: %r\n", __func__, Uri, Status));
+      }
     }
 
     return Status;
