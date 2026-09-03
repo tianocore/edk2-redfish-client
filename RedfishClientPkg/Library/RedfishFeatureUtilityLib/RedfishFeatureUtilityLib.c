@@ -3,7 +3,7 @@
 
   Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries. All rights reserved.
   (C) Copyright 2020-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2025, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -113,20 +113,24 @@ GetArraykeyFromUri (
 
   This function query ETag from given URI string and keep it in database.
 
-  @param[in]  Service               Redfish service instance to make query.
+  @param[in]  RedfishService        Redfish service instance to make query.
   @param[in]  Uri                   URI to query ETag.
   @param[in]  CheckPendingSettings  Set this to true and @Redfish.Settings will
                                     be handled together. FALSE otherwise.
+  @param[in]  UseCache              Allow RedfishHttpDxe to answer the query from
+                                    its response cache.
 
   @retval     EFI_SUCCESS     ETAG and URI are applied successfully.
   @retval     Others          Errors occur.
 
 **/
+STATIC
 EFI_STATUS
-SetEtagFromUri (
+SetEtagFromUriEx (
   IN  REDFISH_SERVICE  *RedfishService,
   IN  EFI_STRING       Uri,
-  IN  BOOLEAN          CheckPendingSettings
+  IN  BOOLEAN          CheckPendingSettings,
+  IN  BOOLEAN          UseCache
   )
 {
   EFI_STATUS        Status;
@@ -155,7 +159,7 @@ SetEtagFromUri (
   }
 
   ZeroMem (&Response, sizeof (Response));
-  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, FALSE);
+  Status = RedfishHttpGetResource (RedfishService, Uri, NULL, &Response, UseCache);
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a: get resource from: %s failed\n", __func__, Uri));
     return Status;
@@ -198,7 +202,12 @@ SetEtagFromUri (
     if (!EFI_ERROR (Status)) {
       DEBUG ((REDFISH_DEBUG_TRACE, "%a: @Redfish.Settings found: %s\n", __func__, PendingSettingUri));
 
-      Status = SetEtagFromUri (RedfishService, PendingSettingUri, FALSE);
+      //
+      // The BMC rewrites the pending settings resource whenever the main
+      // resource is modified, so a cached copy of it is stale after a PATCH
+      // to the main URI. Always read its ETag from the BMC.
+      //
+      Status = SetEtagFromUriEx (RedfishService, PendingSettingUri, FALSE, FALSE);
     }
   }
 
@@ -219,6 +228,36 @@ ON_RELEASE:
   RedfishHttpFreeResponse (&Response);
 
   return Status;
+}
+
+/**
+
+  This function query ETag from given URI string and keep it in database.
+
+  The main resource is read through the RedfishHttpDxe cache. RedfishHttpDxe
+  expires the cached response for a URI whenever a feature driver modifies it
+  (PATCH/PUT/POST/DELETE), so the ETag returned here is current in both cases:
+  fresh from the BMC when this boot changed the resource, and from the cache
+  when nothing changed. The @Redfish.Settings resource is always read from the
+  BMC, see SetEtagFromUriEx().
+
+  @param[in]  RedfishService        Redfish service instance to make query.
+  @param[in]  Uri                   URI to query ETag.
+  @param[in]  CheckPendingSettings  Set this to true and @Redfish.Settings will
+                                    be handled together. FALSE otherwise.
+
+  @retval     EFI_SUCCESS     ETAG and URI are applied successfully.
+  @retval     Others          Errors occur.
+
+**/
+EFI_STATUS
+SetEtagFromUri (
+  IN  REDFISH_SERVICE  *RedfishService,
+  IN  EFI_STRING       Uri,
+  IN  BOOLEAN          CheckPendingSettings
+  )
+{
+  return SetEtagFromUriEx (RedfishService, Uri, CheckPendingSettings, TRUE);
 }
 
 /**

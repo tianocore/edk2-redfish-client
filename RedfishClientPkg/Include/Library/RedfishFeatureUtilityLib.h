@@ -2,7 +2,7 @@
   This file defines the Redfish Feature Utility Library interface.
 
   (C) Copyright 2021-2022 Hewlett Packard Enterprise Development LP<BR>
-  Copyright (c) 2023-2024, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+  Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
   Copyright (C) 2024-2026 Advanced Micro Devices, Inc. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -485,7 +485,15 @@ PropertyChecker (
 /**
   This function query ETag from given URI string and keep it in database.
 
-  @param[in]  Service               Redfish service instance to make query.
+  The main resource is read through the RedfishHttpDxe response cache, so
+  the ETag may come from a response fetched earlier in this boot. RedfishHttpDxe
+  expires the cached response for a URI whenever the client modifies it
+  (PATCH/PUT/POST/DELETE), so the ETag is refetched from the BMC whenever this
+  boot changed the resource. When CheckPendingSettings is TRUE, the
+  @Redfish.Settings resource is always read from the BMC, bypassing the cache,
+  because the BMC rewrites it without the client touching that URI.
+
+  @param[in]  RedfishService        Redfish service instance to make query.
   @param[in]  Uri                   URI to query ETag.
   @param[in]  CheckPendingSettings  Set this to true and @Redfish.Settings will
                                     be handled together. FALSE otherwise.
