@@ -36,7 +36,7 @@ jobs:
           cd uncrustify-edk2
           mkdir build
           cd build
-          cmake ..
+          cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ..
           cmake --build .
           cp uncrustify /usr/local/bin && chmod +x /usr/local/bin/uncrustify
       - name: uncrustify check changed files
