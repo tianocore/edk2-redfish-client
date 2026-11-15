@@ -61,5 +61,6 @@
   RedfishClientPkg/Library/RedfishSystemTopologyLibNull/RedfishSystemTopologyLibNull.inf
   RedfishClientPkg/Library/RedfishMessageLib/RedfishMessageLib.inf
   RedfishClientPkg/Library/RedfishTaskLibNull/RedfishTaskLibNull.inf
+  RedfishClientPkg/Library/RedfishPlatformTaskLib/RedfishPlatformTaskLib.inf
 
   !include RedfishClientPkg/RedfishClient.dsc.inc
