@@ -518,6 +518,39 @@ collection resource, and also for triggering the Redfish action. For the Redfish
 as loading the BIOS default and Secure boot certification enrollment.<br>
 HTTP DELETE operation is triggered by BIOS to delete a member in the Redfish collection.
 
+<a name="BIOS-Redfish-Task-Update"></a>**BIOS Redfish Task Update**
+- BMC provides the task update URI for BIOS to report the Redfish task result<br>
+After BIOS finishes the job requested by a Redfish task (see [Redfish Task](#redfish-task)), BIOS reports the
+task result back to BMC. The Redfish specification does not define how a Redfish client updates the "TaskState"
+and "Messages" properties of a task resource, so this interface is platform dependent and is implemented by the
+Redfish task library ***RedfishTaskLib***. When the platform uses ***RedfishPlatformTaskLib*** (see
+[Redfish task library](#Redfish-Task-Library)), BMC must meet the requirements below:
+  - BMC supports HTTP PATCH on `{TaskUri}/Update`, where `{TaskUri}` is the "@odata.id" of the task member
+    in the `/redfish/v1/TaskService/Tasks` collection. For example, `/redfish/v1/TaskService/Tasks/1/Update`.
+  - BMC accepts the "TaskState" and "Messages" properties in the request body and applies them to the task
+    resource at `{TaskUri}`. "TaskState" is either "Completed" or "Exception". Each member of "Messages" has
+    "MessageId" and "Message". "MessageId" is "Base.1.0.Success" for a message reported with OK severity and
+    "Base.1.0.GeneralError" for a message reported with warning or critical severity. When the task is completed
+    and no message is reported, BIOS sends one "Base.1.0.Success" message.
+  - BMC changes the task to the reported terminal state. Redfish task service driver only handles the tasks in
+    "New", "Starting", "Pending" or "Running" state. If the task state is not changed, BIOS handles the same task
+    again on the next boot.
+  - BMC allows the BIOS Redfish credential (see **BIOS Redfish Credential**) to PATCH this URI, and responds with
+    HTTP status code 200 (OK), 202 (Accepted) or 204 (No Content) on success.
+
+```C
+HTTP PATCH /redfish/v1/TaskService/Tasks/1/Update
+{
+  "TaskState": "Completed",
+  "Messages": [
+    {
+      "MessageId": "Base.1.0.Success",
+      "Message": "The request completed successfully"
+    }
+  ]
+}
+```
+
 ### Redfish Task
 Redfish task service driver handles Redfish task resources at `/redfish/v1/TaskService/Tasks` and dispatch the task
 resource to registered Redfish feature driver. Redfish feature driver utilizes Redfish task protocol to get data
@@ -569,9 +602,22 @@ callback registered by the Redfish client feature driver. Later, once the associ
 requests the task payload through the RedfishTaskProtocol and performs the action required. Once completed or failed,
 TaskStatus and TaskState is communicated back to the RedfishTaskServiceDxe which will eventually notify the BMC.
 
-**Redfish task library**
+<a name="Redfish-Task-Library"></a>**Redfish task library**
 
 Redfish task service reads Redfish tasks on  `/redfish/v1/TaskService/Tasks`. However, the URI for host firmware to update task results and state are not defined in any specification. As the result, platform BMC may have different implementation of updating task result. This makes the interface of updating Redfish task to be platform dependent. Redfish task library is introduced for platform owner to implement this path.
+
+There are two Redfish task library instances in RedfishClientPkg:
+- ***RedfishTaskLibNull*** is the default instance in RedfishClientLibs.dsc.inc. It does not report the task
+  result to BMC and returns EFI_UNSUPPORTED.
+- ***RedfishPlatformTaskLib*** reports "TaskState" and "Messages" of the task to BMC with HTTP PATCH on
+  `{TaskUri}/Update`. The messages are the ones that Redfish feature driver reports with ReportMessage() in
+  Redfish task protocol. BMC must implement the interface described in
+  [BIOS Redfish Task Update](#BIOS-Redfish-Task-Update). Platform uses this instance by below setting in the
+  platform DSC file:
+
+```C
+  RedfishTaskLib|RedfishClientPkg/Library/RedfishPlatformTaskLib/RedfishPlatformTaskLib.inf
+```
 
 ## The Contributors
 Chang, Abner <abner.chang@amd.com>\
